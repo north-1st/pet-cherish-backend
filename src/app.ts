@@ -5,6 +5,7 @@ import morgan from "morgan";
 import env from "./env";
 import errorHandler from "./middlewares/errorHandler";
 import tasksRoutes from "./routes/tasks";
+import v1Routes from "./routes/v1";
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/tasks", tasksRoutes);
+app.use(v1Routes);
 
 app.use(errorHandler);
 
