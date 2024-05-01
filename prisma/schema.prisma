@@ -8,24 +8,148 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  username String @unique
-  email    String @unique
-  password String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  email             String    @unique
+  real_name         String
+  phone             String
+  password          String
+  nickname          String
+  birthdate         DateTime?
+  gender            Gender?
+  self_introduction String
+  avatar            String?
+  is_sitter         Boolean   @default(false)
+  is_deleted        Boolean   @default(false)
+  average_rating    Float
+  total_reviews     Int
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+  sitter            Sitter?
+  pet_list          Pet[]
+  task_list         Task[]
 
   @@map("users")
 }
 
-model Task {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  title  String @unique
-  detail String
+model Sitter {
+  id                    String        @id @default(auto()) @map("_id") @db.ObjectId
+  certificate_number    String
+  certificate_image     String
+  police_check_image    String?
+  service_city          String?
+  service_district_list String[]
+  photography_price     Int?
+  health_care_price     Int?
+  bath_price            Int?
+  walking_price         Int?
+  service_size_list     PetSize[]
+  is_door_to_door       Boolean       @default(false)
+  image_list            String[]
+  service_description   String
+  average_rating        Float
+  total_reviews         Int
+  service_type_list     ServiceType[]
+  status                SitterStatus  @default(APPROVING)
+  created_at            DateTime      @default(now())
+  updated_at            DateTime      @updatedAt
+  user                  User          @relation(fields: [user_id], references: [id])
+  user_id               String        @unique @db.ObjectId
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@map("sitters")
+}
+
+model Pet {
+  id                 String         @id @default(auto()) @map("_id") @db.ObjectId
+  name               String
+  breed              String
+  size               PetSize
+  character_list     PetCharacter[]
+  has_microchipped   Boolean        @default(false)
+  is_neutered        Boolean        @default(false)
+  health_description String
+  avatar_list        String[]
+  created_at         DateTime       @default(now())
+  updated_at         DateTime       @updatedAt
+  owner              User           @relation(fields: [owner_user_id], references: [id])
+  owner_user_id      String         @unique @db.ObjectId
+  task_list          Task[]
+
+  @@map("pets")
+}
+
+model Task {
+  id                    String      @id @default(auto()) @map("_id") @db.ObjectId
+  title                 String
+  public                TaskPublic  @default(OPEN)
+  status                TaskStatus  @default(NULL)
+  service_type          ServiceType
+  city                  String
+  district              String
+  unit_price            Int
+  total                 Int
+  detail                String
+  accept_sitter_contact Boolean     @default(false)
+  start_at              DateTime
+  end_at                DateTime
+  created_at            DateTime    @default(now())
+  updated_at            DateTime    @updatedAt
+  user                  User        @relation(fields: [user_id], references: [id])
+  user_id               String      @db.ObjectId
+  pet                   Pet         @relation(fields: [pet_id], references: [id])
+  pet_id                String      @db.ObjectId
 
   @@map("tasks")
+}
+
+enum Gender {
+  MALE // 男
+  FEMALE // 女
+  OTHER // 其他
+}
+
+enum PetSize {
+  S // 小
+  M // 中
+  L // 大
+}
+
+enum PetCharacter {
+  IRRITABLE // 暴躁
+  CUTE // 可爱
+  SMART // 聰明
+  FRIENDLY // 友善
+  GREEDY // 貪吃
+  NAUGHTY // 調皮
+  SNOOZE // 貪睡
+  ENERGETIC // 活潑
+}
+
+enum ServiceType {
+  PHOTOGRAPHY // 專業攝影
+  HEALTH_CARE // 寵物保健
+  BATH // 到府洗澡
+  WALKING // 陪伴散步
+}
+
+enum SitterStatus {
+  APPROVING // 等待審核
+  REJECTED // 拒絕
+  PASS // 通過
+  ON_BOARD // 服務已上架
+}
+
+enum TaskPublic {
+  OPEN // 開放下單
+  CLOSED // 下架
+  IN_TRANSACTION // 交易中
+  DELETED // 已刪除
+  COMPLETED // 已完成
+}
+
+enum TaskStatus {
+  NULL // 未有保母下單
+  PENDING // 有保母下單
+  UN_PAID // 飼主已接受保母接單 但尚未付款
+  TRACKING // 任務進行中
+  COMPLETED // 任務完成
 }
