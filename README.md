@@ -23,3 +23,9 @@ docker compose up -d
 ```bash
 DATABASE_URL="mongodb://root:prisma@localhost:27017/pet-cherish?authSource=admin&retryWrites=true&w=majority"
 ```
+
+## 產生 swagger.json
+
+```bash
+npm run swagger
+```
