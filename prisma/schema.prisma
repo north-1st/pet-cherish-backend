@@ -97,8 +97,31 @@ model Task {
   user_id               String      @db.ObjectId
   pet                   Pet         @relation(fields: [pet_id], references: [id])
   pet_id                String      @db.ObjectId
+  Order                 Order[]
 
+  @@unique([id, user_id])
   @@map("tasks")
+}
+
+model Order {
+  id                  String      @id @default(auto()) @map("_id") @db.ObjectId
+  sitter_user_id      String
+  pet_owner_user_id   String      @db.ObjectId
+  status              OrderStatus @default(PENDING)
+  third_party_id      String?
+  payment_at          DateTime?
+  report_content      String
+  report_image_list   String[]
+  report_created_at   DateTime?
+  report_updated_at   DateTime?
+
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  task                Task   @relation(fields: [task_id, pet_owner_user_id], references: [id, user_id])
+  task_id             String @db.ObjectId
+
+  @@map("orders")
 }
 
 enum Gender {
@@ -152,4 +175,13 @@ enum TaskStatus {
   UN_PAID // 飼主已接受保母接單 但尚未付款
   TRACKING // 任務進行中
   COMPLETED // 任務完成
+}
+
+enum OrderStatus {
+  PENDING // 待處理
+  VALID // 已成立
+  TRACKING // 任務進行中
+  COMPLETED // 任務完成
+  CANCELED // 訂單已取消
+  INVALID // 訂單不成立
 }
