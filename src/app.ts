@@ -2,10 +2,11 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import swaggerUi from "swagger-ui-express";
 import env from "./env";
 import errorHandler from "./middlewares/errorHandler";
-import tasksRoutes from "./routes/tasks";
-import v1Routes from "./routes/v1";
+import routes from "./routes/index";
+import swaggerDocument from "../src/swagger.json";
 
 const app = express();
 
@@ -19,12 +20,13 @@ app.use(
   })
 );
 
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.use("/tasks", tasksRoutes);
-app.use(v1Routes);
+app.use("/api", routes);
 
 app.use(errorHandler);
 
