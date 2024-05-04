@@ -21,6 +21,16 @@
         }
       }
     },
+    "/api/v1/users/signup": {
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/v1/tasks/": {
       "get": {
         "description": "",
