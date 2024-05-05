@@ -8,10 +8,24 @@ const doc = {
     description: '寵物陪伴媒合平台',
     version,
   },
+  tags: [
+    {
+      name: 'Users',
+    },
+    {
+      name: 'Pets',
+    },
+    {
+      name: 'Tasks',
+    },
+    {
+      name: 'Orders',
+    },
+  ],
   host: 'localhost:5000',
 };
 
 const outputFile = './swagger.json';
-const routes = ['src/routes/*/*.ts'];
+const routes = ['./app.ts'];
 
 swaggerAutogen()(outputFile, routes, doc);
