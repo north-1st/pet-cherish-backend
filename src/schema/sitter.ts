@@ -1,6 +1,7 @@
-import { petSizeSchema } from 'schema/pet';
-import { serviceTypeSchema } from 'schema/task';
 import { z } from 'zod';
+
+import { petSizeSchema } from '@schema/pet';
+import { serviceTypeSchema } from '@schema/task';
 
 export const sitterStatusSchema = z.enum(['APPROVING', 'REJECTED', 'APPROVED', 'PENDING']);
 
