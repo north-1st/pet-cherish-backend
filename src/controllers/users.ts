@@ -1,7 +1,8 @@
-import { RequestHandler } from "express";
-import createHttpError from "http-errors";
-import prisma from "../prisma";
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt';
+import { RequestHandler } from 'express';
+import createHttpError from 'http-errors';
+
+import prisma from '@prisma';
 
 interface SignUpBody {
   real_name: string;
@@ -9,12 +10,7 @@ interface SignUpBody {
   password: string;
 }
 
-export const signUp: RequestHandler<
-  unknown,
-  unknown,
-  SignUpBody,
-  unknown
-> = async (req, res, next) => {
+export const signUp: RequestHandler<unknown, unknown, SignUpBody, unknown> = async (req, res, next) => {
   const { real_name, email, password: passwordRaw } = req.body;
 
   try {
@@ -25,7 +21,7 @@ export const signUp: RequestHandler<
     });
 
     if (existingUser) {
-      throw createHttpError(409, "User already taken");
+      throw createHttpError(409, 'User already taken');
     }
 
     const passwordHashed = await bcrypt.hash(passwordRaw, 10);

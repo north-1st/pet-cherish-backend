@@ -1,6 +1,17 @@
-const swaggerAutogen = require("swagger-autogen")();
+import swaggerAutogen from 'swagger-autogen';
 
-const outputFile = "./swagger.json";
-const endpointsFiles = ["./app.ts"];
+import { version } from '../package.json';
 
-swaggerAutogen(outputFile, endpointsFiles);
+const doc = {
+  info: {
+    title: 'Pet Cherish API Docs',
+    description: '寵物陪伴媒合平台',
+    version,
+  },
+  host: 'localhost:5000',
+};
+
+const outputFile = './swagger.json';
+const routes = ['src/routes/*/*.ts'];
+
+swaggerAutogen()(outputFile, routes, doc);
