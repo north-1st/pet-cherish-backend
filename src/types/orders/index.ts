@@ -6,3 +6,9 @@ export interface CreateOrdersRequest extends Request {
         user_id: string;
     }
 }
+
+export interface UpdateOrdersRequest extends Request {
+    body: {
+        user_id: string;
+    }
+}

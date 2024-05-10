@@ -98,6 +98,7 @@ model Task {
   pet                   Pet         @relation(fields: [pet_id], references: [id])
   pet_id                String      @db.ObjectId
   Order                 Order[]
+  order_id              String?      @db.ObjectId @unique
 
   @@unique([id, user_id])
   @@map("tasks")
