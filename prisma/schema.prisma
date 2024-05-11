@@ -11,17 +11,17 @@ model User {
   id                String    @id @default(auto()) @map("_id") @db.ObjectId
   email             String    @unique
   real_name         String
-  phone             String
+  phone             String?
   password          String
-  nickname          String
+  nickname          String?
   birthdate         DateTime?
   gender            Gender?
-  self_introduction String
+  self_introduction String?
   avatar            String?
-  is_sitter         Boolean   @default(false)
-  is_deleted        Boolean   @default(false)
-  average_rating    Float
-  total_reviews     Int
+  is_sitter         Boolean?  @default(false)
+  is_deleted        Boolean?  @default(false)
+  average_rating    Float?
+  total_reviews     Int?
   created_at        DateTime  @default(now())
   updated_at        DateTime  @updatedAt
   sitter            Sitter?
