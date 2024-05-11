@@ -258,9 +258,9 @@ export const updateOrdersByPaid = async (req: UpdateOrdersRequest, res: Response
 
 export const updateOrdersByComplete = async (req: UpdateOrdersRequest, res: Response, next: NextFunction) => {
   const { order_id } = req.params;
-  const { user_id } = req.body;
+  const { user_id, task_id } = req.body;
 
-  if(!user_id){
+  if(!user_id || !task_id){
     res.status(400).json({
         message : "Bad Request!",
         status: false
@@ -270,7 +270,7 @@ export const updateOrdersByComplete = async (req: UpdateOrdersRequest, res: Resp
 
   try{
     // 訂單狀態<保姆視角>：已完成
-    const updateResultBySitter = await prisma.order.update({
+    await prisma.order.update({
       where: {
         id: order_id
       },
@@ -278,13 +278,9 @@ export const updateOrdersByComplete = async (req: UpdateOrdersRequest, res: Resp
         status: OrderStatus.COMPLETED
       }
     });
-    res.status(200).json({
-      data: updateResultBySitter,
-      status: true
-    });
 
-    // 訂單狀態<飼主視角>：已完成 TBD
-    const updateResultByOwner = await prisma.task.update({
+    // 訂單狀態<飼主視角>：已完成
+    await prisma.task.update({
       where: {
         user_id,
         order_id
@@ -294,12 +290,13 @@ export const updateOrdersByComplete = async (req: UpdateOrdersRequest, res: Resp
         public: TaskPublic.COMPLETED
       }
     });
-    res.status(200).json({
-      data: updateResultByOwner,
-      status: true
-    });
 
     // （補）7天到直接改狀態：後端排程
+
+    res.status(200).json({
+      data: "Update Successfully!",
+      status: true
+    });
 
   }catch(error){
     next(error);
@@ -308,9 +305,9 @@ export const updateOrdersByComplete = async (req: UpdateOrdersRequest, res: Resp
 
 export const updateOrdersByCancel = async (req: UpdateOrdersRequest, res: Response, next: NextFunction) => {
   const { order_id } = req.params;
-  const { user_id } = req.body;
+  const { user_id, task_id } = req.body;
 
-  if(!user_id){
+  if(!user_id || !task_id){
     res.status(400).json({
         message : "Bad Request!",
         status: false
@@ -320,7 +317,7 @@ export const updateOrdersByCancel = async (req: UpdateOrdersRequest, res: Respon
 
   try{
     // 訂單狀態<保姆視角>：已取消
-    const updateResultBySitter = await prisma.order.update({
+    await prisma.order.update({
       where: {
         id: order_id
       },
@@ -328,15 +325,10 @@ export const updateOrdersByCancel = async (req: UpdateOrdersRequest, res: Respon
         status: OrderStatus.CANCELED
       }
     });
-    res.status(200).json({
-      data: updateResultBySitter,
-      status: true
-    });
 
-    // 訂單狀態<飼主視角>：已完成 TBD
-    const updateResultByOwner = await prisma.task.update({
+    // 訂單狀態<飼主視角>：已取消
+    await prisma.task.update({
       where: {
-        user_id,
         order_id,
       },
       data: {
@@ -345,8 +337,9 @@ export const updateOrdersByCancel = async (req: UpdateOrdersRequest, res: Respon
         public: TaskPublic.OPEN
       }
     });
+
     res.status(200).json({
-      data: updateResultByOwner,
+      data: "Update Successfully!",
       status: true
     });
   }catch(error){
