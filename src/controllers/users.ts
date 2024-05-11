@@ -40,8 +40,22 @@ export const signUp: RequestHandler<
 
     const { password: userPassword, ...user } = newUser;
 
-    res.status(201).json(user);
+    req.logIn(user, (error) => {
+      if (error) throw error;
+      res.status(201).json({
+        status: true,
+        message: "register successd",
+        data: user,
+      });
+    });
   } catch (error) {
     next(error);
   }
+};
+
+export const logOut: RequestHandler = (req, res) => {
+  req.logOut((error) => {
+    if (error) throw error;
+    res.sendStatus(200);
+  });
 };
