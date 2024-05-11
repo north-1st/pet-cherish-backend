@@ -2,10 +2,10 @@ import { NextFunction, Request, Response } from 'express';
 
 import { OrderStatus, TaskPublic, TaskStatus } from '@prisma/client';
 
-import prisma from '../../prisma';
-import { CreateOrdersRequest, UpdateOrdersRequest } from '../../types/orders';
+import prisma from '../prisma';
+import { OrdersRequest } from '../types/orders';
 
-export const createOrder = async (req: CreateOrdersRequest, res: Response, next: NextFunction) => {
+export const createOrder = async (req: OrdersRequest, res: Response, next: NextFunction) => {
   const { user_id, task_id } = req.body;
   if (!user_id || !task_id) {
     res.status(400).json({
@@ -76,7 +76,7 @@ export const createOrder = async (req: CreateOrdersRequest, res: Response, next:
  * (2) 回傳成功訊息：因為會做兩件事，拒絕保姆好像不用回傳更新資料。
  *
  */
-export const updateOrdersByRefuseSitter = async (req: UpdateOrdersRequest, res: Response, next: NextFunction) => {
+export const updateOrdersByRefuseSitter = async (req: OrdersRequest, res: Response, next: NextFunction) => {
   const { order_id } = req.params;
   const { user_id, task_id } = req.body;
 
@@ -143,7 +143,7 @@ export const updateOrdersByRefuseSitter = async (req: UpdateOrdersRequest, res: 
   }
 };
 
-export const updateOrdersByAcceptSitter = async (req: UpdateOrdersRequest, res: Response, next: NextFunction) => {
+export const updateOrdersByAcceptSitter = async (req: OrdersRequest, res: Response, next: NextFunction) => {
   const { order_id } = req.params;
   const { user_id, task_id } = req.body;
 
@@ -208,7 +208,7 @@ export const updateOrdersByAcceptSitter = async (req: UpdateOrdersRequest, res: 
   }
 };
 
-export const updateOrdersByPaid = async (req: UpdateOrdersRequest, res: Response, next: NextFunction) => {
+export const updateOrdersByPaid = async (req: OrdersRequest, res: Response, next: NextFunction) => {
   const { order_id } = req.params;
   const { user_id, task_id } = req.body;
 
@@ -252,7 +252,7 @@ export const updateOrdersByPaid = async (req: UpdateOrdersRequest, res: Response
   }
 };
 
-export const updateOrdersByComplete = async (req: UpdateOrdersRequest, res: Response, next: NextFunction) => {
+export const updateOrdersByComplete = async (req: OrdersRequest, res: Response, next: NextFunction) => {
   const { order_id } = req.params;
   const { user_id, task_id } = req.body;
 
@@ -298,7 +298,7 @@ export const updateOrdersByComplete = async (req: UpdateOrdersRequest, res: Resp
   }
 };
 
-export const updateOrdersByCancel = async (req: UpdateOrdersRequest, res: Response, next: NextFunction) => {
+export const updateOrdersByCancel = async (req: OrdersRequest, res: Response, next: NextFunction) => {
   const { order_id } = req.params;
   const { user_id, task_id } = req.body;
 
