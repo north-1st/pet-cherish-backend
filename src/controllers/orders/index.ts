@@ -160,7 +160,7 @@ export const updateOrdersByAcceptSitter = async (req: UpdateOrdersRequest, res: 
 
   try{
     // 訂單狀態<保姆視角>：已成立
-    const updateResultBySitter = await prisma.order.update({
+    await prisma.order.update({
       where: {
         id: order_id
       },
@@ -168,28 +168,43 @@ export const updateOrdersByAcceptSitter = async (req: UpdateOrdersRequest, res: 
         status: OrderStatus.VALID
       }
     });
-    res.status(200).json({
-      data: updateResultBySitter,
-      status: true
-    });
 
     // 訂單狀態<飼主視角>：待付款
-    const updateResultByOwner = await prisma.task.update({
+    await prisma.task.update({
       where: {
-        user_id,
-        order_id
+        id: task_id,
+        user_id
       },
       data: {
+        order_id,
         status: TaskStatus.UN_PAID
       }
     });
-    res.status(200).json({
-      data: updateResultByOwner,
-      status: true
+
+    // 拒絕其他提交申請的保姆
+    const pendingOrders = await prisma.order.findMany({
+      where: {
+        task_id,
+        status: OrderStatus.PENDING
+      }
     });
 
-    // 拒絕其他提交申請的多個保姆 
+    if(pendingOrders.length > 0){
+      await prisma.order.updateMany({
+        where: {
+          task_id,
+          status: OrderStatus.PENDING
+        },
+        data: {
+          status: OrderStatus.INVALID
+        }
+      })
+    }
 
+    res.status(200).json({
+      data: "Update Successfully!",
+      status: true
+    });
 
   }catch(error){
     next(error);
