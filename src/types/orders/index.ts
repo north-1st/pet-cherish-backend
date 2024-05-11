@@ -10,5 +10,6 @@ export interface CreateOrdersRequest extends Request {
 export interface UpdateOrdersRequest extends Request {
     body: {
         user_id: string;
+        task_id: string;
     }
 }

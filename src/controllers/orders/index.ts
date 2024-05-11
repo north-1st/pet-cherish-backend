@@ -4,8 +4,8 @@ import { CreateOrdersRequest, UpdateOrdersRequest } from "../../types/orders";
 import { OrderStatus, Prisma, TaskPublic, TaskStatus } from "@prisma/client";
 
 export const createOrder = async (req: CreateOrdersRequest, res: Response, next: NextFunction) => {
-    const {task_id, user_id} = req.body;
-    if(!task_id || !user_id){
+    const { user_id, task_id } = req.body;
+    if(!user_id || !task_id){
         res.status(400).json({
             message : "Bad Request!",
             status: false
@@ -43,6 +43,17 @@ export const createOrder = async (req: CreateOrdersRequest, res: Response, next:
             return;
         }
         
+        // 訂單狀態<飼主視角>：待處理 
+        await prisma.task.update({
+          where: {
+              id: task_id
+          },
+          data: {
+            status: TaskStatus.PENDING
+          }
+        });
+
+        // 訂單狀態<保姆視角>：待處理 
         const data = {
             sitter_user_id: user_id,
             task_id,
@@ -62,16 +73,16 @@ export const createOrder = async (req: CreateOrdersRequest, res: Response, next:
 }
 
 /**
- * 提問紀錄：
- * (1) 要不要補傳參數：task_id，我可以少去 DB 要 Order.task_id
+ * 同步討論紀錄：
+ * (1) 補傳參數：task_id，我可以少去 DB 要 Order.task_id
  * (2) 回傳成功訊息：因為會做兩件事，拒絕保姆好像不用回傳更新資料。
  * 
  */
 export const updateOrdersByRefuseSitter = async (req: UpdateOrdersRequest, res: Response, next: NextFunction) => {
   const { order_id } = req.params;
-  const { user_id } = req.body;
+  const { user_id, task_id } = req.body;
 
-  if(!user_id){
+  if(!user_id || !task_id){
     res.status(400).json({
         message : "Bad Request!",
         status: false
@@ -80,19 +91,19 @@ export const updateOrdersByRefuseSitter = async (req: UpdateOrdersRequest, res: 
   }
 
   try{
-    const targetOrder = await prisma.order.findUnique({
-        where: {
-            id: order_id,
-            sitter_user_id: user_id
-        }
-    });
-    if(!targetOrder){
-      res.status(404).json({
-          message : "Order not found!",
-          status: false
-      });
-      return;
-    }
+    // const targetOrder = await prisma.order.findUnique({
+    //     where: {
+    //         id: order_id,
+    //         sitter_user_id: user_id
+    //     }
+    // });
+    // if(!targetOrder){
+    //   res.status(404).json({
+    //       message : "Order not found!",
+    //       status: false
+    //   });
+    //   return;
+    // }
 
     // 訂單狀態<保姆視角>：未成立
     await prisma.order.update({
@@ -107,7 +118,7 @@ export const updateOrdersByRefuseSitter = async (req: UpdateOrdersRequest, res: 
     // 飼主任務：若所有接單申請需求都拒絕，修改 Task.status
     const pendingOrders = await prisma.order.findMany({
       where: {
-        task_id: targetOrder.task_id,
+        task_id,
         pet_owner_user_id: user_id,
         status: OrderStatus.PENDING
       }
@@ -116,7 +127,7 @@ export const updateOrdersByRefuseSitter = async (req: UpdateOrdersRequest, res: 
     if(pendingOrders.length === 0){
       await prisma.task.update({
         where: {
-          id: targetOrder.task_id,
+          id: task_id,
           user_id
         },
         data: {
@@ -137,9 +148,9 @@ export const updateOrdersByRefuseSitter = async (req: UpdateOrdersRequest, res: 
 
 export const updateOrdersByAcceptSitter = async (req: UpdateOrdersRequest, res: Response, next: NextFunction) => {
   const { order_id } = req.params;
-  const { user_id } = req.body;
+  const { user_id, task_id } = req.body;
 
-  if(!user_id){
+  if(!user_id || !task_id){
     res.status(400).json({
         message : "Bad Request!",
         status: false
@@ -162,7 +173,7 @@ export const updateOrdersByAcceptSitter = async (req: UpdateOrdersRequest, res: 
       status: true
     });
 
-    // 訂單狀態<飼主視角>：待付款 TBD
+    // 訂單狀態<飼主視角>：待付款
     const updateResultByOwner = await prisma.task.update({
       where: {
         user_id,
@@ -177,7 +188,7 @@ export const updateOrdersByAcceptSitter = async (req: UpdateOrdersRequest, res: 
       status: true
     });
 
-    // 同時拒絕多個保姆 
+    // 拒絕其他提交申請的多個保姆 
 
 
   }catch(error){
