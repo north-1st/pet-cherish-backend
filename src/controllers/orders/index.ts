@@ -289,7 +289,6 @@ export const updateOrdersByCancel = async (req: UpdateOrdersRequest, res: Respon
       where: {
         user_id,
         order_id,
-        
       },
       data: {
         order_id: undefined,

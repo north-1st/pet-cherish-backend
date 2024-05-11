@@ -101,6 +101,7 @@ model Task {
   order_id              String?      @db.ObjectId @unique
 
   @@unique([id, user_id])
+  @@unique([user_id, order_id])  // 查詢 Task 下 Order 使用
   @@map("tasks")
 }
 
