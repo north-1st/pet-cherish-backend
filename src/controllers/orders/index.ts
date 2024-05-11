@@ -61,6 +61,12 @@ export const createOrder = async (req: CreateOrdersRequest, res: Response, next:
     }
 }
 
+/**
+ * 提問紀錄：
+ * (1) 要不要補傳參數：task_id，我可以少去 DB 要 Order.task_id
+ * (2) 回傳成功訊息：因為會做兩件事，拒絕保姆好像不用回傳更新資料。
+ * 
+ */
 export const updateOrdersByRefuseSitter = async (req: UpdateOrdersRequest, res: Response, next: NextFunction) => {
   const { order_id } = req.params;
   const { user_id } = req.body;
@@ -73,23 +79,23 @@ export const updateOrdersByRefuseSitter = async (req: UpdateOrdersRequest, res: 
     return;
   }
 
-  // const targetOrder = prisma.order.findUnique({
-  //     where: {
-  //         id: order_id,
-  //         sitter_user_id: user_id
-  //     }
-  // });
-  // if(!targetOrder){
-  //   res.status(404).json({
-  //       message : "Order not found!",
-  //       status: false
-  //   });
-  //   return;
-  // }
-
   try{
-    // 訂單狀態：未成立
-    const updateResultBySitter = await prisma.order.update({
+    const targetOrder = await prisma.order.findUnique({
+        where: {
+            id: order_id,
+            sitter_user_id: user_id
+        }
+    });
+    if(!targetOrder){
+      res.status(404).json({
+          message : "Order not found!",
+          status: false
+      });
+      return;
+    }
+
+    // 訂單狀態<保姆視角>：未成立
+    await prisma.order.update({
       where: {
         id: order_id
       },
@@ -97,13 +103,32 @@ export const updateOrdersByRefuseSitter = async (req: UpdateOrdersRequest, res: 
         status: OrderStatus.INVALID
       }
     });
-    res.status(200).json({
-      data: updateResultBySitter,
-      status: true
+
+    // 飼主任務：若所有接單申請需求都拒絕，修改 Task.status
+    const pendingOrders = await prisma.order.findMany({
+      where: {
+        task_id: targetOrder.task_id,
+        pet_owner_user_id: user_id,
+        status: OrderStatus.PENDING
+      }
     });
 
-    // 飼主 Task 所有接單申請需求都拒絕 :
-    // (1) 有多少 Or
+    if(pendingOrders.length === 0){
+      await prisma.task.update({
+        where: {
+          id: targetOrder.task_id,
+          user_id
+        },
+        data: {
+          status: TaskStatus.NULL
+        }
+      });
+    }
+
+    res.status(200).json({
+      data: "Update Successfully!",
+      status: true
+    });
 
   }catch(error){
     next(error);
