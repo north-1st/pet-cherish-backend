@@ -179,6 +179,33 @@
         }
       }
     },
+    "/api/v1/upload/image": {
+      "post": {
+        "tags": [
+          "Upload"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
     "/api/v1/users/signup": {
       "post": {
         "tags": [
