@@ -160,7 +160,7 @@ export const updateOrdersByAcceptSitter = async (req: UpdateOrdersRequest, res: 
 
   try{
     // 訂單狀態<保姆視角>：已成立
-    await prisma.order.update({
+    const targetOrder = await prisma.order.update({
       where: {
         id: order_id
       },
@@ -185,6 +185,7 @@ export const updateOrdersByAcceptSitter = async (req: UpdateOrdersRequest, res: 
     const pendingOrders = await prisma.order.findMany({
       where: {
         task_id,
+        sitter_user_id: targetOrder.sitter_user_id,
         status: OrderStatus.PENDING
       }
     });
@@ -213,9 +214,9 @@ export const updateOrdersByAcceptSitter = async (req: UpdateOrdersRequest, res: 
 
 export const updateOrdersByPaid = async (req: UpdateOrdersRequest, res: Response, next: NextFunction) => {
   const { order_id } = req.params;
-  const { user_id } = req.body;
+  const { user_id, task_id } = req.body;
 
-  if(!user_id){
+  if(!user_id || !task_id){
     res.status(400).json({
         message : "Bad Request!",
         status: false
@@ -225,7 +226,7 @@ export const updateOrdersByPaid = async (req: UpdateOrdersRequest, res: Response
 
   try{
     // 訂單狀態<保姆視角>：任務進度追蹤
-    const updateResultBySitter = await prisma.order.update({
+    await prisma.order.update({
       where: {
         id: order_id
       },
@@ -233,24 +234,21 @@ export const updateOrdersByPaid = async (req: UpdateOrdersRequest, res: Response
         status: OrderStatus.TRACKING
       }
     });
-    res.status(200).json({
-      data: updateResultBySitter,
-      status: true
-    });
 
-    // 訂單狀態<飼主視角>：任務進度追蹤 TBD
-    const updateResultByOwner = await prisma.task.update({
+    // 訂單狀態<飼主視角>：任務進度追蹤
+    await prisma.task.update({
       where: {
         user_id,
         order_id
       },
       data: {
-        status: TaskStatus.UN_PAID,
+        status: TaskStatus.TRACKING,
         public: TaskPublic.IN_TRANSACTION
       }
     });
+
     res.status(200).json({
-      data: updateResultByOwner,
+      data: "Update Successfully!",
       status: true
     });
   }catch(error){
