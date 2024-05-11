@@ -3,6 +3,30 @@ import createHttpError from "http-errors";
 import prisma from "../prisma";
 import bcrypt from "bcrypt";
 
+export const getUserByUserId: RequestHandler = async (req, res, next) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: req.params.userid,
+      },
+    });
+
+    if (!user) {
+      throw createHttpError(404, "User not found");
+    }
+
+    const { password: userPassword, ...userData } = user;
+
+    res.status(200).json({
+      status: true,
+      message: "get user successd",
+      data: userData,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 interface SignUpBody {
   real_name: string;
   email: string;
