@@ -15,9 +15,9 @@ const config = {
   client_x509_cert_url: env.FIREBASE_CLIENT_X509_CERT_URL,
 } as admin.ServiceAccount;
 
-admin.initializeApp({
+export const firebaseAdmin = admin.initializeApp({
   credential: admin.credential.cert(config),
   storageBucket: env.FIREBASE_PROJECT_ID + '.appspot.com',
 });
 
-export default admin;
+export const bucket = firebaseAdmin.storage().bucket();
