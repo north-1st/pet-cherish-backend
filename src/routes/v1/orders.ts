@@ -17,15 +17,23 @@ const router = Router();
 // 之後要補 User 登入檢查的 middleware，還要同時回傳 user_id 給 controller 使用
 router.post(
   '/',
-  /*  #swagger.parameters['body'] = {
-          in: 'body',
-          description: '建立訂單',
-          schema: { 
-            user_id: "'663fd8ce5eeb13779e3a2f76'", 
-            task_id: "456" 
-          }
-      } 
-  */ validateRequest(orderBodySchema),
+  /*  
+    #swagger.tags = ['Orders']
+    #swagger.description = '建立訂單'
+    #swagger.parameters['obj'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        $ref: '#/definitions/CreateOrder'
+      }
+    }
+    #swagger.responses[201] = {
+      schema: {
+        $ref: '#/definitions/SuccessResult'
+      }
+    }
+  */
+  validateRequest(orderBodySchema),
   createOrder
 );
 router.patch('/:order_id/refuse-sitter', validateRequest(orderBodySchema), updateOrdersByRefuseSitter);
