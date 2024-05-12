@@ -30,7 +30,7 @@ export const updateSitterServiceRequestSchema = z.object({
   body: sitterServiceRequestSchema,
 });
 
-export const getSitterServiceRequestSchema = z.object({
+export const sitterRequestSchema = z.object({
   params: z.object({
     user_id: objectIdSchema,
   }),
@@ -56,5 +56,5 @@ export const sitterResponseSchema = z.object({
 export type SitterStatus = z.infer<typeof sitterStatusSchema>;
 export type ApplySitterRequest = z.infer<typeof applySitterRequestSchema>;
 export type UpdateSitterServiceRequest = z.infer<typeof updateSitterServiceRequestSchema>;
-export type GetSitterServiceRequest = z.infer<typeof getSitterServiceRequestSchema>;
+export type SitterRequest = z.infer<typeof sitterRequestSchema>;
 export type SitterResponse = z.infer<typeof sitterResponseSchema>;

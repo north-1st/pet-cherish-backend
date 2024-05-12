@@ -35,7 +35,9 @@ model Sitter {
   id                    String       @id @default(auto()) @map("_id") @db.ObjectId
   certificate_number    String
   certificate_image     String
+  has_certificate       Boolean      @default(false)
   police_check_image    String?
+  has_police_check      Boolean      @default(false)
   service_city          String?
   service_district_list String[]
   photography_price     Int?

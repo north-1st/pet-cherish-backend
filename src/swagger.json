@@ -268,9 +268,54 @@
               "properties": {
                 "where": {
                   "example": "any"
+                },
+                "include": {
+                  "example": "any"
                 }
               }
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/sitters/{user_id}/approve": {
+      "patch": {
+        "tags": [
+          "Sitters"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/sitters/{user_id}/reject": {
+      "patch": {
+        "tags": [
+          "Sitters"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {
