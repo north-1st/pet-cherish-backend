@@ -7,13 +7,6 @@ import prisma from '../prisma';
 
 export const createOrder = async (req: Request<unknown, unknown, OrdersRequest>, res: Response, next: NextFunction) => {
   const { user_id, task_id } = req.body;
-  if (!user_id || !task_id) {
-    res.status(400).json({
-      message: 'Bad Request!',
-      status: false,
-    });
-    return;
-  }
 
   try {
     const existingLiveTaskOrders = await prisma.order.findMany({
@@ -78,14 +71,6 @@ export const updateOrdersByRefuseSitter = async (
   const { order_id } = req.params;
   const { user_id, task_id } = req.body;
 
-  if (!user_id || !task_id) {
-    res.status(400).json({
-      message: 'Bad Request!',
-      status: false,
-    });
-    return;
-  }
-
   try {
     // 訂單狀態<保姆視角>：未成立
     await prisma.order.update({
@@ -134,14 +119,6 @@ export const updateOrdersByAcceptSitter = async (
 ) => {
   const { order_id } = req.params;
   const { user_id, task_id } = req.body;
-
-  if (!user_id || !task_id) {
-    res.status(400).json({
-      message: 'Bad Request!',
-      status: false,
-    });
-    return;
-  }
 
   try {
     // 訂單狀態<保姆視角>：已成立
@@ -204,14 +181,6 @@ export const updateOrdersByPaid = async (
   const { order_id } = req.params;
   const { user_id, task_id } = req.body;
 
-  if (!user_id || !task_id) {
-    res.status(400).json({
-      message: 'Bad Request!',
-      status: false,
-    });
-    return;
-  }
-
   try {
     // 訂單狀態<保姆視角>：任務進度追蹤
     await prisma.order.update({
@@ -251,14 +220,6 @@ export const updateOrdersByComplete = async (
 ) => {
   const { order_id } = req.params;
   const { user_id, task_id } = req.body;
-
-  if (!user_id || !task_id) {
-    res.status(400).json({
-      message: 'Bad Request!',
-      status: false,
-    });
-    return;
-  }
 
   try {
     // 訂單狀態<保姆視角>：已完成
@@ -301,14 +262,6 @@ export const updateOrdersByCancel = async (
 ) => {
   const { order_id } = req.params;
   const { user_id, task_id } = req.body;
-
-  if (!user_id || !task_id) {
-    res.status(400).json({
-      message: 'Bad Request!',
-      status: false,
-    });
-    return;
-  }
 
   try {
     // 訂單狀態<保姆視角>：已取消
