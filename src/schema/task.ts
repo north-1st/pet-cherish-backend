@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { objectIdSchema } from '@schema/objectId';
+
 export const taskPublicSchema = z.enum(['OPEN', 'CLOSED', 'IN_TRANSACTION', 'DELETED', 'COMPLETED']);
 
 export const taskStatusSchema = z.enum(['NULL', 'PENDING', 'UN_PAID', 'TRACKING', 'COMPLETED']);
@@ -7,7 +9,7 @@ export const taskStatusSchema = z.enum(['NULL', 'PENDING', 'UN_PAID', 'TRACKING'
 export const serviceTypeSchema = z.enum(['PHOTOGRAPHY', 'HEALTH_CARE', 'BATH', 'WALKING']);
 
 export const taskResponseSchema = z.object({
-  id: z.string(),
+  id: objectIdSchema,
   title: z.string(),
   public: taskPublicSchema.default('OPEN'),
   status: taskStatusSchema.default('NULL'),

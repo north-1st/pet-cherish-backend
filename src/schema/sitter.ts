@@ -37,7 +37,7 @@ export const sitterRequestSchema = z.object({
 });
 
 export const sitterResponseSchema = z.object({
-  user_id: z.string(),
+  user_id: objectIdSchema,
   has_certificate: z.boolean().default(false),
   has_police_check: z.boolean().default(false),
   photography_price: z.number().nullable(),
