@@ -1,9 +1,11 @@
 import { z } from 'zod';
 
+import { objectIdSchema } from '@schema/objectId';
+
 export const genderSchema = z.enum(['MALE', 'FEMALE', 'OTHER']);
 
 export const userResponseSchema = z.object({
-  id: z.string(),
+  id: objectIdSchema,
   email: z.string().optional(),
   real_name: z.string().optional(),
   phone: z.string().optional(),

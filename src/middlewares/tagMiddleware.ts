@@ -10,6 +10,16 @@ export const usersMiddleware = (req: Request, res: Response, next: NextFunction)
   next();
 };
 
+export const sitterMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  // #swagger.tags = ['Sitters']
+  next();
+};
+
+export const uploadMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  // #swagger.tags = ['Upload']
+  next();
+};
+
 export const ordersMiddleware = (req: Request, res: Response, next: NextFunction) => {
   // #swagger.tags = ['Orders']
   next();
