@@ -8,7 +8,8 @@
     "lint": "eslint . --ext .ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "swagger": "ts-node src/swagger.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "format": "prettier --write ."
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
