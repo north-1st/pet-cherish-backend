@@ -41,26 +41,6 @@
           "Orders"
         ],
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Add a user",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "user_id": {
-                  "type": "number",
-                  "example": 123
-                },
-                "task_id": {
-                  "type": "number",
-                  "example": 456
-                }
-              }
-            }
-          }
-        ],
         "responses": {
           "default": {
             "description": ""

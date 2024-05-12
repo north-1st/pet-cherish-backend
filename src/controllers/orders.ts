@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { OrderStatus, TaskPublic, TaskStatus } from '@prisma/client';
+import { OrdersParams, OrdersRequest } from '@schema/orders';
 
 import prisma from '../prisma';
-import { OrdersRequest } from '../types/orders';
 
-export const createOrder = async (req: OrdersRequest, res: Response, next: NextFunction) => {
+export const createOrder = async (req: Request<unknown, unknown, OrdersRequest>, res: Response, next: NextFunction) => {
   const { user_id, task_id } = req.body;
   if (!user_id || !task_id) {
     res.status(400).json({
@@ -70,7 +70,11 @@ export const createOrder = async (req: OrdersRequest, res: Response, next: NextF
   }
 };
 
-export const updateOrdersByRefuseSitter = async (req: OrdersRequest, res: Response, next: NextFunction) => {
+export const updateOrdersByRefuseSitter = async (
+  req: Request<OrdersParams, unknown, OrdersRequest>,
+  res: Response,
+  next: NextFunction
+) => {
   const { order_id } = req.params;
   const { user_id, task_id } = req.body;
 
@@ -123,7 +127,11 @@ export const updateOrdersByRefuseSitter = async (req: OrdersRequest, res: Respon
   }
 };
 
-export const updateOrdersByAcceptSitter = async (req: OrdersRequest, res: Response, next: NextFunction) => {
+export const updateOrdersByAcceptSitter = async (
+  req: Request<OrdersParams, unknown, OrdersRequest>,
+  res: Response,
+  next: NextFunction
+) => {
   const { order_id } = req.params;
   const { user_id, task_id } = req.body;
 
@@ -188,7 +196,11 @@ export const updateOrdersByAcceptSitter = async (req: OrdersRequest, res: Respon
   }
 };
 
-export const updateOrdersByPaid = async (req: OrdersRequest, res: Response, next: NextFunction) => {
+export const updateOrdersByPaid = async (
+  req: Request<OrdersParams, unknown, OrdersRequest>,
+  res: Response,
+  next: NextFunction
+) => {
   const { order_id } = req.params;
   const { user_id, task_id } = req.body;
 
@@ -232,7 +244,11 @@ export const updateOrdersByPaid = async (req: OrdersRequest, res: Response, next
   }
 };
 
-export const updateOrdersByComplete = async (req: OrdersRequest, res: Response, next: NextFunction) => {
+export const updateOrdersByComplete = async (
+  req: Request<OrdersParams, unknown, OrdersRequest>,
+  res: Response,
+  next: NextFunction
+) => {
   const { order_id } = req.params;
   const { user_id, task_id } = req.body;
 
@@ -278,7 +294,11 @@ export const updateOrdersByComplete = async (req: OrdersRequest, res: Response, 
   }
 };
 
-export const updateOrdersByCancel = async (req: OrdersRequest, res: Response, next: NextFunction) => {
+export const updateOrdersByCancel = async (
+  req: Request<OrdersParams, unknown, OrdersRequest>,
+  res: Response,
+  next: NextFunction
+) => {
   const { order_id } = req.params;
   const { user_id, task_id } = req.body;
 
