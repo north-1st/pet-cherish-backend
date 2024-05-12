@@ -32,7 +32,7 @@ model User {
 }
 
 model Sitter {
-  id                    String        @id @default(auto()) @map("_id") @db.ObjectId
+  id                    String       @id @default(auto()) @map("_id") @db.ObjectId
   certificate_number    String
   certificate_image     String
   police_check_image    String?
@@ -43,17 +43,16 @@ model Sitter {
   bath_price            Int?
   walking_price         Int?
   service_size_list     PetSize[]
-  is_door_to_door       Boolean       @default(false)
+  is_door_to_door       Boolean      @default(false)
   image_list            String[]
-  service_description   String
-  average_rating        Float
-  total_reviews         Int
-  service_type_list     ServiceType[]
-  status                SitterStatus  @default(APPROVING)
-  created_at            DateTime      @default(now())
-  updated_at            DateTime      @updatedAt
-  user                  User          @relation(fields: [user_id], references: [id])
-  user_id               String        @unique @db.ObjectId
+  service_description   String       @default("")
+  average_rating        Float        @default(0)
+  total_reviews         Int          @default(0)
+  status                SitterStatus @default(APPROVING)
+  created_at            DateTime     @default(now())
+  updated_at            DateTime     @updatedAt
+  user                  User         @relation(fields: [user_id], references: [id])
+  user_id               String       @unique @db.ObjectId
 
   @@map("sitters")
 }
@@ -104,22 +103,22 @@ model Task {
 }
 
 model Order {
-  id                  String      @id @default(auto()) @map("_id") @db.ObjectId
-  sitter_user_id      String
-  pet_owner_user_id   String      @db.ObjectId
-  status              OrderStatus @default(PENDING)
-  third_party_id      String?
-  payment_at          DateTime?
-  report_content      String
-  report_image_list   String[]
-  report_created_at   DateTime?
-  report_updated_at   DateTime?
+  id                String      @id @default(auto()) @map("_id") @db.ObjectId
+  sitter_user_id    String
+  pet_owner_user_id String      @db.ObjectId
+  status            OrderStatus @default(PENDING)
+  third_party_id    String?
+  payment_at        DateTime?
+  report_content    String
+  report_image_list String[]
+  report_created_at DateTime?
+  report_updated_at DateTime?
 
-  created_at          DateTime @default(now())
-  updated_at          DateTime @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  task                Task   @relation(fields: [task_id, pet_owner_user_id], references: [id, user_id])
-  task_id             String @db.ObjectId
+  task    Task   @relation(fields: [task_id, pet_owner_user_id], references: [id, user_id])
+  task_id String @db.ObjectId
 
   @@map("orders")
 }

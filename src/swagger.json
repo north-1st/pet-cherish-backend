@@ -219,6 +219,67 @@
         }
       }
     },
+    "/api/v1/apply-sitter": {
+      "post": {
+        "tags": [
+          "Sitters"
+        ],
+        "description": "",
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/api/v1/sitters/{user_id}": {
+      "get": {
+        "tags": [
+          "Sitters"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/sitters": {
+      "patch": {
+        "tags": [
+          "Sitters"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "where": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/v1/users/{user_id}/pets": {
       "post": {
         "tags": [
