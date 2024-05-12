@@ -219,7 +219,7 @@
         }
       }
     },
-    "/api/v1/pets/": {
+    "/api/v1/users/{user_id}/pets": {
       "post": {
         "tags": [
           "Pets"
@@ -227,42 +227,55 @@
         "description": "",
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "breed": {
-                  "example": "any"
-                },
-                "size": {
-                  "example": "any"
-                },
-                "character_list": {
-                  "example": "any"
-                },
-                "has_microchipped": {
-                  "example": "any"
-                },
-                "is_neutered": {
-                  "example": "any"
-                },
-                "health_description": {
-                  "example": "any"
-                },
-                "avatar_list": {
-                  "example": "any"
-                }
-              }
-            }
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {
           "201": {
             "description": "Created"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Pets"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/pets/{pet_id}": {
+      "patch": {
+        "tags": [
+          "Pets"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "pet_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }

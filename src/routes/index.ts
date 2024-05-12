@@ -18,7 +18,7 @@ const router = express();
 router.use('/v1', ordersMiddleware, ordersV1);
 router.use('/v1/upload', uploadMiddleware, uploadV1);
 router.use('/v1/users', usersMiddleware, usersV1);
-router.use('/v1/pets', petsMiddleware, petsV1);
+router.use('/v1', petsMiddleware, petsV1);
 router.use('/v1/tasks', tasksMiddleware, tasksV1);
 
 export default router;

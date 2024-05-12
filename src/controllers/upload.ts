@@ -2,10 +2,9 @@ import { NextFunction, Response } from 'express';
 import createHttpError from 'http-errors';
 import { v4 as uuid } from 'uuid';
 
+import { GetSignedUrlConfig } from '@google-cloud/storage';
 import { UploadImageRequest } from '@schema/upload';
-import firebaseAdmin from '@service/firebase';
-
-const bucket = firebaseAdmin.storage().bucket();
+import { bucket } from '@service/firebase';
 
 export const uploadImage = async (req: UploadImageRequest, res: Response, next: NextFunction) => {
   const { type } = req.body;
@@ -24,8 +23,19 @@ export const uploadImage = async (req: UploadImageRequest, res: Response, next: 
     });
 
     blobStream.on('finish', async () => {
-      res.status(201).json({
-        message: 'File uploaded successfully',
+      const config: GetSignedUrlConfig = {
+        action: 'read',
+        expires: '03-01-2500', // 有效期限
+      };
+
+      blob.getSignedUrl(config, (err, publicUrl) => {
+        if (err) {
+          createHttpError(500, err);
+        }
+
+        res.status(201).json({
+          data: publicUrl,
+        });
       });
     });
 
