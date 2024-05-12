@@ -22,8 +22,7 @@ router.patch('/:order_id/paid', updateOrdersByPaid);
 router.patch('/:order_id/complete', updateOrdersByComplete);
 router.patch('/:order_id/cancel', updateOrdersByCancel);
 
-// 同步討論：Route 配置
-router.get('/pet-owner-orders', getPetOwnerOrders);
-router.get('/sitter-orders', getSitterOrders);
+router.get('/pet-owner', getPetOwnerOrders);
+router.get('/sitter', getSitterOrders);
 
 export default router;

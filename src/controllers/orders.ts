@@ -70,12 +70,6 @@ export const createOrder = async (req: OrdersRequest, res: Response, next: NextF
   }
 };
 
-/**
- * 同步討論紀錄：
- * (1) 補傳參數：task_id，我可以少去 DB 要 Order.task_id
- * (2) 回傳成功訊息：因為會做兩件事，拒絕保姆好像不用回傳更新資料。
- *
- */
 export const updateOrdersByRefuseSitter = async (req: OrdersRequest, res: Response, next: NextFunction) => {
   const { order_id } = req.params;
   const { user_id, task_id } = req.body;
@@ -89,20 +83,6 @@ export const updateOrdersByRefuseSitter = async (req: OrdersRequest, res: Respon
   }
 
   try {
-    // const targetOrder = await prisma.order.findUnique({
-    //     where: {
-    //         id: order_id,
-    //         sitter_user_id: user_id
-    //     }
-    // });
-    // if(!targetOrder){
-    //   res.status(404).json({
-    //       message : "Order not found!",
-    //       status: false
-    //   });
-    //   return;
-    // }
-
     // 訂單狀態<保姆視角>：未成立
     await prisma.order.update({
       where: {
@@ -135,7 +115,7 @@ export const updateOrdersByRefuseSitter = async (req: OrdersRequest, res: Respon
     }
 
     res.status(200).json({
-      data: 'Update Successfully!',
+      message: 'Update Successfully!',
       status: true,
     });
   } catch (error) {
@@ -200,7 +180,7 @@ export const updateOrdersByAcceptSitter = async (req: OrdersRequest, res: Respon
     }
 
     res.status(200).json({
-      data: 'Update Successfully!',
+      message: 'Update Successfully!',
       status: true,
     });
   } catch (error) {
@@ -244,7 +224,7 @@ export const updateOrdersByPaid = async (req: OrdersRequest, res: Response, next
     });
 
     res.status(200).json({
-      data: 'Update Successfully!',
+      message: 'Update Successfully!',
       status: true,
     });
   } catch (error) {
@@ -290,7 +270,7 @@ export const updateOrdersByComplete = async (req: OrdersRequest, res: Response, 
     // （補）7天到直接改狀態：後端排程
 
     res.status(200).json({
-      data: 'Update Successfully!',
+      message: 'Update Successfully!',
       status: true,
     });
   } catch (error) {
@@ -334,7 +314,7 @@ export const updateOrdersByCancel = async (req: OrdersRequest, res: Response, ne
     });
 
     res.status(200).json({
-      data: 'Update Successfully!',
+      message: 'Update Successfully!',
       status: true,
     });
   } catch (error) {
