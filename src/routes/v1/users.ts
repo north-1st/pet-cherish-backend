@@ -10,13 +10,7 @@ router.get("/:userid", UsersController.getUserByUserId);
 
 router.post("/signup", UsersController.signUp);
 
-router.post("/login", passport.authenticate("local"), (req, res) =>
-  res.status(200).json({
-    status: true,
-    message: "login successd",
-    data: req.user,
-  })
-);
+router.post("/login", passport.authenticate("local"), UsersController.logIn);
 
 router.post("/logout", UsersController.logOut);
 

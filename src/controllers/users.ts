@@ -1,7 +1,9 @@
 import { RequestHandler } from "express";
 import createHttpError from "http-errors";
-import prisma from "../prisma";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import prisma from "../prisma";
+import env from "../env";
 
 export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
   const authenticatedUser = req.user;
@@ -91,17 +93,43 @@ export const signUp: RequestHandler<
       },
     });
 
+    const accessToken = jwt.sign(
+      { id: newUser.id },
+      env.JWT_ACCESS_SECRET_KEY,
+      { expiresIn: "7d" }
+    );
+
     req.logIn(newUser, (error) => {
       if (error) throw error;
       res.status(201).json({
         status: true,
         message: "register successd",
-        data: newUser,
+        data: {
+          ...newUser,
+          accessToken,
+        },
       });
     });
   } catch (error) {
     next(error);
   }
+};
+
+export const logIn: RequestHandler = (req, res) => {
+  const accessToken = jwt.sign(
+    { id: req.user?.id },
+    env.JWT_ACCESS_SECRET_KEY,
+    { expiresIn: "7d" }
+  );
+
+  res.status(200).json({
+    status: true,
+    message: "login successd",
+    data: {
+      ...req.user,
+      accessToken,
+    },
+  });
 };
 
 export const logOut: RequestHandler = (req, res) => {
