@@ -4,7 +4,7 @@ const env = cleanEnv(process.env, {
   DATABASE_URL: str(),
   WEBSITE_URL: str(),
   SESSION_SECRET: str(),
-  JWT_ACCESS_SECRET_KEY: str(),
+  JWT_ACCESS_SECRET: str(),
 });
 
 export default env;

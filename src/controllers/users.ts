@@ -93,11 +93,9 @@ export const signUp: RequestHandler<
       },
     });
 
-    const accessToken = jwt.sign(
-      { id: newUser.id },
-      env.JWT_ACCESS_SECRET_KEY,
-      { expiresIn: "7d" }
-    );
+    const accessToken = jwt.sign({ id: newUser.id }, env.JWT_ACCESS_SECRET, {
+      expiresIn: "7d",
+    });
 
     req.logIn(newUser, (error) => {
       if (error) throw error;
@@ -116,11 +114,9 @@ export const signUp: RequestHandler<
 };
 
 export const logIn: RequestHandler = (req, res) => {
-  const accessToken = jwt.sign(
-    { id: req.user?.id },
-    env.JWT_ACCESS_SECRET_KEY,
-    { expiresIn: "7d" }
-  );
+  const accessToken = jwt.sign({ id: req.user?.id }, env.JWT_ACCESS_SECRET, {
+    expiresIn: "7d",
+  });
 
   res.status(200).json({
     status: true,
