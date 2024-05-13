@@ -3,11 +3,39 @@ import createHttpError from "http-errors";
 import prisma from "../prisma";
 import bcrypt from "bcrypt";
 
+export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
+  const authenticatedUser = req.user;
+
+  try {
+    if (!authenticatedUser) throw createHttpError(401);
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: authenticatedUser.id,
+      },
+      omit: {
+        password: true,
+      },
+    });
+
+    res.status(200).json({
+      status: true,
+      message: "get auth user successd",
+      data: user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getUserByUserId: RequestHandler = async (req, res, next) => {
   try {
     const user = await prisma.user.findUnique({
       where: {
         id: req.params.userid,
+      },
+      omit: {
+        password: true,
       },
     });
 
@@ -15,12 +43,10 @@ export const getUserByUserId: RequestHandler = async (req, res, next) => {
       throw createHttpError(404, "User not found");
     }
 
-    const { password: userPassword, ...userData } = user;
-
     res.status(200).json({
       status: true,
       message: "get user successd",
-      data: userData,
+      data: user,
     });
   } catch (error) {
     next(error);
@@ -60,16 +86,17 @@ export const signUp: RequestHandler<
         email,
         password: passwordHashed,
       },
+      omit: {
+        password: true,
+      },
     });
 
-    const { password: userPassword, ...user } = newUser;
-
-    req.logIn(user, (error) => {
+    req.logIn(newUser, (error) => {
       if (error) throw error;
       res.status(201).json({
         status: true,
         message: "register successd",
-        data: user,
+        data: newUser,
       });
     });
   } catch (error) {
