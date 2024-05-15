@@ -1,6 +1,6 @@
 import swaggerAutogen from 'swagger-autogen';
 
-import { OrdersRequest, orderBodyJsonSchema, orderBodySchema } from '@schema/orders';
+import { OrdersRequest, orderBodySchema } from '@schema/orders';
 
 import { version } from '../package.json';
 
