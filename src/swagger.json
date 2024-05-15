@@ -63,6 +63,9 @@
     },
     "/api/v1/orders/{order_id}/refuse-sitter": {
       "patch": {
+        "tags": [
+          "Orders"
+        ],
         "description": "",
         "parameters": [
           {
@@ -96,6 +99,9 @@
     },
     "/api/v1/orders/{order_id}/accept-sitter": {
       "patch": {
+        "tags": [
+          "Orders"
+        ],
         "description": "",
         "parameters": [
           {
@@ -129,6 +135,9 @@
     },
     "/api/v1/orders/{order_id}/paid": {
       "patch": {
+        "tags": [
+          "Orders"
+        ],
         "description": "",
         "parameters": [
           {
@@ -162,6 +171,9 @@
     },
     "/api/v1/orders/{order_id}/complete": {
       "patch": {
+        "tags": [
+          "Orders"
+        ],
         "description": "",
         "parameters": [
           {
@@ -195,6 +207,9 @@
     },
     "/api/v1/orders/{order_id}/cancel": {
       "patch": {
+        "tags": [
+          "Orders"
+        ],
         "description": "",
         "parameters": [
           {
@@ -228,6 +243,9 @@
     },
     "/api/v1/orders/pet-owner": {
       "get": {
+        "tags": [
+          "Orders"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -238,6 +256,9 @@
     },
     "/api/v1/orders/sitter": {
       "get": {
+        "tags": [
+          "Orders"
+        ],
         "description": "",
         "responses": {
           "default": {
@@ -248,6 +269,9 @@
     },
     "/api/v1/upload/image": {
       "post": {
+        "tags": [
+          "Upload"
+        ],
         "description": "",
         "parameters": [
           {
