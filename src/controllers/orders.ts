@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { OrderStatus, TaskPublic, TaskStatus } from '@prisma/client';
-import { OrdersParams, OrdersRequest } from '@schema/orders';
+import { BaseRequest, OrdersParams, OrdersRequest, SitterOrderParams } from '@schema/orders';
 
 import prisma from '../prisma';
 
@@ -297,4 +297,39 @@ export const updateOrdersByCancel = async (
 
 export const getPetOwnerOrders = async (req: Request, res: Response, next: NextFunction) => {};
 
-export const getSitterOrders = async (req: Request, res: Response, next: NextFunction) => {};
+export const getSitterOrders = async (
+  req: Request<SitterOrderParams, unknown, BaseRequest>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { limit, page, status } = req.params;
+  const { user_id } = req.body;
+
+  try {
+    const conditions = {
+      sitter_user_id: user_id,
+      status,
+    };
+    const getData = prisma.order.findMany({
+      take: limit,
+      skip: (page - 1) * limit,
+      where: conditions,
+      orderBy: {
+        updated_at: 'desc',
+      },
+    });
+    const getTotal = prisma.order.count({
+      where: conditions,
+    });
+    const [result, total] = await Promise.all([getData, getTotal]);
+
+    res.status(200).json({
+      data: result,
+      total: 100,
+      total_page: Math.ceil(total / limit),
+      status: true,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
