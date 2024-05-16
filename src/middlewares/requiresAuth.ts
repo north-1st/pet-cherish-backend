@@ -31,6 +31,14 @@ const requiresAuth: RequestHandler = async (req, res, next) => {
 
       if (!user) throw new Error("User not found");
 
+      // 檢查 token 的發行時間是否在用戶最後一次修改密碼之前
+      if (
+        decoded.iat <
+        Math.floor(new Date(user.lastPasswordChange).getTime() / 1000)
+      ) {
+        return next(createHttpError(401, "Token is invalid"));
+      }
+
       req.user = user;
       next();
     } catch (err) {

@@ -7,11 +7,18 @@ const router = express.Router();
 
 router.get("/me", UsersController.getAuthenticatedUser);
 
-router.get("/:userid", requiresAuth, UsersController.getUserByUserId);
+router
+  .route("/:userid/profile")
+  .get(requiresAuth, UsersController.getUser)
+  .patch(requiresAuth, UsersController.updateUser);
 
 router.post("/signup", UsersController.signUp);
 
-router.post("/login", passport.authenticate("local"), UsersController.logIn);
+router.post(
+  "/login",
+  passport.authenticate("local", { session: false }),
+  UsersController.logIn
+);
 
 router.post("/logout", UsersController.logOut);
 

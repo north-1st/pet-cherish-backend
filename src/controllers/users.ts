@@ -30,7 +30,7 @@ export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const getUserByUserId: RequestHandler = async (req, res, next) => {
+export const getUser: RequestHandler = async (req, res, next) => {
   try {
     const user = await prisma.user.findUnique({
       where: {
@@ -98,7 +98,7 @@ export const signUp: RequestHandler<
     });
 
     req.logIn(newUser, (error) => {
-      if (error) throw error;
+      if (error) throw createHttpError(401, error);
       res.status(201).json({
         status: true,
         message: "register successd",
@@ -114,9 +114,13 @@ export const signUp: RequestHandler<
 };
 
 export const logIn: RequestHandler = (req, res) => {
-  const accessToken = jwt.sign({ id: req.user?.id }, env.JWT_ACCESS_SECRET, {
-    expiresIn: "7d",
-  });
+  const accessToken = jwt.sign(
+    { id: req.user?.id, iat: Math.floor(Date.now() / 1000) },
+    env.JWT_ACCESS_SECRET,
+    {
+      expiresIn: "7d",
+    }
+  );
 
   res.status(200).json({
     status: true,
@@ -133,4 +137,63 @@ export const logOut: RequestHandler = (req, res) => {
     if (error) throw error;
     res.sendStatus(200);
   });
+};
+
+export const updateUser: RequestHandler = async (req, res, next) => {
+  const { phone, password: passwordRaw } = req.body;
+
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        id: req.params.userid,
+      },
+    });
+
+    if (!existingUser) {
+      throw createHttpError(409, "User not found.");
+    }
+
+    let data: {
+      phone?: string;
+      password?: string;
+      lastPasswordChange?: Date;
+    } = {
+      phone,
+    };
+
+    if (passwordRaw) {
+      const passwordHashed = await bcrypt.hash(passwordRaw, 10);
+      data.password = passwordHashed;
+      data.lastPasswordChange = new Date();
+    }
+
+    const user = await prisma.user.update({
+      where: {
+        id: req.params.userid,
+      },
+      data,
+      omit: {
+        password: true,
+      },
+    });
+
+    const accessToken = jwt.sign(
+      { id: user.id, iat: Math.floor(Date.now() / 1000) },
+      env.JWT_ACCESS_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    res.status(200).json({
+      status: true,
+      message: "update user successd",
+      data: {
+        ...user,
+        accessToken,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
 };
