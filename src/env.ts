@@ -1,8 +1,10 @@
 import { cleanEnv, email, num, str, url } from 'envalid';
 
 const env = cleanEnv(process.env, {
-  DATABASE_URL: url(),
-  WEBSITE_URL: url(),
+  DATABASE_URL: str(),
+  WEBSITE_URL: str(),
+  SESSION_SECRET: str(),
+  JWT_ACCESS_SECRET: str(),
   FIREBASE_TYPE: str(),
   FIREBASE_PROJECT_ID: str(),
   FIREBASE_PRIVATE_KEY_ID: str(),
