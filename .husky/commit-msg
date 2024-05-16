@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "trigger commit-msg"
+
+message="$(cat $1)"
+requiredPattern="^(feat:|fix:|docs:|style:|refactor:|pref:|test:|build:|ci:|chore:|revert:|Merge) .*$"
+
+echo \"Recived message '------->' $message \" 
+
+if ! [[ $message =~ $requiredPattern ]];
+then
+  echo "your commit message is invalid"
+  exit 1
+fi

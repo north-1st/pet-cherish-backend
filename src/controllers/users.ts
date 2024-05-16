@@ -1,9 +1,10 @@
-import { RequestHandler } from "express";
-import createHttpError from "http-errors";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import prisma from "../prisma";
-import env from "../env";
+import bcrypt from 'bcrypt';
+import { RequestHandler } from 'express';
+import createHttpError from 'http-errors';
+import jwt from 'jsonwebtoken';
+
+import env from '../env';
+import prisma from '../prisma';
 
 export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
   const authenticatedUser = req.user;
@@ -22,7 +23,7 @@ export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
 
     res.status(200).json({
       status: true,
-      message: "get auth user successd",
+      message: 'get auth user successd',
       data: user,
     });
   } catch (error) {
@@ -42,12 +43,12 @@ export const getUser: RequestHandler = async (req, res, next) => {
     });
 
     if (!user) {
-      throw createHttpError(404, "User not found");
+      throw createHttpError(404, 'User not found');
     }
 
     res.status(200).json({
       status: true,
-      message: "get user successd",
+      message: 'get user successd',
       data: user,
     });
   } catch (error) {
@@ -61,12 +62,7 @@ interface SignUpBody {
   password: string;
 }
 
-export const signUp: RequestHandler<
-  unknown,
-  unknown,
-  SignUpBody,
-  unknown
-> = async (req, res, next) => {
+export const signUp: RequestHandler<unknown, unknown, SignUpBody, unknown> = async (req, res, next) => {
   const { real_name, email, password: passwordRaw } = req.body;
 
   try {
@@ -77,7 +73,7 @@ export const signUp: RequestHandler<
     });
 
     if (existingUser) {
-      throw createHttpError(409, "User already taken");
+      throw createHttpError(409, 'User already taken');
     }
 
     const passwordHashed = await bcrypt.hash(passwordRaw, 10);
@@ -94,14 +90,14 @@ export const signUp: RequestHandler<
     });
 
     const accessToken = jwt.sign({ id: newUser.id }, env.JWT_ACCESS_SECRET, {
-      expiresIn: "7d",
+      expiresIn: '7d',
     });
 
     req.logIn(newUser, (error) => {
       if (error) throw createHttpError(401, error);
       res.status(201).json({
         status: true,
-        message: "register successd",
+        message: 'register successd',
         data: {
           ...newUser,
           accessToken,
@@ -114,17 +110,13 @@ export const signUp: RequestHandler<
 };
 
 export const logIn: RequestHandler = (req, res) => {
-  const accessToken = jwt.sign(
-    { id: req.user?.id, iat: Math.floor(Date.now() / 1000) },
-    env.JWT_ACCESS_SECRET,
-    {
-      expiresIn: "7d",
-    }
-  );
+  const accessToken = jwt.sign({ id: req.user?.id, iat: Math.floor(Date.now() / 1000) }, env.JWT_ACCESS_SECRET, {
+    expiresIn: '7d',
+  });
 
   res.status(200).json({
     status: true,
-    message: "login successd",
+    message: 'login successd',
     data: {
       ...req.user,
       accessToken,
@@ -150,10 +142,10 @@ export const updateUser: RequestHandler = async (req, res, next) => {
     });
 
     if (!existingUser) {
-      throw createHttpError(409, "User not found.");
+      throw createHttpError(409, 'User not found.');
     }
 
-    let data: {
+    const data: {
       phone?: string;
       password?: string;
       lastPasswordChange?: Date;
@@ -177,17 +169,13 @@ export const updateUser: RequestHandler = async (req, res, next) => {
       },
     });
 
-    const accessToken = jwt.sign(
-      { id: user.id, iat: Math.floor(Date.now() / 1000) },
-      env.JWT_ACCESS_SECRET,
-      {
-        expiresIn: "7d",
-      }
-    );
+    const accessToken = jwt.sign({ id: user.id, iat: Math.floor(Date.now() / 1000) }, env.JWT_ACCESS_SECRET, {
+      expiresIn: '7d',
+    });
 
     res.status(200).json({
       status: true,
-      message: "update user successd",
+      message: 'update user successd',
       data: {
         ...user,
         accessToken,
