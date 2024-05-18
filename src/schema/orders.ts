@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { OpenAPIRegistry, OpenApiGeneratorV3, extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
+import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { OrderStatus, TaskStatus } from '@prisma/client';
 import { paginatioSchema } from '@schema/pagination';
 
@@ -50,10 +50,3 @@ export type OrdersRequest = z.infer<typeof orderBodySchema>;
 export type OrdersParams = z.infer<typeof orderParamSchema>;
 export type SitterOrderParams = z.infer<typeof sitterOrderParamSchema>;
 export type OwnerOrderParams = z.infer<typeof ownerOrderParamSchema>;
-
-const registry = new OpenAPIRegistry();
-export const orderType = registry.register('Orders', orderBodySchema);
-
-const generator = new OpenApiGeneratorV3(registry.definitions);
-export const openAPIComponents = generator.generateComponents();
-console.log('🚀 ~ openAPIComponents:', openAPIComponents);

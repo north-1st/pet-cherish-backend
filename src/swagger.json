@@ -59,7 +59,7 @@
         "tags": [
           "Orders"
         ],
-        "summary": "訂單狀態更新：拒絕指定保母",
+        "summary": "更新：訂單狀態/拒絕指定保母",
         "description": "",
         "parameters": [
           {
@@ -89,7 +89,7 @@
         "tags": [
           "Orders"
         ],
-        "summary": "訂單狀態更新：接受指定保母",
+        "summary": "更新：訂單狀態/接受指定保母",
         "description": "",
         "parameters": [
           {
@@ -119,7 +119,7 @@
         "tags": [
           "Orders"
         ],
-        "summary": "訂單狀態更新：飼主付款",
+        "summary": "更新：訂單狀態/飼主付款",
         "description": "",
         "parameters": [
           {
@@ -149,7 +149,7 @@
         "tags": [
           "Orders"
         ],
-        "summary": "訂單狀態更新：任務完成",
+        "summary": "更新：訂單狀態/任務完成",
         "description": "",
         "parameters": [
           {
@@ -179,7 +179,7 @@
         "tags": [
           "Orders"
         ],
-        "summary": "訂單狀態更新：取消訂單",
+        "summary": "更新：訂單狀態/取消訂單",
         "description": "",
         "parameters": [
           {
@@ -211,6 +211,16 @@
         ],
         "summary": "查詢：所有訂單<飼主視角>",
         "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Base"
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -225,6 +235,16 @@
         ],
         "summary": "查詢：所有訂單<保母視角>",
         "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Base"
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -470,6 +490,18 @@
         "required": [
           "user_id",
           "task_id"
+        ]
+      },
+      "Base": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "使用者編號"
+          }
+        },
+        "required": [
+          "user_id"
         ]
       }
     },

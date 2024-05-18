@@ -1,6 +1,6 @@
 import swaggerAutogen from 'swagger-autogen';
 
-import { openAPIComponents } from '@schema/orders';
+import { openAPIComponents } from '@schema';
 
 import { version } from '../package.json';
 
