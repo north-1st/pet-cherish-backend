@@ -10,7 +10,7 @@ const doc = {
     description: '寵物陪伴媒合平台',
     version,
   },
-  host: 'localhost:5000',
+  host: process.env.NODE_ENV == 'development' ? process.env.BACK_END_DEV_URL : process.env.BACK_END_DEV_URL,
   ...openAPIComponents,
 };
 
