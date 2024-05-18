@@ -26,7 +26,14 @@ export const taskResponseSchema = z.object({
   updated_at: z.string(),
 });
 
+export const reviewBodySchema = z.object({
+  user_id: z.string(),
+  rating: z.number().min(1).max(5).default(5),
+  content: z.string(),
+});
+
 export type TaskPublic = z.infer<typeof taskPublicSchema>;
 export type TaskStatus = z.infer<typeof taskStatusSchema>;
 export type ServiceType = z.infer<typeof serviceTypeSchema>;
 export type TaskResponse = z.infer<typeof taskResponseSchema>;
+export type ReviewRequest = z.infer<typeof reviewBodySchema>;

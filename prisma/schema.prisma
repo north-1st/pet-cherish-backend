@@ -101,10 +101,12 @@ model Task {
   pet                   Pet         @relation(fields: [pet_id], references: [id])
   pet_id                String      @db.ObjectId
   Order                 Order[]
-  order_id              String?      @db.ObjectId @unique
+  order_id              String?     @db.ObjectId
+  Review                Review?     @relation
+  review_id             String?     @unique @db.ObjectId
 
   @@unique([id, user_id])
-  @@unique([user_id, order_id])  // 查詢 Task 下 Order 使用
+  @@unique([user_id, order_id]) // 查詢 Task 下 Order 使用
   @@map("tasks")
 }
 
@@ -119,14 +121,28 @@ model Order {
   report_image_list String[]
   report_created_at DateTime?
   report_updated_at DateTime?
-
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  task    Task   @relation(fields: [task_id, pet_owner_user_id], references: [id, user_id])
-  task_id String @db.ObjectId
+  created_at        DateTime    @default(now())
+  updated_at        DateTime    @updatedAt
+  Task              Task        @relation(fields: [task_id, pet_owner_user_id], references: [id, user_id])
+  task_id           String      @db.ObjectId
 
   @@map("orders")
+}
+
+model Review {
+  id                     String    @id @default(auto()) @map("_id") @db.ObjectId
+  pet_owner_user_id      String    @db.ObjectId
+  pet_owner_rating       Int
+  pet_owner_content      String
+  pet_owner_created_at   DateTime  @default(now())
+  sitter_user_id         String    @db.ObjectId
+  sitter_rating          Int?
+  sitter_content         String?
+  sitter_user_created_at DateTime?
+  Task                   Task      @relation(fields: [task_id], references: [id])
+  task_id                String    @unique @db.ObjectId
+
+  @@map("reviews")
 }
 
 enum Gender {
