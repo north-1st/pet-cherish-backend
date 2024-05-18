@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { OrderStatus, TaskStatus } from '@prisma/client';
-import { paginatioSchema } from '@schema/pagination';
+import { paginationSchema } from '@schema/pagination';
 
 extendZodWithOpenApi(z);
 
@@ -26,13 +26,13 @@ export const orderParamSchema = z.object({
   }),
 });
 
-export const sitterOrderParamSchema = paginatioSchema.extend({
+export const sitterOrderParamSchema = paginationSchema.extend({
   status: z.nativeEnum(OrderStatus).openapi({
     description: '訂單狀態: 保姆視角',
     example: OrderStatus.TRACKING,
   }),
 });
-export const ownerOrderParamSchema = paginatioSchema.extend({
+export const ownerOrderParamSchema = paginationSchema.extend({
   status: z
     .nativeEnum({
       ...TaskStatus,

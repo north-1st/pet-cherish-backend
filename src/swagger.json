@@ -5,7 +5,7 @@
     "description": "寵物陪伴媒合平台",
     "version": "1.0.0"
   },
-  "host": "http://localhost:5000",
+  "host": "localhost:5000",
   "basePath": "/",
   "schemes": [
     "http"
@@ -656,21 +656,15 @@
         }
       }
     },
-    "/api/v1/tasks/": {
+    "/api/v1/users/{user_id}/tasks": {
       "get": {
-        "tags": [
-          "Tasks"
-        ],
-        "summary": "取得：任務資料",
         "description": "",
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
+            "name": "user_id",
+            "in": "path",
             "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/{換成對應的名字}"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -680,7 +674,51 @@
         }
       }
     },
-    "/api/v1/tasks/{task_id}/review": {
+    "/api/v1/tasks": {
+      "post": {
+        "description": "",
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/api/v1/tasks/{task_id}": {
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/{task_id}/review": {
       "post": {
         "tags": [
           "Tasks"
@@ -703,6 +741,16 @@
             }
           }
         ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/users/{user_id}/{tasks{where{id:_req.params.task_id}": {
+      "delete": {
+        "description": "",
         "responses": {
           "default": {
             "description": ""
