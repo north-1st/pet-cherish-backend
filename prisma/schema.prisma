@@ -101,12 +101,12 @@ model Task {
   pet                   Pet         @relation(fields: [pet_id], references: [id])
   pet_id                String      @db.ObjectId
   Order                 Order[]
-  order_id              String?     @db.ObjectId
+  order_id              String?      @db.ObjectId @unique
   Review                Review?     @relation
   review_id             String?     @unique @db.ObjectId
 
   @@unique([id, user_id])
-  @@unique([user_id, order_id]) // 查詢 Task 下 Order 使用
+  @@unique([user_id, order_id])  // 查詢 Task 下 Order 使用
   @@map("tasks")
 }
 

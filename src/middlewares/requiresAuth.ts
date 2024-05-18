@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import createHttpError from 'http-errors';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 import env from '../env';
 import prisma from '../prisma';
@@ -18,9 +18,9 @@ const requiresAuth: RequestHandler = async (req, res, next) => {
     try {
       if (!jwt_token) throw new Error('Token is missing');
 
-      const decoded = jwt.verify(jwt_token, env.JWT_ACCESS_SECRET);
+      const decoded = jwt.verify(jwt_token, env.JWT_ACCESS_SECRET) as JwtPayload;
 
-      const userId = decoded.id;
+      const userId = decoded.id!;
       const user = await prisma.user.findUnique({
         where: {
           id: userId,
@@ -33,7 +33,7 @@ const requiresAuth: RequestHandler = async (req, res, next) => {
       if (!user) throw new Error('User not found');
 
       // 檢查 token 的發行時間是否在用戶最後一次修改密碼之前
-      if (decoded.iat < Math.floor(new Date(user.lastPasswordChange).getTime() / 1000)) {
+      if (decoded.iat && decoded.iat < Math.floor(new Date(user.lastPasswordChange).getTime() / 1000)) {
         return next(createHttpError(401, 'Token is invalid'));
       }
 
