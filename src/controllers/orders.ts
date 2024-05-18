@@ -11,7 +11,7 @@ export const createOrder = async (req: Request<unknown, unknown, OrdersRequest>,
   try {
     const existingLiveTaskOrders = await prisma.order.findMany({
       where: {
-        AND: [{ task_id }, { status: { notIn: ['CANCELED', 'INVALID'] } }],
+        AND: [{ task_id }, { status: { notIn: [OrderStatus.CANCELED, OrderStatus.INVALID] } }],
       },
     });
     if (existingLiveTaskOrders.length > 0) {
@@ -29,7 +29,7 @@ export const createOrder = async (req: Request<unknown, unknown, OrdersRequest>,
     });
     if (targetTask === null) {
       res.status(404).json({
-        message: 'Task not found!',
+        message: 'Task is not found!',
         status: false,
       });
       return;
