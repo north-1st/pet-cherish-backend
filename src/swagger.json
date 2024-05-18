@@ -482,6 +482,7 @@
         "tags": [
           "Pets"
         ],
+        "summary": "新增：寵物資料",
         "description": "",
         "parameters": [
           {
@@ -489,6 +490,14 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/{換成對應的名字}"
+            }
           }
         ],
         "responses": {
@@ -501,6 +510,7 @@
         "tags": [
           "Pets"
         ],
+        "summary": "取得：寵物資料",
         "description": "",
         "parameters": [
           {
@@ -508,6 +518,14 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/{換成對應的名字}"
+            }
           }
         ],
         "responses": {
@@ -522,6 +540,7 @@
         "tags": [
           "Pets"
         ],
+        "summary": "更新：寵物資料",
         "description": "",
         "parameters": [
           {
@@ -529,6 +548,14 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/{換成對應的名字}"
+            }
           }
         ],
         "responses": {
@@ -547,6 +574,45 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/tasks/{task_id}/review": {
+      "post": {
+        "tags": [
+          "Tasks"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "example": "any"
+                },
+                "rating": {
+                  "example": "any"
+                },
+                "content": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
           }
         }
       }
