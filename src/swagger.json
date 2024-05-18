@@ -278,9 +278,6 @@
     },
     "/api/v1/users/me": {
       "get": {
-        "tags": [
-          "Users"
-        ],
         "description": "",
         "responses": {
           "default": {
@@ -291,9 +288,6 @@
     },
     "/api/v1/users/{userid}/profile": {
       "get": {
-        "tags": [
-          "Users"
-        ],
         "description": "",
         "parameters": [
           {
@@ -310,9 +304,6 @@
         }
       },
       "patch": {
-        "tags": [
-          "Users"
-        ],
         "description": "",
         "parameters": [
           {
@@ -331,9 +322,6 @@
     },
     "/api/v1/users/signup": {
       "post": {
-        "tags": [
-          "Users"
-        ],
         "description": "",
         "responses": {
           "default": {
@@ -344,9 +332,6 @@
     },
     "/api/v1/users/login": {
       "post": {
-        "tags": [
-          "Users"
-        ],
         "description": "",
         "responses": {
           "default": {
@@ -357,9 +342,6 @@
     },
     "/api/v1/users/logout": {
       "post": {
-        "tags": [
-          "Users"
-        ],
         "description": "",
         "responses": {
           "default": {
@@ -373,7 +355,18 @@
         "tags": [
           "Sitters"
         ],
+        "summary": "申請保姆",
         "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/{換成對應的名字}"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -386,6 +379,7 @@
         "tags": [
           "Sitters"
         ],
+        "summary": "取得：保姆服務",
         "description": "",
         "parameters": [
           {
@@ -393,6 +387,14 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/{換成對應的名字}"
+            }
           }
         ],
         "responses": {
@@ -407,21 +409,15 @@
         "tags": [
           "Sitters"
         ],
+        "summary": "更新：保姆服務",
         "description": "",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "where": {
-                  "example": "any"
-                },
-                "include": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/components/schemas/{換成對應的名字}"
             }
           }
         ],
@@ -437,6 +433,7 @@
         "tags": [
           "Sitters"
         ],
+        "summary": "審核保姆：核可",
         "description": "",
         "parameters": [
           {
@@ -444,6 +441,14 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/{換成對應的名字}"
+            }
           }
         ],
         "responses": {
@@ -458,6 +463,7 @@
         "tags": [
           "Sitters"
         ],
+        "summary": "審核保姆：不核可",
         "description": "",
         "parameters": [
           {
@@ -465,6 +471,14 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/{換成對應的名字}"
+            }
           }
         ],
         "responses": {
@@ -564,9 +578,6 @@
     },
     "/api/v1/tasks/": {
       "get": {
-        "tags": [
-          "Tasks"
-        ],
         "description": "",
         "responses": {
           "200": {
@@ -577,9 +588,6 @@
     },
     "/api/v1/tasks/{task_id}/review": {
       "post": {
-        "tags": [
-          "Tasks"
-        ],
         "description": "",
         "parameters": [
           {
