@@ -255,20 +255,17 @@
     "/api/v1/upload/image": {
       "post": {
         "tags": [
-          "Upload"
+          "Uploads"
         ],
+        "summary": "上傳圖片",
         "description": "",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/components/schemas/{換成對應的名字}"
             }
           }
         ],
