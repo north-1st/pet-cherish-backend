@@ -1,7 +1,6 @@
 import express from 'express';
 
 import {
-  ordersMiddleware,
   petsMiddleware,
   sitterMiddleware,
   tasksMiddleware,
@@ -17,7 +16,7 @@ import usersV1 from '@routes/v1/users';
 
 const router = express();
 
-router.use('/v1/orders', ordersMiddleware, ordersV1);
+router.use('/v1/orders', ordersV1);
 router.use('/v1/upload', uploadMiddleware, uploadV1);
 router.use('/v1/users', usersMiddleware, usersV1);
 router.use('/v1', sitterMiddleware, sitterV1);

@@ -63,7 +63,7 @@ export const createOrder = async (req: Request<unknown, unknown, OrdersRequest>,
   }
 };
 
-export const updateOrdersByRefuseSitter = async (
+export const refuseSitter = async (
   req: Request<OrdersParams, unknown, OrdersRequest>,
   res: Response,
   next: NextFunction
@@ -112,7 +112,7 @@ export const updateOrdersByRefuseSitter = async (
   }
 };
 
-export const updateOrdersByAcceptSitter = async (
+export const acceptSitter = async (
   req: Request<OrdersParams, unknown, OrdersRequest>,
   res: Response,
   next: NextFunction
@@ -173,7 +173,7 @@ export const updateOrdersByAcceptSitter = async (
   }
 };
 
-export const updateOrdersByPaid = async (
+export const payForOrder = async (
   req: Request<OrdersParams, unknown, OrdersRequest>,
   res: Response,
   next: NextFunction
@@ -213,7 +213,7 @@ export const updateOrdersByPaid = async (
   }
 };
 
-export const updateOrdersByComplete = async (
+export const completeOrder = async (
   req: Request<OrdersParams, unknown, OrdersRequest>,
   res: Response,
   next: NextFunction
@@ -255,7 +255,7 @@ export const updateOrdersByComplete = async (
   }
 };
 
-export const updateOrdersByCancel = async (
+export const cancelOrder = async (
   req: Request<OrdersParams, unknown, OrdersRequest>,
   res: Response,
   next: NextFunction

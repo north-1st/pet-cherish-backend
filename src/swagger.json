@@ -7,20 +7,6 @@
   },
   "host": "localhost:5000",
   "basePath": "/",
-  "tags": [
-    {
-      "name": "Users"
-    },
-    {
-      "name": "Pets"
-    },
-    {
-      "name": "Tasks"
-    },
-    {
-      "name": "Orders"
-    }
-  ],
   "schemes": [
     "http"
   ],
@@ -40,14 +26,15 @@
         "tags": [
           "Orders"
         ],
-        "description": "建立訂單",
+        "summary": "建立訂單",
+        "description": "",
         "parameters": [
           {
-            "name": "obj",
+            "name": "body",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/CreateOrder"
+              "$ref": "#/components/schemas/Orders"
             }
           }
         ],
@@ -57,6 +44,12 @@
               "$ref": "#/definitions/SuccessResult"
             },
             "description": "Created"
+          },
+          "500": {
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResult"
+            },
+            "description": "Internal Server Error"
           }
         }
       }
@@ -66,6 +59,7 @@
         "tags": [
           "Orders"
         ],
+        "summary": "訂單狀態更新：拒絕指定保母",
         "description": "",
         "parameters": [
           {
@@ -77,16 +71,9 @@
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "user_id": {
-                  "example": "any"
-                },
-                "task_id": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/components/schemas/Orders"
             }
           }
         ],
@@ -102,6 +89,7 @@
         "tags": [
           "Orders"
         ],
+        "summary": "訂單狀態更新：接受指定保母",
         "description": "",
         "parameters": [
           {
@@ -113,16 +101,9 @@
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "user_id": {
-                  "example": "any"
-                },
-                "task_id": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/components/schemas/Orders"
             }
           }
         ],
@@ -138,6 +119,7 @@
         "tags": [
           "Orders"
         ],
+        "summary": "訂單狀態更新：飼主付款",
         "description": "",
         "parameters": [
           {
@@ -149,16 +131,9 @@
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "user_id": {
-                  "example": "any"
-                },
-                "task_id": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/components/schemas/Orders"
             }
           }
         ],
@@ -174,6 +149,7 @@
         "tags": [
           "Orders"
         ],
+        "summary": "訂單狀態更新：任務完成",
         "description": "",
         "parameters": [
           {
@@ -185,16 +161,9 @@
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "user_id": {
-                  "example": "any"
-                },
-                "task_id": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/components/schemas/Orders"
             }
           }
         ],
@@ -210,6 +179,7 @@
         "tags": [
           "Orders"
         ],
+        "summary": "訂單狀態更新：取消訂單",
         "description": "",
         "parameters": [
           {
@@ -221,16 +191,9 @@
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "user_id": {
-                  "example": "any"
-                },
-                "task_id": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/components/schemas/Orders"
             }
           }
         ],
@@ -246,6 +209,7 @@
         "tags": [
           "Orders"
         ],
+        "summary": "查詢：所有訂單<飼主視角>",
         "description": "",
         "responses": {
           "default": {
@@ -259,6 +223,7 @@
         "tags": [
           "Orders"
         ],
+        "summary": "查詢：所有訂單<保母視角>",
         "description": "",
         "responses": {
           "default": {
@@ -488,54 +453,26 @@
       }
     }
   },
-  "definitions": {
-    "CreateOrder": {
-      "type": "object",
-      "properties": {
-        "user_id": {
-          "type": "string",
-          "example": "888"
+  "components": {
+    "schemas": {
+      "Orders": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "使用者編號"
+          },
+          "task_id": {
+            "type": "string",
+            "description": "任務編號"
+          }
         },
-        "task_id": {
-          "type": "string",
-          "example": "999"
-        }
+        "required": [
+          "user_id",
+          "task_id"
+        ]
       }
     },
-    "SuccessResult": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "type": "boolean",
-          "example": true
-        },
-        "data": {
-          "type": "object",
-          "properties": {
-            "sitter_user_id": {
-              "type": "string",
-              "example": "111"
-            },
-            "task_id": {
-              "type": "string",
-              "example": "333"
-            },
-            "pet_owner_user_id": {
-              "type": "string",
-              "example": "444"
-            },
-            "report_content": {
-              "type": "string",
-              "example": ""
-            },
-            "report_image_list": {
-              "type": "array",
-              "example": [],
-              "items": {}
-            }
-          }
-        }
-      }
-    }
+    "parameters": {}
   }
 }
