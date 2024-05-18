@@ -21,7 +21,7 @@ docker compose up -d
 #### 在 .env 設定 DATABASE_URL
 
 ```bash
-DATABASE_URL="mongodb://root:prisma@localhost:27017/pet-cherish?authSource=admin&retryWrites=true&w=majority"
+DATABASE_URL=mongodb://root:prisma@localhost:27017/pet-cherish?authSource=admin&retryWrites=true&w=majority
 ```
 
 ## 產生 swagger.json

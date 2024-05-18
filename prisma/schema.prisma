@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["omitApi"]
 }
 
 datasource db {
@@ -8,25 +9,26 @@ datasource db {
 }
 
 model User {
-  id                String    @id @default(auto()) @map("_id") @db.ObjectId
-  email             String    @unique
-  real_name         String
-  phone             String?
-  password          String
-  nickname          String?
-  birthdate         DateTime?
-  gender            Gender?
-  self_introduction String?
-  avatar            String?
-  is_sitter         Boolean?  @default(false)
-  is_deleted        Boolean?  @default(false)
-  average_rating    Float?
-  total_reviews     Int?
-  created_at        DateTime  @default(now())
-  updated_at        DateTime  @updatedAt
-  sitter            Sitter?
-  pet_list          Pet[]
-  task_list         Task[]
+  id                 String    @id @default(auto()) @map("_id") @db.ObjectId
+  email              String    @unique
+  real_name          String
+  phone              String?
+  password           String
+  lastPasswordChange DateTime  @default(now())
+  nickname           String?
+  birthdate          DateTime?
+  gender             Gender?
+  self_introduction  String?
+  avatar             String?
+  is_sitter          Boolean?  @default(false)
+  is_deleted         Boolean?  @default(false)
+  average_rating     Float?
+  total_reviews      Int?
+  created_at         DateTime  @default(now())
+  updated_at         DateTime  @updatedAt
+  sitter             Sitter?
+  pet_list           Pet[]
+  task_list          Task[]
 
   @@map("users")
 }
