@@ -578,7 +578,21 @@
     },
     "/api/v1/tasks/": {
       "get": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "取得：任務資料",
         "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/{換成對應的名字}"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -588,6 +602,10 @@
     },
     "/api/v1/tasks/{task_id}/review": {
       "post": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "新增：評價",
         "description": "",
         "parameters": [
           {
@@ -599,19 +617,9 @@
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "user_id": {
-                  "example": "any"
-                },
-                "rating": {
-                  "example": "any"
-                },
-                "content": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/components/schemas/{換成對應的名字}"
             }
           }
         ],
