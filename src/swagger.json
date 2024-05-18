@@ -278,7 +278,21 @@
     },
     "/api/v1/users/me": {
       "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "取得：使用者的ＯＯ",
         "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/{換成對應的名字}"
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -288,6 +302,10 @@
     },
     "/api/v1/users/{userid}/profile": {
       "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "取得：使用者資料",
         "description": "",
         "parameters": [
           {
@@ -295,6 +313,14 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/{換成對應的名字}"
+            }
           }
         ],
         "responses": {
@@ -304,6 +330,10 @@
         }
       },
       "patch": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "更新：使用者資料",
         "description": "",
         "parameters": [
           {
@@ -311,6 +341,14 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/{換成對應的名字}"
+            }
           }
         ],
         "responses": {
@@ -322,7 +360,21 @@
     },
     "/api/v1/users/signup": {
       "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "註冊",
         "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/{換成對應的名字}"
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -332,7 +384,21 @@
     },
     "/api/v1/users/login": {
       "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "登入",
         "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/{換成對應的名字}"
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -342,7 +408,21 @@
     },
     "/api/v1/users/logout": {
       "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "登出",
         "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/{換成對應的名字}"
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
