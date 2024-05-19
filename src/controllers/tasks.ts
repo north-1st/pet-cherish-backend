@@ -165,3 +165,59 @@ export const createReview = async (
     next(error);
   }
 };
+
+export const updateReview = async (
+  req: Request<OrdersParams, unknown, ReviewRequest>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { order_id } = req.params;
+  const { user_id, rating, content } = req.body;
+
+  try {
+    // 找到指定訂單
+    const targetOrder = await prisma.order.findUnique({
+      where: {
+        id: order_id,
+      },
+    });
+    if (!targetOrder) {
+      res.status(404).json({
+        message: 'Order is not found!',
+        status: false,
+      });
+      return;
+    }
+
+    if (targetOrder.pet_owner_user_id === user_id) {
+      // 飼主更新評價
+      await prisma.review.update({
+        where: {
+          task_id: targetOrder.task_id,
+        },
+        data: {
+          pet_owner_rating: rating,
+          pet_owner_content: content,
+        },
+      });
+    } else {
+      // 保姆更新評價
+      await prisma.review.update({
+        where: {
+          task_id: targetOrder.task_id,
+        },
+        data: {
+          sitter_rating: rating,
+          sitter_content: content,
+        },
+      });
+    }
+
+    res.status(200).json({
+      message: 'Update Successfully!',
+      status: true,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

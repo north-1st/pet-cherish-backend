@@ -42,3 +42,25 @@ export const createReview = async (
   */
   next();
 };
+
+export const updateReview = async (
+  _req: Request<OrdersParams, unknown, ReviewRequest>,
+  _res: Response,
+  next: NextFunction
+) => {
+  /*
+    #swagger.tags = ['Tasks']
+    #swagger.summary = '更新：評價'
+  */
+
+  /* 
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        $ref: '#/components/schemas/{換成對應的名字}'
+      }
+    }
+  */
+  next();
+};

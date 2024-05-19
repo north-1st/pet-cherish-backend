@@ -708,6 +708,34 @@
             "description": ""
           }
         }
+      },
+      "patch": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "新增：評價",
+        "description": "",
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/{換成對應的名字}"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
       }
     }
   },
