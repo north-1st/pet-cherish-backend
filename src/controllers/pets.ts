@@ -32,12 +32,15 @@ export const updatePet = async (_req: Request, res: Response, next: NextFunction
     const pet = await prisma.pet.findUnique({
       where: {
         id: req.params.pet_id,
-        owner_user_id: userId,
       },
     });
 
     if (!pet) {
       throw createHttpError(404, 'Pet not found');
+    }
+
+    if (pet.owner_user_id !== userId) {
+      throw createHttpError(403, 'Forbidden');
     }
 
     await prisma.pet.update({
