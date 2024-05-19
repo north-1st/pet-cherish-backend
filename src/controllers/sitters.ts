@@ -1,27 +1,17 @@
-import { NextFunction, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 
-import prisma, { prismaExclude } from '@prisma';
+import prisma from '@prisma';
 import { SitterStatus } from '@prisma/client';
-import { ApplySitterRequest, SitterRequest, UpdateSitterServiceRequest } from '@schema/sitter';
+import { SitterRequest, applySitterRequestSchema, updateSitterServiceRequestSchema } from '@schema/sitter';
 
-const userId = '663fd8ce5eeb13779e3a2f76';
-
-export const applySitter = async (req: ApplySitterRequest, res: Response, next: NextFunction) => {
+export const applySitter = async (_req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-    });
-
-    if (!user) {
-      throw createHttpError(404, 'User not found');
-    }
+    const req = applySitterRequestSchema.parse(_req);
 
     await prisma.sitter.create({
       data: {
-        user_id: userId,
+        user_id: _req.user!.id,
         ...req.body,
         status: SitterStatus.APPROVING,
       },
@@ -29,6 +19,53 @@ export const applySitter = async (req: ApplySitterRequest, res: Response, next: 
     res.status(201).json({
       status: true,
       message: 'Apply sitter successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateSitterService = async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const req = updateSitterServiceRequestSchema.parse(_req);
+    const userId = _req.user!.id;
+
+    const sitter = await prisma.sitter.findUnique({
+      where: {
+        user_id: userId,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    if (!sitter) {
+      throw createHttpError(404, 'You are not a sitter');
+    }
+
+    if (!sitter.user.is_sitter) {
+      throw createHttpError(400, 'Sitter is not approved');
+    }
+
+    const { photography_price, health_care_price, bath_price, walking_price } = req.body;
+
+    if (!photography_price && !health_care_price && !bath_price && !walking_price) {
+      throw createHttpError(400, 'Please provide at least one service');
+    }
+
+    await prisma.sitter.update({
+      where: {
+        user_id: userId,
+      },
+      data: {
+        ...req.body,
+        status: SitterStatus.ON_BOARD,
+      },
+    });
+
+    res.status(200).json({
+      status: true,
+      message: 'Update sitter service successfully',
     });
   } catch (error) {
     next(error);
@@ -131,66 +168,19 @@ export const getSitterService = async (req: SitterRequest, res: Response, next: 
 
     const sitterService = await prisma.sitter.findUnique({
       where: {
-        user_id: userId,
+        user_id: req.params.user_id,
       },
-      select: prismaExclude('Sitter', [
-        'id',
-        'certificate_number',
-        'certificate_image',
-        'police_check_image',
-        'created_at',
-        'updated_at',
-      ]),
+      omit: {
+        certificate_number: true,
+        certificate_image: true,
+        police_check_image: true,
+      },
     });
 
     res.status(200).json({
       status: true,
       data: sitterService,
       message: 'Get sitter service successfully',
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const updateSitterService = async (req: UpdateSitterServiceRequest, res: Response, next: NextFunction) => {
-  try {
-    const sitter = await prisma.sitter.findUnique({
-      where: {
-        user_id: userId,
-      },
-      include: {
-        user: true,
-      },
-    });
-
-    if (!sitter) {
-      throw createHttpError(404, 'Sitter not found');
-    }
-
-    if (!sitter.user.is_sitter) {
-      throw createHttpError(400, 'Sitter is not approved');
-    }
-
-    const { photography_price, health_care_price, bath_price, walking_price } = req.body;
-
-    if (!photography_price && !health_care_price && !bath_price && !walking_price) {
-      throw createHttpError(400, 'Please provide at least one service');
-    }
-
-    await prisma.sitter.update({
-      where: {
-        user_id: userId,
-      },
-      data: {
-        ...req.body,
-        status: SitterStatus.ON_BOARD,
-      },
-    });
-
-    res.status(200).json({
-      status: true,
-      message: 'Update sitter service successfully',
     });
   } catch (error) {
     next(error);

@@ -5,7 +5,7 @@
     "description": "寵物陪伴媒合平台",
     "version": "1.0.0"
   },
-  "host": "http://localhost:5000",
+  "host": "localhost:5000",
   "basePath": "/",
   "schemes": [
     "http"
@@ -454,36 +454,6 @@
         }
       }
     },
-    "/api/v1/sitters/{user_id}": {
-      "get": {
-        "tags": [
-          "Sitters"
-        ],
-        "summary": "取得：保姆服務",
-        "description": "",
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/{換成對應的名字}"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/v1/sitters": {
       "patch": {
         "tags": [
@@ -544,6 +514,36 @@
           "Sitters"
         ],
         "summary": "審核保姆：不核可",
+        "description": "",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/{換成對應的名字}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/sitters/{user_id}": {
+      "get": {
+        "tags": [
+          "Sitters"
+        ],
+        "summary": "取得：保姆服務",
         "description": "",
         "parameters": [
           {
