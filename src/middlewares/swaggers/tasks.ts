@@ -36,7 +36,7 @@ export const createReview = async (
       in: 'body',
       required: true,
       schema: {
-        $ref: '#/components/schemas/{換成對應的名字}'
+        $ref: '#/components/schemas/Reviews'
       }
     }
   */
@@ -58,7 +58,7 @@ export const updateReview = async (
       in: 'body',
       required: true,
       schema: {
-        $ref: '#/components/schemas/{換成對應的名字}'
+        $ref: '#/components/schemas/Reviews'
       }
     }
   */

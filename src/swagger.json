@@ -59,7 +59,7 @@
         "tags": [
           "Orders"
         ],
-        "summary": "更新：訂單狀態/拒絕指定保母",
+        "summary": "更新：訂單狀態 / 拒絕指定保母",
         "description": "",
         "parameters": [
           {
@@ -89,7 +89,7 @@
         "tags": [
           "Orders"
         ],
-        "summary": "更新：訂單狀態/接受指定保母",
+        "summary": "更新：訂單狀態 / 接受指定保母",
         "description": "",
         "parameters": [
           {
@@ -119,7 +119,7 @@
         "tags": [
           "Orders"
         ],
-        "summary": "更新：訂單狀態/飼主付款",
+        "summary": "更新：訂單狀態 / 飼主付款",
         "description": "",
         "parameters": [
           {
@@ -149,7 +149,7 @@
         "tags": [
           "Orders"
         ],
-        "summary": "更新：訂單狀態/任務完成",
+        "summary": "更新：訂單狀態 / 任務完成",
         "description": "",
         "parameters": [
           {
@@ -179,7 +179,7 @@
         "tags": [
           "Orders"
         ],
-        "summary": "更新：訂單狀態/取消訂單",
+        "summary": "更新：訂單狀態 / 取消訂單",
         "description": "",
         "parameters": [
           {
@@ -699,7 +699,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/{換成對應的名字}"
+              "$ref": "#/components/schemas/Reviews"
             }
           }
         ],
@@ -713,7 +713,7 @@
         "tags": [
           "Tasks"
         ],
-        "summary": "新增：評價",
+        "summary": "更新：評價",
         "description": "",
         "parameters": [
           {
@@ -727,7 +727,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/{換成對應的名字}"
+              "$ref": "#/components/schemas/Reviews"
             }
           }
         ],
@@ -768,6 +768,30 @@
         },
         "required": [
           "user_id"
+        ]
+      },
+      "Reviews": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "使用者編號"
+          },
+          "rating": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 5,
+            "default": 5,
+            "description": "評價幾顆星"
+          },
+          "content": {
+            "type": "string",
+            "description": "評價內容"
+          }
+        },
+        "required": [
+          "user_id",
+          "content"
         ]
       }
     },

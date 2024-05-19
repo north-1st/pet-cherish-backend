@@ -49,7 +49,7 @@ export const refuseSitter = async (
 ) => {
   /*
     #swagger.tags = ['Orders']
-    #swagger.summary = '更新：訂單狀態/拒絕指定保母'
+    #swagger.summary = '更新：訂單狀態 / 拒絕指定保母'
   */
   /* 
     #swagger.parameters['body'] = {
@@ -70,7 +70,7 @@ export const acceptSitter = async (
 ) => {
   /*
     #swagger.tags = ['Orders']
-    #swagger.summary = '更新：訂單狀態/接受指定保母'
+    #swagger.summary = '更新：訂單狀態 / 接受指定保母'
   */
 
   /* 
@@ -92,7 +92,7 @@ export const payForOrder = async (
 ) => {
   /*
     #swagger.tags = ['Orders']
-    #swagger.summary = '更新：訂單狀態/飼主付款'
+    #swagger.summary = '更新：訂單狀態 / 飼主付款'
   */
 
   /* 
@@ -114,7 +114,7 @@ export const completeOrder = async (
 ) => {
   /*
     #swagger.tags = ['Orders']
-    #swagger.summary = '更新：訂單狀態/任務完成'
+    #swagger.summary = '更新：訂單狀態 / 任務完成'
   */
 
   /* 
@@ -136,7 +136,7 @@ export const cancelOrder = async (
 ) => {
   /*
     #swagger.tags = ['Orders']
-    #swagger.summary = '更新：訂單狀態/取消訂單'
+    #swagger.summary = '更新：訂單狀態 / 取消訂單'
   */
 
   /* 
