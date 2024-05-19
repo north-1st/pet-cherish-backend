@@ -15,7 +15,6 @@ export const petRequestSchema = z.object({
 });
 
 export const createPetRequestSchema = z.object({
-  params: z.object({ user_id: objectIdSchema }),
   body: petRequestSchema,
 });
 
