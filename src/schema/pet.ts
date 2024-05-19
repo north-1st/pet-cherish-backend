@@ -1,25 +1,13 @@
 import { z } from 'zod';
 
+import { PetCharacter, PetSize } from '@prisma/client';
 import { objectIdSchema } from '@schema/objectId';
-
-export const petSizeSchema = z.enum(['S', 'M', 'L']);
-
-export const petCharacterSchema = z.enum([
-  'IRRITABLE',
-  'CUTE',
-  'SMART',
-  'FRIENDLY',
-  'GREEDY',
-  'NAUGHTY',
-  'SNOOZE',
-  'ENERGETIC',
-]);
 
 export const petRequestSchema = z.object({
   name: z.string(),
   breed: z.string(),
-  size: petSizeSchema,
-  character_list: z.array(petCharacterSchema).min(1).max(3),
+  size: z.nativeEnum(PetSize),
+  character_list: z.array(z.nativeEnum(PetCharacter)).min(1).max(3),
   has_microchipped: z.boolean(),
   is_neutered: z.boolean(),
   health_description: z.string(),
@@ -44,8 +32,6 @@ export const petResponseSchema = petRequestSchema.extend({
   id: objectIdSchema,
 });
 
-export type PetSize = z.infer<typeof petSizeSchema>;
-export type PetCharacter = z.infer<typeof petCharacterSchema>;
 export type CreatePetRequest = z.infer<typeof createPetRequestSchema>;
 export type GetPetRequest = z.infer<typeof getPetRequestSchema>;
 export type UpdatePetRequest = z.infer<typeof updatePetRequestSchema>;
