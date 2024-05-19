@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 
-import prisma, { prismaExclude } from '@prisma';
+import prisma from '@prisma';
 import { GetPetRequest, createPetRequestSchema, updatePetRequestSchema } from '@schema/pet';
 
 export const createPet = async (_req: Request, res: Response, next: NextFunction) => {
@@ -63,7 +63,6 @@ export const getPets = async (req: GetPetRequest, res: Response, next: NextFunct
       where: {
         owner_user_id: req.params.user_id,
       },
-      select: prismaExclude('Pet', ['owner_user_id', 'created_at', 'updated_at']),
     });
 
     res.status(200).json({
