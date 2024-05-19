@@ -1,4 +1,3 @@
-import { Request } from 'express';
 import { z } from 'zod';
 
 import { ServiceType, TaskPublic, TaskStatus } from '@prisma/client';
@@ -74,12 +73,12 @@ export const reviewBodySchema = z.object({
 });
 
 export type CreateTaskBody = z.infer<typeof createTaskBodySchema>;
-export type CreateTaskRequest = z.infer<typeof createTaskRequestSchema> & Request;
+export type CreateTaskRequest = z.infer<typeof createTaskRequestSchema>;
 
 export type GetTasksByUserRequest = z.infer<typeof getTasksByUserRequestSchema>;
 
 export type UpdateTaskBody = z.infer<typeof updateTaskBodySchema>;
-export type UpdateTaskRequest = Request & z.infer<typeof updateTaskRequestSchema>;
+export type UpdateTaskRequest = z.infer<typeof updateTaskRequestSchema>;
 
 export type TaskResponse = z.infer<typeof taskResponseSchema>;
 

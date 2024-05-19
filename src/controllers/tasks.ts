@@ -27,10 +27,20 @@ export const getTasks: RequestHandler = async (req, res, next) => {
 };
 
 export const createTask = async (_req: Request, res: Response, next: NextFunction) => {
-  const req = createTaskRequestSchema.parse(_req);
-  console.log(_req.user?.id);
-
   try {
+    const req = createTaskRequestSchema.parse(_req);
+    const { pet_id } = req.body;
+
+    const pet = await prisma.pet.findUnique({
+      where: {
+        id: pet_id,
+        owner_user_id: _req.user!.id,
+      },
+    });
+
+    if (!pet) {
+      throw createHttpError(404, 'Pet not found');
+    }
     await prisma.task.create({
       data: {
         user_id: _req.user!.id,
