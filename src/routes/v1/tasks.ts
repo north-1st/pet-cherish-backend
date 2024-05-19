@@ -14,10 +14,10 @@ import {
 
 const router = express.Router();
 
-router.get('/users/:user_id/tasks', validateRequest(getTasksByUserRequestSchema), getUserTasks);
 router.post('/tasks', requiresAuth, requiresAuth, validateRequest(createTaskRequestSchema), createTask);
 router.patch('/tasks/:task_id', requiresAuth, validateRequest(updateTaskRequestSchema), updateTask);
 router.delete('/tasks/:task_id', requiresAuth, validateRequest(deleteTaskRequestSchema), deleteTask);
+router.get('/users/:user_id/tasks', validateRequest(getTasksByUserRequestSchema), getUserTasks);
 router.post('/:task_id/review', TasksController.createReview, s.createReview);
 
 export default router;

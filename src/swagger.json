@@ -656,24 +656,6 @@
         }
       }
     },
-    "/api/v1/users/{user_id}/tasks": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/v1/tasks": {
       "post": {
         "description": "",
@@ -718,6 +700,24 @@
         }
       }
     },
+    "/api/v1/users/{user_id}/tasks": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/v1/{task_id}/review": {
       "post": {
         "tags": [
@@ -748,7 +748,7 @@
         }
       }
     },
-    "/api/v1/users/{user_id}/{tasks{where{id:_req.params.task_id}": {
+    "/api/v1/{tasks{where{id:_req.params.task_id}": {
       "delete": {
         "description": "",
         "responses": {
