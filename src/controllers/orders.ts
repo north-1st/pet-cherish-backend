@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { OrderStatus, TaskPublic, TaskStatus } from '@prisma/client';
-import { BaseRequest, OrdersParams, OrdersRequest, OwnerOrderParams, SitterOrderParams } from '@schema/orders';
+import { OrdersParams, OrdersRequest, OwnerOrderParams, SitterOrderParams } from '@schema/orders';
+import { UserBaseSchema } from '@schema/user';
 
 import prisma from '../prisma';
 
@@ -296,7 +297,7 @@ export const cancelOrder = async (
 };
 
 export const getPetOwnerOrders = async (
-  req: Request<OwnerOrderParams, unknown, BaseRequest>,
+  req: Request<OwnerOrderParams, unknown, UserBaseSchema>,
   res: Response,
   next: NextFunction
 ) => {
@@ -359,7 +360,7 @@ export const getPetOwnerOrders = async (
 };
 
 export const getSitterOrders = async (
-  req: Request<SitterOrderParams, unknown, BaseRequest>,
+  req: Request<SitterOrderParams, unknown, UserBaseSchema>,
   res: Response,
   next: NextFunction
 ) => {

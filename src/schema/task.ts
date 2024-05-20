@@ -107,9 +107,9 @@ export const taskResponseSchema = z
   });
 
 export const reviewBodySchema = z.object({
-  user_id: z.string(),
-  rating: z.number().min(1).max(5).default(5),
-  content: z.string(),
+  user_id: z.string().openapi({ description: '使用者編號' }),
+  rating: z.number().min(1).max(5).default(5).openapi({ description: '評價幾顆星' }),
+  content: z.string().openapi({ description: '評價內容' }),
 });
 
 export type CreateTaskBody = z.infer<typeof createTaskBodySchema>;

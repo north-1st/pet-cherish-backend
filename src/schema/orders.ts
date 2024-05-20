@@ -3,16 +3,11 @@ import { z } from 'zod';
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { OrderStatus, TaskStatus } from '@prisma/client';
 import { paginationSchema } from '@schema/pagination';
+import { userBaseSchema } from '@schema/user';
 
 extendZodWithOpenApi(z);
 
-export const baseSchema = z.object({
-  user_id: z.string().openapi({
-    description: '使用者編號',
-    // example: '1234',
-  }),
-});
-export const orderBodySchema = baseSchema.extend({
+export const orderBodySchema = userBaseSchema.extend({
   task_id: z.string().openapi({
     description: '任務編號',
     // example: '7777',
@@ -45,7 +40,6 @@ export const ownerOrderParamSchema = paginationSchema.extend({
     }),
 });
 
-export type BaseRequest = z.infer<typeof baseSchema>;
 export type OrdersRequest = z.infer<typeof orderBodySchema>;
 export type OrdersParams = z.infer<typeof orderParamSchema>;
 export type SitterOrderParams = z.infer<typeof sitterOrderParamSchema>;
