@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { BaseRequest, OrdersParams, OrdersRequest, OwnerOrderParams, SitterOrderParams } from '@schema/orders';
+import { OrdersParams, OrdersRequest, OwnerOrderParams, SitterOrderParams } from '@schema/orders';
+import { UserBaseSchema } from '@schema/user';
 
 // Swagger
 export const createOrder = async (
@@ -49,7 +50,7 @@ export const refuseSitter = async (
 ) => {
   /*
     #swagger.tags = ['Orders']
-    #swagger.summary = '更新：訂單狀態/拒絕指定保母'
+    #swagger.summary = '更新：訂單狀態 / 拒絕指定保母'
   */
   /* 
     #swagger.parameters['body'] = {
@@ -70,7 +71,7 @@ export const acceptSitter = async (
 ) => {
   /*
     #swagger.tags = ['Orders']
-    #swagger.summary = '更新：訂單狀態/接受指定保母'
+    #swagger.summary = '更新：訂單狀態 / 接受指定保母'
   */
 
   /* 
@@ -92,7 +93,7 @@ export const payForOrder = async (
 ) => {
   /*
     #swagger.tags = ['Orders']
-    #swagger.summary = '更新：訂單狀態/飼主付款'
+    #swagger.summary = '更新：訂單狀態 / 飼主付款'
   */
 
   /* 
@@ -114,7 +115,7 @@ export const completeOrder = async (
 ) => {
   /*
     #swagger.tags = ['Orders']
-    #swagger.summary = '更新：訂單狀態/任務完成'
+    #swagger.summary = '更新：訂單狀態 / 任務完成'
   */
 
   /* 
@@ -136,7 +137,7 @@ export const cancelOrder = async (
 ) => {
   /*
     #swagger.tags = ['Orders']
-    #swagger.summary = '更新：訂單狀態/取消訂單'
+    #swagger.summary = '更新：訂單狀態 / 取消訂單'
   */
 
   /* 
@@ -152,7 +153,7 @@ export const cancelOrder = async (
 };
 
 export const getPetOwnerOrders = async (
-  _req: Request<OwnerOrderParams, unknown, BaseRequest>,
+  _req: Request<OwnerOrderParams, unknown, UserBaseSchema>,
   _res: Response,
   next: NextFunction
 ) => {
@@ -174,7 +175,7 @@ export const getPetOwnerOrders = async (
 };
 
 export const getSitterOrders = async (
-  _req: Request<SitterOrderParams, unknown, BaseRequest>,
+  _req: Request<SitterOrderParams, unknown, UserBaseSchema>,
   _res: Response,
   next: NextFunction
 ) => {
