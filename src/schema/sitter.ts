@@ -1,8 +1,7 @@
 import { z } from 'zod';
 
-import { SitterStatus } from '@prisma/client';
+import { PetSize, SitterStatus } from '@prisma/client';
 import { objectIdSchema } from '@schema/objectId';
-import { petSizeSchema } from '@schema/pet';
 
 export const applySitterRequestSchema = z.object({
   body: z.object({
@@ -19,7 +18,7 @@ const sitterServiceRequestSchema = z.object({
   health_care_price: z.number().nullable(),
   bath_price: z.number().nullable(),
   walking_price: z.number().nullable(),
-  service_size_list: z.array(petSizeSchema).min(1).max(3),
+  service_size_list: z.array(z.nativeEnum(PetSize)).min(1).max(3),
   is_door_to_door: z.boolean().default(false),
   image_list: z.array(z.string().url()).min(1).max(3),
   service_description: z.string(),
@@ -43,7 +42,7 @@ export const sitterResponseSchema = z.object({
   health_care_price: z.number().nullable(),
   bath_price: z.number().nullable(),
   walking_price: z.number().nullable(),
-  service_size_list: z.array(petSizeSchema).min(1).max(3),
+  service_size_list: z.array(z.nativeEnum(PetSize)).min(1).max(3),
   is_door_to_door: z.boolean().default(false),
   image_list: z.array(z.string()).min(1).max(3),
   service_description: z.string(),
