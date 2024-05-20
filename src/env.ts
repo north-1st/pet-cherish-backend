@@ -1,6 +1,7 @@
 import { cleanEnv, email, num, str, url } from 'envalid';
 
 const env = cleanEnv(process.env, {
+  NODE_ENV: str(),
   DATABASE_URL: str(),
   WEBSITE_URL: str(),
   SESSION_SECRET: str(),
@@ -15,6 +16,8 @@ const env = cleanEnv(process.env, {
   FIREBASE_TOKEN_URI: url(),
   FIREBASE_AUTH_PROVIDER_X509_CERT_URL: url(),
   FIREBASE_CLIENT_X509_CERT_URL: url(),
+  BACK_END_DEV_URL: str(),
+  BACK_END_PROD_URL: str(),
 });
 
 export default env;
