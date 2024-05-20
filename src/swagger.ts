@@ -1,20 +1,44 @@
-import swaggerAutogen from 'swagger-autogen';
+import * as fs from 'fs';
 
-import { openAPIComponents } from '@schema';
+import { OpenAPIRegistry, OpenApiGeneratorV3 } from '@asteasolutions/zod-to-openapi';
+import { setUsersSwagger } from '@config/swaggers/users';
+import env from '@env';
 
 import { version } from '../package.json';
 
-const doc = {
-  info: {
-    title: 'Pet Cherish API Docs',
-    description: '寵物陪伴媒合平台',
-    version,
-  },
-  host: process.env.NODE_ENV == 'development' ? process.env.BACK_END_DEV_URL : process.env.BACK_END_DEV_URL,
-  ...openAPIComponents,
+export const registry = new OpenAPIRegistry();
+
+const bearerAuth = registry.registerComponent('securitySchemes', 'bearerAuth', {
+  type: 'http',
+  scheme: 'bearer',
+  bearerFormat: 'JWT',
+});
+
+setUsersSwagger(registry, bearerAuth);
+
+const getOpenApiDocumentation = () => {
+  const generator = new OpenApiGeneratorV3(registry.definitions);
+
+  return generator.generateDocument({
+    openapi: '3.0.0',
+    info: {
+      title: 'Pet Cherish API Docs',
+      description: '寵物陪伴媒合平台',
+      version,
+    },
+    servers: [
+      { url: env.BACK_END_PROD_URL, description: 'Production server' },
+      { url: env.BACK_END_DEV_URL, description: 'Development server' },
+    ],
+  });
 };
 
-const outputFile = './swagger.json';
-const routes = ['./app.ts'];
+const writeDocumentation = () => {
+  const docs = getOpenApiDocumentation();
 
-swaggerAutogen(outputFile, routes, doc);
+  fs.writeFileSync(`${__dirname}/swagger.json`, JSON.stringify(docs, null, 2), {
+    encoding: 'utf-8',
+  });
+};
+
+writeDocumentation();

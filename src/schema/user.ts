@@ -1,8 +1,12 @@
 import { z } from 'zod';
 
+import { Gender } from '@prisma/client';
 import { objectIdSchema } from '@schema/objectId';
 
-export const genderSchema = z.enum(['MALE', 'FEMALE', 'OTHER']);
+export const userLoginRequestSchema = z.object({
+  email: z.string().email(),
+  password: z.string(),
+});
 
 export const userResponseSchema = z.object({
   id: objectIdSchema,
@@ -11,7 +15,7 @@ export const userResponseSchema = z.object({
   phone: z.string().optional(),
   nickname: z.string().default(''),
   birthdate: z.date().nullable(),
-  gender: genderSchema.nullable(),
+  gender: z.nativeEnum(Gender).nullable(),
   self_introduction: z.string().default(''),
   avatar: z.string().nullable(),
   is_sitter: z.boolean().default(false),
