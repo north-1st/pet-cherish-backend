@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 
 import { OpenAPIRegistry, OpenApiGeneratorV3 } from '@asteasolutions/zod-to-openapi';
+import { setTasksSwagger } from '@config/swaggers/tasks';
 import { setUsersSwagger } from '@config/swaggers/users';
 import env from '@env';
 
@@ -15,6 +16,7 @@ const bearerAuth = registry.registerComponent('securitySchemes', 'bearerAuth', {
 });
 
 setUsersSwagger(registry, bearerAuth);
+setTasksSwagger(registry, bearerAuth);
 
 const getOpenApiDocumentation = () => {
   const generator = new OpenApiGeneratorV3(registry.definitions);
