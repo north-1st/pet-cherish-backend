@@ -1,4 +1,4 @@
-import { NextFunction, Request, RequestHandler, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 
 import prisma from '@prisma';
@@ -13,18 +13,6 @@ import {
   deleteTaskRequestSchema,
   updateTaskRequestSchema,
 } from '@schema/task';
-
-export const getTasks: RequestHandler = async (req, res, next) => {
-  try {
-    const allTasks = await prisma.task.findMany({
-      orderBy: { created_at: 'desc' },
-    });
-
-    res.status(200).json(allTasks);
-  } catch (error) {
-    next(error);
-  }
-};
 
 export const createTask = async (_req: Request, res: Response, next: NextFunction) => {
   try {
@@ -138,7 +126,7 @@ export const deleteTask = async (_req: Request, res: Response, next: NextFunctio
   }
 };
 
-export const getUserTasks = async (req: GetTasksByUserRequest, res: Response, next: NextFunction) => {
+export const getTasksByUser = async (req: GetTasksByUserRequest, res: Response, next: NextFunction) => {
   try {
     const user = await prisma.user.findUnique({
       where: {
