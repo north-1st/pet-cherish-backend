@@ -14,6 +14,6 @@ router.use('/v1/upload', uploadV1);
 router.use('/v1/users', usersV1);
 router.use('/v1', sitterV1);
 router.use('/v1', petsV1);
-router.use('/v1/tasks', tasksV1);
+router.use('/v1', tasksV1);
 
 export default router;

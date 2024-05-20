@@ -1,11 +1,15 @@
 import { z } from 'zod';
 
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
+import { Gender } from '@prisma/client';
 import { objectIdSchema } from '@schema/objectId';
 
-extendZodWithOpenApi(z);
+export const userLoginRequestSchema = z.object({
+  email: z.string().email(),
+  password: z.string(),
+});
 
-export const genderSchema = z.enum(['MALE', 'FEMALE', 'OTHER']);
+extendZodWithOpenApi(z);
 
 export const userResponseSchema = z.object({
   id: objectIdSchema,
@@ -14,7 +18,7 @@ export const userResponseSchema = z.object({
   phone: z.string().optional(),
   nickname: z.string().default(''),
   birthdate: z.date().nullable(),
-  gender: genderSchema.nullable(),
+  gender: z.nativeEnum(Gender).nullable(),
   self_introduction: z.string().default(''),
   avatar: z.string().nullable(),
   is_sitter: z.boolean().default(false),
