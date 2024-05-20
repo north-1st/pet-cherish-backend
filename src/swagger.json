@@ -5,7 +5,7 @@
     "description": "寵物陪伴媒合平台",
     "version": "1.0.0"
   },
-  "host": "http://localhost:5000",
+  "host": "localhost:5000",
   "basePath": "/",
   "schemes": [
     "http"
@@ -568,7 +568,7 @@
         }
       }
     },
-    "/api/v1/users/{user_id}/pets": {
+    "/api/v1/pets": {
       "post": {
         "tags": [
           "Pets"
@@ -576,12 +576,6 @@
         "summary": "新增：寵物資料",
         "description": "",
         "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
@@ -596,16 +590,18 @@
             "description": "Created"
           }
         }
-      },
-      "get": {
+      }
+    },
+    "/api/v1/pets/{pet_id}": {
+      "patch": {
         "tags": [
           "Pets"
         ],
-        "summary": "取得：寵物資料",
+        "summary": "更新：寵物資料",
         "description": "",
         "parameters": [
           {
-            "name": "user_id",
+            "name": "pet_id",
             "in": "path",
             "required": true,
             "type": "string"
@@ -626,16 +622,16 @@
         }
       }
     },
-    "/api/v1/pets/{pet_id}": {
-      "patch": {
+    "/api/v1/users/{user_id}/pets": {
+      "get": {
         "tags": [
           "Pets"
         ],
-        "summary": "更新：寵物資料",
+        "summary": "取得：寵物資料",
         "description": "",
         "parameters": [
           {
-            "name": "pet_id",
+            "name": "user_id",
             "in": "path",
             "required": true,
             "type": "string"
