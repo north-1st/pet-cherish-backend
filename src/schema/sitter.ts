@@ -1,9 +1,8 @@
 import { z } from 'zod';
 
+import { SitterStatus } from '@prisma/client';
 import { objectIdSchema } from '@schema/objectId';
 import { petSizeSchema } from '@schema/pet';
-
-export const sitterStatusSchema = z.enum(['APPROVING', 'REJECTED', 'PASS', 'ON_BOARD']);
 
 export const applySitterRequestSchema = z.object({
   body: z.object({
@@ -50,10 +49,9 @@ export const sitterResponseSchema = z.object({
   service_description: z.string(),
   average_rating: z.number().nullable(),
   total_reviews: z.number().default(0),
-  status: sitterStatusSchema.default('APPROVING'),
+  status: z.nativeEnum(SitterStatus).default(SitterStatus.APPROVING),
 });
 
-export type SitterStatus = z.infer<typeof sitterStatusSchema>;
 export type ApplySitterRequest = z.infer<typeof applySitterRequestSchema>;
 export type UpdateSitterServiceRequest = z.infer<typeof updateSitterServiceRequestSchema>;
 export type SitterRequest = z.infer<typeof sitterRequestSchema>;
