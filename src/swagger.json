@@ -1,796 +1,138 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "title": "Pet Cherish API Docs",
     "description": "寵物陪伴媒合平台",
     "version": "1.0.0"
   },
-  "host": "localhost:5000",
-  "basePath": "/",
-  "schemes": [
-    "http"
+  "servers": [
+    {
+      "url": "https://pet-cherish-backend.onrender.com",
+      "description": "Production server"
+    },
+    {
+      "url": "http://localhost:5000",
+      "description": "Development server"
+    }
   ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {},
+    "parameters": {}
+  },
   "paths": {
-    "/": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/orders/": {
-      "post": {
-        "tags": [
-          "Orders"
-        ],
-        "summary": "建立訂單",
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Orders"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "schema": {
-              "$ref": "#/definitions/SuccessResult"
-            },
-            "description": "Created"
-          },
-          "500": {
-            "schema": {
-              "$ref": "#/definitions/ServerErrorResult"
-            },
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/api/v1/orders/{order_id}/refuse-sitter": {
-      "patch": {
-        "tags": [
-          "Orders"
-        ],
-        "summary": "更新：訂單狀態/拒絕指定保母",
-        "description": "",
-        "parameters": [
-          {
-            "name": "order_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Orders"
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/orders/{order_id}/accept-sitter": {
-      "patch": {
-        "tags": [
-          "Orders"
-        ],
-        "summary": "更新：訂單狀態/接受指定保母",
-        "description": "",
-        "parameters": [
-          {
-            "name": "order_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Orders"
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/orders/{order_id}/paid": {
-      "patch": {
-        "tags": [
-          "Orders"
-        ],
-        "summary": "更新：訂單狀態/飼主付款",
-        "description": "",
-        "parameters": [
-          {
-            "name": "order_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Orders"
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/orders/{order_id}/complete": {
-      "patch": {
-        "tags": [
-          "Orders"
-        ],
-        "summary": "更新：訂單狀態/任務完成",
-        "description": "",
-        "parameters": [
-          {
-            "name": "order_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Orders"
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/orders/{order_id}/cancel": {
-      "patch": {
-        "tags": [
-          "Orders"
-        ],
-        "summary": "更新：訂單狀態/取消訂單",
-        "description": "",
-        "parameters": [
-          {
-            "name": "order_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Orders"
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/orders/pet-owner": {
-      "get": {
-        "tags": [
-          "Orders"
-        ],
-        "summary": "查詢：所有訂單<飼主視角>",
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Base"
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/orders/sitter": {
-      "get": {
-        "tags": [
-          "Orders"
-        ],
-        "summary": "查詢：所有訂單<保母視角>",
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Base"
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/upload/image": {
-      "post": {
-        "tags": [
-          "Uploads"
-        ],
-        "summary": "上傳圖片",
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/{換成對應的名字}"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          }
-        }
-      }
-    },
-    "/api/v1/users/me": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "取得：使用者的ＯＯ",
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/{換成對應的名字}"
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/users/{userid}/profile": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "取得：使用者資料",
-        "description": "",
-        "parameters": [
-          {
-            "name": "userid",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/{換成對應的名字}"
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "更新：使用者資料",
-        "description": "",
-        "parameters": [
-          {
-            "name": "userid",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/{換成對應的名字}"
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/users/signup": {
-      "post": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "註冊",
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/{換成對應的名字}"
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
     "/api/v1/users/login": {
       "post": {
         "tags": [
           "Users"
         ],
         "summary": "登入",
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/{換成對應的名字}"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
             }
           }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/users/logout": {
-      "post": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "登出",
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/{換成對應的名字}"
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/apply-sitter": {
-      "post": {
-        "tags": [
-          "Sitters"
-        ],
-        "summary": "申請保姆",
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/{換成對應的名字}"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          }
-        }
-      }
-    },
-    "/api/v1/sitters/{user_id}": {
-      "get": {
-        "tags": [
-          "Sitters"
-        ],
-        "summary": "取得：保姆服務",
-        "description": "",
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/{換成對應的名字}"
-            }
-          }
-        ],
+        },
         "responses": {
           "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/sitters": {
-      "patch": {
-        "tags": [
-          "Sitters"
-        ],
-        "summary": "更新：保姆服務",
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/{換成對應的名字}"
+            "description": "login successd",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "real_name": {
+                      "type": "string"
+                    },
+                    "phone": {
+                      "type": "string"
+                    },
+                    "nickname": {
+                      "type": "string",
+                      "default": ""
+                    },
+                    "birthdate": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "gender": {
+                      "type": "string",
+                      "nullable": true,
+                      "enum": [
+                        "MALE",
+                        "FEMALE",
+                        "OTHER"
+                      ]
+                    },
+                    "self_introduction": {
+                      "type": "string",
+                      "default": ""
+                    },
+                    "avatar": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "is_sitter": {
+                      "type": "boolean",
+                      "default": false
+                    },
+                    "is_deleted": {
+                      "type": "boolean"
+                    },
+                    "average_rating": {
+                      "type": "number",
+                      "nullable": true
+                    },
+                    "total_reviews": {
+                      "type": "number",
+                      "default": 0
+                    },
+                    "accessToken": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "birthdate",
+                    "gender",
+                    "avatar",
+                    "average_rating",
+                    "accessToken"
+                  ]
+                }
+              }
             }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/sitters/{user_id}/approve": {
-      "patch": {
-        "tags": [
-          "Sitters"
-        ],
-        "summary": "審核保姆：核可",
-        "description": "",
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/{換成對應的名字}"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/sitters/{user_id}/reject": {
-      "patch": {
-        "tags": [
-          "Sitters"
-        ],
-        "summary": "審核保姆：不核可",
-        "description": "",
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/{換成對應的名字}"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/users/{user_id}/pets": {
-      "post": {
-        "tags": [
-          "Pets"
-        ],
-        "summary": "新增：寵物資料",
-        "description": "",
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/{換成對應的名字}"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "Pets"
-        ],
-        "summary": "取得：寵物資料",
-        "description": "",
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/{換成對應的名字}"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/pets/{pet_id}": {
-      "patch": {
-        "tags": [
-          "Pets"
-        ],
-        "summary": "更新：寵物資料",
-        "description": "",
-        "parameters": [
-          {
-            "name": "pet_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/{換成對應的名字}"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/tasks": {
-      "post": {
-        "description": "",
-        "responses": {
-          "201": {
-            "description": "Created"
-          }
-        }
-      }
-    },
-    "/api/v1/tasks/{task_id}": {
-      "patch": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "task_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "task_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/users/{user_id}/tasks": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/{task_id}/review": {
-      "post": {
-        "tags": [
-          "Tasks"
-        ],
-        "summary": "新增：評價",
-        "description": "",
-        "parameters": [
-          {
-            "name": "task_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/{換成對應的名字}"
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/{tasks{where{id:_req.params.task_id}": {
-      "delete": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
           }
         }
       }
     }
-  },
-  "components": {
-    "schemas": {
-      "Orders": {
-        "type": "object",
-        "properties": {
-          "user_id": {
-            "type": "string",
-            "description": "使用者編號"
-          },
-          "task_id": {
-            "type": "string",
-            "description": "任務編號"
-          }
-        },
-        "required": [
-          "user_id",
-          "task_id"
-        ]
-      },
-      "Base": {
-        "type": "object",
-        "properties": {
-          "user_id": {
-            "type": "string",
-            "description": "使用者編號"
-          }
-        },
-        "required": [
-          "user_id"
-        ]
-      }
-    },
-    "parameters": {}
   }
 }
