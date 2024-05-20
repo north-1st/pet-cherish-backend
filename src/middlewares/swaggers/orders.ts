@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { BaseRequest, OrdersParams, OrdersRequest, OwnerOrderParams, SitterOrderParams } from '@schema/orders';
+import { OrdersParams, OrdersRequest, OwnerOrderParams, SitterOrderParams } from '@schema/orders';
+import { UserBaseSchema } from '@schema/user';
 
 // Swagger
 export const createOrder = async (
@@ -152,7 +153,7 @@ export const cancelOrder = async (
 };
 
 export const getPetOwnerOrders = async (
-  _req: Request<OwnerOrderParams, unknown, BaseRequest>,
+  _req: Request<OwnerOrderParams, unknown, UserBaseSchema>,
   _res: Response,
   next: NextFunction
 ) => {
@@ -174,7 +175,7 @@ export const getPetOwnerOrders = async (
 };
 
 export const getSitterOrders = async (
-  _req: Request<SitterOrderParams, unknown, BaseRequest>,
+  _req: Request<SitterOrderParams, unknown, UserBaseSchema>,
   _res: Response,
   next: NextFunction
 ) => {
