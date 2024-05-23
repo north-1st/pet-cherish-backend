@@ -1,6 +1,6 @@
 import { NextFunction, Response } from 'express';
 
-import { CreatePetRequest, GetPetRequest, UpdatePetRequest } from '@schema/pet';
+import { CreatePetRequest, GetPetsByUserRequest, UpdatePetRequest } from '@schema/pet';
 
 // Swagger
 export const createPet = async (_req: CreatePetRequest, _res: Response, next: NextFunction) => {
@@ -21,7 +21,7 @@ export const createPet = async (_req: CreatePetRequest, _res: Response, next: Ne
   next();
 };
 
-export const getPets = async (_req: GetPetRequest, _res: Response, next: NextFunction) => {
+export const getPets = async (_req: GetPetsByUserRequest, _res: Response, next: NextFunction) => {
   /*
     #swagger.tags = ['Pets']
     #swagger.summary = '取得：寵物資料'

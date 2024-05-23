@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 
 import prisma from '@prisma';
-import { GetPetRequest, createPetRequestSchema, updatePetRequestSchema } from '@schema/pet';
+import { GetPetsByUserRequest, createPetRequestSchema, updatePetRequestSchema } from '@schema/pet';
 
 export const createPet = async (_req: Request, res: Response, next: NextFunction) => {
   try {
@@ -60,7 +60,7 @@ export const updatePet = async (_req: Request, res: Response, next: NextFunction
   }
 };
 
-export const getPets = async (req: GetPetRequest, res: Response, next: NextFunction) => {
+export const getPetsByUser = async (req: GetPetsByUserRequest, res: Response, next: NextFunction) => {
   try {
     const pets = await prisma.pet.findMany({
       where: {
