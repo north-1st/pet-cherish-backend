@@ -18,7 +18,7 @@ export const createPetRequestSchema = z.object({
   body: petRequestSchema,
 });
 
-export const getPetRequestSchema = z.object({
+export const getPetsByUserRequestSchema = z.object({
   params: z.object({ user_id: objectIdSchema }),
 });
 
@@ -32,6 +32,6 @@ export const petResponseSchema = petRequestSchema.extend({
 });
 
 export type CreatePetRequest = z.infer<typeof createPetRequestSchema>;
-export type GetPetRequest = z.infer<typeof getPetRequestSchema>;
+export type GetPetsByUserRequest = z.infer<typeof getPetsByUserRequestSchema>;
 export type UpdatePetRequest = z.infer<typeof updatePetRequestSchema>;
 export type PetResponse = z.infer<typeof petResponseSchema>;
