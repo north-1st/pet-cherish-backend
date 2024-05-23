@@ -134,6 +134,335 @@
         }
       }
     },
+    "/api/v1/pets": {
+      "post": {
+        "tags": [
+          "Pets"
+        ],
+        "summary": "新增：寵物",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "寵物名稱"
+                  },
+                  "breed": {
+                    "type": "string",
+                    "example": "寵物品種"
+                  },
+                  "size": {
+                    "type": "string",
+                    "enum": [
+                      "S",
+                      "M",
+                      "L"
+                    ],
+                    "example": "S"
+                  },
+                  "character_list": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "IRRITABLE",
+                        "CUTE",
+                        "SMART",
+                        "FRIENDLY",
+                        "GREEDY",
+                        "NAUGHTY",
+                        "SNOOZE",
+                        "ENERGETIC"
+                      ]
+                    },
+                    "minItems": 1,
+                    "maxItems": 3,
+                    "example": [
+                      "CUTE",
+                      "ENERGETIC"
+                    ]
+                  },
+                  "has_microchipped": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "is_neutered": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "health_description": {
+                    "type": "string",
+                    "example": "健康狀況描述"
+                  },
+                  "avatar_list": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "minItems": 1,
+                    "maxItems": 3,
+                    "example": [
+                      "https://picsum.photos/200"
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "breed",
+                  "size",
+                  "character_list",
+                  "has_microchipped",
+                  "is_neutered",
+                  "health_description",
+                  "avatar_list"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Create pet successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/v1/pets/{pet_id}": {
+      "patch": {
+        "tags": [
+          "Pets"
+        ],
+        "summary": "更新：寵物",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "pet_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "寵物名稱"
+                  },
+                  "breed": {
+                    "type": "string",
+                    "example": "寵物品種"
+                  },
+                  "size": {
+                    "type": "string",
+                    "enum": [
+                      "S",
+                      "M",
+                      "L"
+                    ],
+                    "example": "S"
+                  },
+                  "character_list": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "IRRITABLE",
+                        "CUTE",
+                        "SMART",
+                        "FRIENDLY",
+                        "GREEDY",
+                        "NAUGHTY",
+                        "SNOOZE",
+                        "ENERGETIC"
+                      ]
+                    },
+                    "minItems": 1,
+                    "maxItems": 3,
+                    "example": [
+                      "CUTE",
+                      "ENERGETIC"
+                    ]
+                  },
+                  "has_microchipped": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "is_neutered": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "health_description": {
+                    "type": "string",
+                    "example": "健康狀況描述"
+                  },
+                  "avatar_list": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "minItems": 1,
+                    "maxItems": 3,
+                    "example": [
+                      "https://picsum.photos/200"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update pet successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Pet not found"
+          }
+        }
+      }
+    },
+    "/api/v1/users/{user_id}/pets": {
+      "get": {
+        "tags": [
+          "Pets"
+        ],
+        "summary": "取得：使用者寵物",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "user_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get pets successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "example": "寵物名稱"
+                      },
+                      "breed": {
+                        "type": "string",
+                        "example": "寵物品種"
+                      },
+                      "size": {
+                        "type": "string",
+                        "enum": [
+                          "S",
+                          "M",
+                          "L"
+                        ],
+                        "example": "S"
+                      },
+                      "character_list": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "IRRITABLE",
+                            "CUTE",
+                            "SMART",
+                            "FRIENDLY",
+                            "GREEDY",
+                            "NAUGHTY",
+                            "SNOOZE",
+                            "ENERGETIC"
+                          ]
+                        },
+                        "minItems": 1,
+                        "maxItems": 3,
+                        "example": [
+                          "CUTE",
+                          "ENERGETIC"
+                        ]
+                      },
+                      "has_microchipped": {
+                        "type": "boolean",
+                        "example": false
+                      },
+                      "is_neutered": {
+                        "type": "boolean",
+                        "example": false
+                      },
+                      "health_description": {
+                        "type": "string",
+                        "example": "健康狀況描述"
+                      },
+                      "avatar_list": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "minItems": 1,
+                        "maxItems": 3,
+                        "example": [
+                          "https://picsum.photos/200"
+                        ]
+                      },
+                      "id": {
+                        "type": "string",
+                        "example": "6649d4e467b627a60555c5fd"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "breed",
+                      "size",
+                      "character_list",
+                      "has_microchipped",
+                      "is_neutered",
+                      "health_description",
+                      "avatar_list",
+                      "id"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/tasks": {
       "post": {
         "tags": [
