@@ -54,9 +54,9 @@ export const createOrder = async (req: Request<unknown, unknown, OrdersRequest>,
       report_content: '',
       report_image_list: [],
     };
-    const newOrder = await prisma.order.create({ data });
+    await prisma.order.create({ data });
     res.status(201).json({
-      data: newOrder,
+      message: 'The application has been submitted!',
       status: true,
     });
   } catch (error) {
