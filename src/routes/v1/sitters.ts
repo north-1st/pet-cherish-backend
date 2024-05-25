@@ -1,6 +1,8 @@
 import express from 'express';
 
 import { applySitter, getSitterService, sitterApprove, sitterReject, updateSitterService } from '@controllers/sitters';
+import isExistingSitter from '@middlewares/isExistingSitter';
+import isExistingUser from '@middlewares/isExistingUser';
 import requiresAuth from '@middlewares/requiresAuth';
 import * as s from '@middlewares/swaggers/sitters';
 import { validateRequest } from '@middlewares/validateRequest';
@@ -22,6 +24,7 @@ router.patch(
   '/sitters/:user_id/approve',
   requiresAuth,
   validateRequest(sitterRequestSchema),
+  isExistingUser,
   sitterApprove,
   s.sitterApprove
 );
@@ -29,10 +32,17 @@ router.patch(
   '/sitters/:user_id/reject',
   requiresAuth,
   validateRequest(sitterRequestSchema),
+  isExistingUser,
   sitterReject,
   s.sitterReject
 );
 
-router.get('/sitters/:user_id', validateRequest(sitterRequestSchema), getSitterService, s.getSitterService);
+router.get(
+  '/sitters/:user_id',
+  validateRequest(sitterRequestSchema),
+  isExistingSitter,
+  getSitterService,
+  s.getSitterService
+);
 
 export default router;

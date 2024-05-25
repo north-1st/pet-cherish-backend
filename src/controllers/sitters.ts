@@ -44,7 +44,7 @@ export const updateSitterService = async (_req: Request, res: Response, next: Ne
     }
 
     if (!sitter.user.is_sitter) {
-      throw createHttpError(400, 'Sitter is not approved');
+      throw createHttpError(403, 'Sitter is not approved');
     }
 
     const { photography_price, health_care_price, bath_price, walking_price } = req.body;
@@ -83,10 +83,6 @@ export const sitterApprove = async (req: SitterRequest, res: Response, next: Nex
       },
     });
 
-    if (!sitter?.user) {
-      throw createHttpError(404, 'User not found');
-    }
-
     await prisma.sitter.update({
       where: {
         user_id: req.params.user_id,
@@ -97,7 +93,7 @@ export const sitterApprove = async (req: SitterRequest, res: Response, next: Nex
       data: {
         status: SitterStatus.PASS,
         has_certificate: true,
-        has_police_check: sitter.police_check_image != null,
+        has_police_check: sitter!.police_check_image != null,
         user: {
           update: {
             is_sitter: true,
@@ -107,7 +103,7 @@ export const sitterApprove = async (req: SitterRequest, res: Response, next: Nex
     });
     res.status(200).json({
       status: true,
-      message: 'Sitter has been approved',
+      message: 'Approve sitter successfully',
     });
   } catch (error) {
     next(error);
@@ -116,16 +112,6 @@ export const sitterApprove = async (req: SitterRequest, res: Response, next: Nex
 
 export const sitterReject = async (req: SitterRequest, res: Response, next: NextFunction) => {
   try {
-    const sitter = await prisma.sitter.findUnique({
-      where: {
-        user_id: req.params.user_id,
-      },
-    });
-
-    if (!sitter) {
-      throw createHttpError(404, 'Sitter not found');
-    }
-
     await prisma.sitter.update({
       where: {
         user_id: req.params.user_id,
@@ -144,7 +130,7 @@ export const sitterReject = async (req: SitterRequest, res: Response, next: Next
         },
       },
     });
-    res.status(200).json({ status: true, message: 'Sitter has been rejected' });
+    res.status(200).json({ status: true, message: 'Reject sitter successfully' });
   } catch (error) {
     next(error);
   }
@@ -158,11 +144,7 @@ export const getSitterService = async (req: SitterRequest, res: Response, next: 
       },
     });
 
-    if (!sitter) {
-      throw createHttpError(404, 'Sitter not found');
-    }
-
-    if (sitter.status != SitterStatus.PASS && sitter.status != SitterStatus.ON_BOARD) {
+    if (sitter!.status != SitterStatus.PASS && sitter!.status != SitterStatus.ON_BOARD) {
       throw createHttpError(400, 'Sitter is not approved');
     }
 
