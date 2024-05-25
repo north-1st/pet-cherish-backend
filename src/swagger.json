@@ -944,6 +944,435 @@
           }
         }
       }
+    },
+    "/api/v1/tasks/{task_id}/review": {
+      "post": {
+        "tags": [
+          "Reviews"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "新增：飼主/保姆 評價",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "任務編號"
+            },
+            "required": true,
+            "name": "task_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": {
+                    "type": "string"
+                  },
+                  "rating": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 5,
+                    "default": 5
+                  },
+                  "content": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "user_id",
+                  "content"
+                ],
+                "example": {
+                  "user_id": "54489faba8bcd77a22dedue8",
+                  "rating": 5,
+                  "content": "評價內容"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Create Successfully!"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Order is not found!"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Reviews"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "編輯：飼主/保姆 評價",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "任務編號"
+            },
+            "required": true,
+            "name": "task_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": {
+                    "type": "string"
+                  },
+                  "rating": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 5,
+                    "default": 5
+                  },
+                  "content": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "user_id",
+                  "content"
+                ],
+                "example": {
+                  "user_id": "54489faba8bcd77a22dedue8",
+                  "rating": 5,
+                  "content": "評價內容"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update Successfully!"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Order is not found!"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Reviews"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "查詢：其中一訂單，飼主/保姆 評價",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "任務編號"
+            },
+            "required": true,
+            "name": "task_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "pet_owner_user_id": {
+                      "type": "string"
+                    },
+                    "pet_owner_rating": {
+                      "type": "number",
+                      "minimum": 1,
+                      "maximum": 5,
+                      "default": 5
+                    },
+                    "pet_owner_content": {
+                      "type": "string"
+                    },
+                    "pet_owner_created_at": {
+                      "type": "string"
+                    },
+                    "sitter_user_id": {
+                      "type": "string"
+                    },
+                    "sitter_rating": {
+                      "type": "number",
+                      "minimum": 1,
+                      "maximum": 5,
+                      "default": 5
+                    },
+                    "sitter_content": {
+                      "type": "string"
+                    },
+                    "sitter_user_created_at": {
+                      "type": "string"
+                    },
+                    "task_id": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "pet_owner_user_id",
+                    "pet_owner_content",
+                    "pet_owner_created_at",
+                    "sitter_user_id",
+                    "sitter_content",
+                    "sitter_user_created_at",
+                    "task_id"
+                  ],
+                  "example": {
+                    "id": "595489faba8bcd77a22dedu05",
+                    "pet_owner_user_id": "54489faba8bcd77a22dedue8",
+                    "pet_owner_rating": 5,
+                    "pet_owner_content": "飼主寫的評價內容",
+                    "pet_owner_created_at": "2022-01-01T00:00:00.000Z",
+                    "sitter_user_id": "66489faba8bcd77a22dedu09",
+                    "sitter_rating": 5,
+                    "sitter_content": "保姆寫的評價內容",
+                    "sitter_user_created_at": "2022-01-01T00:00:00.000Z",
+                    "task_id": "86489faba8bcd77a22dedu97"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Review is not found!"
+          }
+        }
+      }
+    },
+    "/api/v1/pet-owners/{user_id}/reviews": {
+      "get": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "查詢：飼主所有評價",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "使用者編號"
+            },
+            "required": true,
+            "name": "user_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "pet_owner_user_id": {
+                        "type": "string"
+                      },
+                      "pet_owner_rating": {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 5,
+                        "default": 5
+                      },
+                      "pet_owner_content": {
+                        "type": "string"
+                      },
+                      "pet_owner_created_at": {
+                        "type": "string"
+                      },
+                      "sitter_user_id": {
+                        "type": "string"
+                      },
+                      "sitter_rating": {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 5,
+                        "default": 5
+                      },
+                      "sitter_content": {
+                        "type": "string"
+                      },
+                      "sitter_user_created_at": {
+                        "type": "string"
+                      },
+                      "task_id": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "pet_owner_user_id",
+                      "pet_owner_content",
+                      "pet_owner_created_at",
+                      "sitter_user_id",
+                      "sitter_content",
+                      "sitter_user_created_at",
+                      "task_id"
+                    ],
+                    "example": {
+                      "id": "595489faba8bcd77a22dedu05",
+                      "pet_owner_user_id": "54489faba8bcd77a22dedue8",
+                      "pet_owner_rating": 5,
+                      "pet_owner_content": "飼主寫的評價內容",
+                      "pet_owner_created_at": "2022-01-01T00:00:00.000Z",
+                      "sitter_user_id": "66489faba8bcd77a22dedu09",
+                      "sitter_rating": 5,
+                      "sitter_content": "保姆寫的評價內容",
+                      "sitter_user_created_at": "2022-01-01T00:00:00.000Z",
+                      "task_id": "86489faba8bcd77a22dedu97"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/api/v1/sitters/{user_id}/reviews": {
+      "get": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "查詢：保姆所有評價",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "使用者編號"
+            },
+            "required": true,
+            "name": "user_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "pet_owner_user_id": {
+                        "type": "string"
+                      },
+                      "pet_owner_rating": {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 5,
+                        "default": 5
+                      },
+                      "pet_owner_content": {
+                        "type": "string"
+                      },
+                      "pet_owner_created_at": {
+                        "type": "string"
+                      },
+                      "sitter_user_id": {
+                        "type": "string"
+                      },
+                      "sitter_rating": {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 5,
+                        "default": 5
+                      },
+                      "sitter_content": {
+                        "type": "string"
+                      },
+                      "sitter_user_created_at": {
+                        "type": "string"
+                      },
+                      "task_id": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "pet_owner_user_id",
+                      "pet_owner_content",
+                      "pet_owner_created_at",
+                      "sitter_user_id",
+                      "sitter_content",
+                      "sitter_user_created_at",
+                      "task_id"
+                    ],
+                    "example": {
+                      "id": "595489faba8bcd77a22dedu05",
+                      "pet_owner_user_id": "54489faba8bcd77a22dedue8",
+                      "pet_owner_rating": 5,
+                      "pet_owner_content": "飼主寫的評價內容",
+                      "pet_owner_created_at": "2022-01-01T00:00:00.000Z",
+                      "sitter_user_id": "66489faba8bcd77a22dedu09",
+                      "sitter_rating": 5,
+                      "sitter_content": "保姆寫的評價內容",
+                      "sitter_user_created_at": "2022-01-01T00:00:00.000Z",
+                      "task_id": "86489faba8bcd77a22dedu97"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sitter not found"
+          }
+        }
+      }
     }
   }
 }

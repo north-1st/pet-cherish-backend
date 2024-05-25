@@ -2,6 +2,7 @@ import express from 'express';
 
 import ordersV1 from '@routes/v1/orders';
 import petsV1 from '@routes/v1/pets';
+import reviewV1 from '@routes/v1/reviews';
 import sitterV1 from '@routes/v1/sitters';
 import tasksV1 from '@routes/v1/tasks';
 import uploadV1 from '@routes/v1/upload';
@@ -15,5 +16,6 @@ router.use('/v1/users', usersV1);
 router.use('/v1', sitterV1);
 router.use('/v1', petsV1);
 router.use('/v1', tasksV1);
+router.use('/v1', reviewV1);
 
 export default router;
