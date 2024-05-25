@@ -3,11 +3,10 @@ import { z } from 'zod';
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { OrderStatus, TaskStatus } from '@prisma/client';
 import { paginationSchema } from '@schema/pagination';
-import { userBaseSchema } from '@schema/user';
 
 extendZodWithOpenApi(z);
 
-export const orderBodySchema = userBaseSchema.extend({
+export const orderBodySchema = z.object({
   task_id: z.string().openapi({
     description: '任務編號',
     // example: '7777',
