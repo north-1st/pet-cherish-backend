@@ -142,7 +142,7 @@ export const createReview = async (
     }
 
     res.status(201).json({
-      message: 'Create Successfully!',
+      message: 'Create review successfully!',
       status: true,
     });
   } catch (error) {

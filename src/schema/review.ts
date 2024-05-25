@@ -11,10 +11,19 @@ export const reviewParamSchema = z.object({
   }),
 });
 
-export const reviewBodySchema = z.object({
-  user_id: z.string().openapi({ description: '使用者編號' }),
-  rating: z.number().min(1).max(5).default(5).openapi({ description: '評價幾顆星' }),
-  content: z.string().openapi({ description: '評價內容' }),
-});
+export const reviewBodySchema = z
+  .object({
+    user_id: z.string(),
+    rating: z.number().min(1).max(5).default(5),
+    content: z.string(),
+  })
+  .openapi({
+    example: {
+      user_id: '54489faba8bcd77a22dedue8',
+      rating: 5,
+      content: '評價內容',
+    },
+  });
+
 export type ReviewParam = z.infer<typeof reviewParamSchema>;
 export type ReviewRequest = z.infer<typeof reviewBodySchema>;
