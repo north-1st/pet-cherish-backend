@@ -28,24 +28,6 @@ export const applySitter = async (_req: Request, res: Response, next: NextFuncti
 export const updateSitterService = async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const req = updateSitterServiceRequestSchema.parse(_req);
-    const userId = _req.user!.id;
-
-    const sitter = await prisma.sitter.findUnique({
-      where: {
-        user_id: userId,
-      },
-      include: {
-        user: true,
-      },
-    });
-
-    if (!sitter) {
-      throw createHttpError(404, 'You are not a sitter');
-    }
-
-    if (!sitter.user.is_sitter) {
-      throw createHttpError(403, 'Sitter is not approved');
-    }
 
     const { photography_price, health_care_price, bath_price, walking_price } = req.body;
 
@@ -55,7 +37,7 @@ export const updateSitterService = async (_req: Request, res: Response, next: Ne
 
     await prisma.sitter.update({
       where: {
-        user_id: userId,
+        user_id: _req.user!.id,
       },
       data: {
         ...req.body,
@@ -138,16 +120,6 @@ export const sitterReject = async (req: SitterRequest, res: Response, next: Next
 
 export const getSitterService = async (req: SitterRequest, res: Response, next: NextFunction) => {
   try {
-    const sitter = await prisma.sitter.findUnique({
-      where: {
-        user_id: req.params.user_id,
-      },
-    });
-
-    if (sitter!.status != SitterStatus.PASS && sitter!.status != SitterStatus.ON_BOARD) {
-      throw createHttpError(400, 'Sitter is not approved');
-    }
-
     const sitterService = await prisma.sitter.findUnique({
       where: {
         user_id: req.params.user_id,

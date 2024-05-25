@@ -9,14 +9,17 @@ const isExistingSitter = async (req: Request<UserBaseSchema>, _res: Response, ne
     const sitter = await prisma.sitter.findUnique({
       where: {
         user_id: req.params.user_id,
-        user: {
-          is_sitter: true,
-        },
+      },
+      include: {
+        user: true,
       },
     });
 
     if (!sitter) {
       throw createHttpError(404, 'Sitter not found');
+    }
+    if (!sitter.user.is_sitter) {
+      throw createHttpError(403, 'Sitter is not approved');
     }
 
     next();

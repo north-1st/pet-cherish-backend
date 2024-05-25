@@ -16,6 +16,7 @@ router.patch(
   '/sitters',
   requiresAuth,
   validateRequest(updateSitterServiceRequestSchema),
+  isExistingSitter,
   updateSitterService,
   s.updateSitterService
 );
