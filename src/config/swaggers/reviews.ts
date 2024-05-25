@@ -1,12 +1,15 @@
+import { z } from 'zod';
+
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { BearerAuth } from '@schema/bearerAuth';
 import { reviewBodySchema, reviewParamSchema, reviewResponseSchema } from '@schema/review';
+import { userBaseSchema } from '@schema/user';
 
 export const setReviewsSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
   createReview(registry, bearerAuth);
   updateReview(registry, bearerAuth);
   getReviewByTaskId(registry, bearerAuth);
-  //   getTasksByUser(registry, bearerAuth);
+  getOwnerReviews(registry);
 };
 
 const commonReviewSetting = (bearerAuth: BearerAuth) => ({
@@ -96,6 +99,31 @@ const getReviewByTaskId = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) =>
       },
       404: {
         description: 'Review is not found!',
+      },
+    },
+  });
+};
+
+const getOwnerReviews = (registry: OpenAPIRegistry) => {
+  registry.registerPath({
+    method: 'get',
+    tags: ['Reviews'],
+    path: '/api/v1/pet-owners/{user_id}/reviews',
+    summary: '查詢：飼主所有評價。',
+    request: {
+      params: userBaseSchema,
+    },
+    responses: {
+      200: {
+        description: 'OK',
+        content: {
+          'application/json': {
+            schema: z.array(reviewResponseSchema),
+          },
+        },
+      },
+      404: {
+        description: 'User not found',
       },
     },
   });
