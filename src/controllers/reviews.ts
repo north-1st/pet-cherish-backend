@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import prisma from '@prisma';
 import { ReviewParam, ReviewRequest } from '@schema/review';
+import { UserBaseSchema } from '@schema/user';
 
 export const createReview = async (
   req: Request<ReviewParam, unknown, ReviewRequest>,
@@ -205,8 +206,64 @@ export const updateReview = async (
   }
 };
 
-export const getReviewByTaskId = async (
-  req: Request<ReviewParam, unknown, ReviewRequest>,
-  res: Response,
-  next: NextFunction
-) => {};
+export const getReviewByTaskId = async (req: Request<ReviewParam>, res: Response, next: NextFunction) => {
+  const { task_id } = req.params;
+
+  try {
+    const targetReview = await prisma.review.findUnique({
+      where: {
+        id: task_id,
+      },
+    });
+    if (!targetReview) {
+      res.status(404).json({
+        message: 'Review is not found!',
+        status: false,
+      });
+      return;
+    }
+
+    res.status(200).json({
+      data: targetReview,
+      status: true,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getOwnerReviews = async (req: Request<UserBaseSchema>, res: Response, next: NextFunction) => {
+  const { user_id } = req.params;
+
+  try {
+    const ownerReviews = await prisma.review.findMany({
+      where: {
+        pet_owner_user_id: user_id,
+      },
+    });
+    res.status(200).json({
+      data: ownerReviews,
+      status: true,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getSitterReviews = async (req: Request<UserBaseSchema>, res: Response, next: NextFunction) => {
+  const { user_id } = req.params;
+
+  try {
+    const ownerReviews = await prisma.review.findMany({
+      where: {
+        sitter_user_id: user_id,
+      },
+    });
+    res.status(200).json({
+      data: ownerReviews,
+      status: true,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
