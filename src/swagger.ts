@@ -4,6 +4,7 @@ import { OpenAPIRegistry, OpenApiGeneratorV3 } from '@asteasolutions/zod-to-open
 import { setOrdersSwagger } from '@config/swaggers/orders';
 import { setPetsSwagger } from '@config/swaggers/pets';
 import { setReviewsSwagger } from '@config/swaggers/reviews';
+import { setSittersSwagger } from '@config/swaggers/sitters';
 import { setTasksSwagger } from '@config/swaggers/tasks';
 import { setUploadSwagger } from '@config/swaggers/upload';
 import { setUsersSwagger } from '@config/swaggers/users';
@@ -20,6 +21,7 @@ const bearerAuth = registry.registerComponent('securitySchemes', 'bearerAuth', {
 });
 
 setUsersSwagger(registry, bearerAuth);
+setSittersSwagger(registry, bearerAuth);
 setPetsSwagger(registry, bearerAuth);
 setTasksSwagger(registry, bearerAuth);
 setUploadSwagger(registry, bearerAuth);
