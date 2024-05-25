@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 
 import { OpenAPIRegistry, OpenApiGeneratorV3 } from '@asteasolutions/zod-to-openapi';
+import { setOrdersSwagger } from '@config/swaggers/orders';
 import { setPetsSwagger } from '@config/swaggers/pets';
 import { setReviewsSwagger } from '@config/swaggers/reviews';
 import { setTasksSwagger } from '@config/swaggers/tasks';
@@ -22,6 +23,7 @@ setUsersSwagger(registry, bearerAuth);
 setPetsSwagger(registry, bearerAuth);
 setTasksSwagger(registry, bearerAuth);
 setUploadSwagger(registry, bearerAuth);
+setOrdersSwagger(registry, bearerAuth);
 setReviewsSwagger(registry, bearerAuth);
 
 const getOpenApiDocumentation = () => {

@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import createHttpError from 'http-errors';
 
 import { OrderStatus, TaskPublic, TaskStatus } from '@prisma/client';
 import { OrdersParams, OrdersRequest, OwnerOrderParams, SitterOrderParams } from '@schema/orders';
@@ -7,7 +8,10 @@ import { UserBaseSchema } from '@schema/user';
 import prisma from '../prisma';
 
 export const createOrder = async (req: Request<unknown, unknown, OrdersRequest>, res: Response, next: NextFunction) => {
-  const { user_id, task_id } = req.body;
+  const { task_id } = req.body;
+  if (!req.user?.id) {
+    throw createHttpError(403, 'Forbidden');
+  }
 
   try {
     const existingLiveTaskOrders = await prisma.order.findMany({
@@ -48,15 +52,15 @@ export const createOrder = async (req: Request<unknown, unknown, OrdersRequest>,
 
     // 訂單狀態<保姆視角>：待處理
     const data = {
-      sitter_user_id: user_id,
+      sitter_user_id: req.user.id,
       task_id,
       pet_owner_user_id: targetTask.user_id,
       report_content: '',
       report_image_list: [],
     };
-    const newOrder = await prisma.order.create({ data });
+    await prisma.order.create({ data });
     res.status(201).json({
-      data: newOrder,
+      message: 'The application has been submitted!',
       status: true,
     });
   } catch (error) {
@@ -70,7 +74,10 @@ export const refuseSitter = async (
   next: NextFunction
 ) => {
   const { order_id } = req.params;
-  const { user_id, task_id } = req.body;
+  const { task_id } = req.body;
+  if (!req.user?.id) {
+    throw createHttpError(403, 'Forbidden');
+  }
 
   try {
     // 訂單狀態<保姆視角>：未成立
@@ -87,7 +94,7 @@ export const refuseSitter = async (
     const pendingOrders = await prisma.order.findMany({
       where: {
         task_id,
-        pet_owner_user_id: user_id,
+        pet_owner_user_id: req.user.id,
         status: OrderStatus.PENDING,
       },
     });
@@ -96,7 +103,7 @@ export const refuseSitter = async (
       await prisma.task.update({
         where: {
           id: task_id,
-          user_id,
+          user_id: req.user.id,
         },
         data: {
           status: TaskStatus.NULL,
@@ -119,7 +126,10 @@ export const acceptSitter = async (
   next: NextFunction
 ) => {
   const { order_id } = req.params;
-  const { user_id, task_id } = req.body;
+  const { task_id } = req.body;
+  if (!req.user?.id) {
+    throw createHttpError(403, 'Forbidden');
+  }
 
   try {
     // 訂單狀態<保姆視角>：已成立
@@ -136,7 +146,7 @@ export const acceptSitter = async (
     await prisma.task.update({
       where: {
         id: task_id,
-        user_id,
+        user_id: req.user.id,
       },
       data: {
         order_id,
@@ -180,7 +190,10 @@ export const payForOrder = async (
   next: NextFunction
 ) => {
   const { order_id } = req.params;
-  const { user_id, task_id } = req.body;
+  const { task_id } = req.body;
+  if (!req.user?.id) {
+    throw createHttpError(403, 'Forbidden');
+  }
 
   try {
     // 訂單狀態<保姆視角>：任務進度追蹤
@@ -196,7 +209,7 @@ export const payForOrder = async (
     // 訂單狀態<飼主視角>：任務進度追蹤
     await prisma.task.update({
       where: {
-        user_id,
+        user_id: req.user.id,
         order_id,
       },
       data: {
@@ -220,7 +233,10 @@ export const completeOrder = async (
   next: NextFunction
 ) => {
   const { order_id } = req.params;
-  const { user_id, task_id } = req.body;
+  const { task_id } = req.body;
+  if (!req.user?.id) {
+    throw createHttpError(403, 'Forbidden');
+  }
 
   try {
     // 訂單狀態<保姆視角>：已完成
@@ -236,7 +252,7 @@ export const completeOrder = async (
     // 訂單狀態<飼主視角>：已完成
     await prisma.task.update({
       where: {
-        user_id,
+        user_id: req.user.id,
         order_id,
       },
       data: {
@@ -262,7 +278,10 @@ export const cancelOrder = async (
   next: NextFunction
 ) => {
   const { order_id } = req.params;
-  const { user_id, task_id } = req.body;
+  const { task_id } = req.body;
+  if (!req.user?.id) {
+    throw createHttpError(403, 'Forbidden');
+  }
 
   try {
     // 訂單狀態<保姆視角>：已取消
