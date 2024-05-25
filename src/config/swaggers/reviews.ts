@@ -1,11 +1,11 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { BearerAuth } from '@schema/bearerAuth';
-import { reviewBodySchema, reviewParamSchema } from '@schema/review';
+import { reviewBodySchema, reviewParamSchema, reviewResponseSchema } from '@schema/review';
 
 export const setReviewsSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
   createReview(registry, bearerAuth);
   updateReview(registry, bearerAuth);
-  //   deleteTask(registry, bearerAuth);
+  getReviewByTaskId(registry, bearerAuth);
   //   getTasksByUser(registry, bearerAuth);
 };
 
@@ -44,7 +44,7 @@ const createReview = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
     security,
     request,
     method: 'post',
-    summary: '新增：評價',
+    summary: '新增：飼主/保姆 評價',
     responses: {
       201: {
         description: 'Create Successfully!',
@@ -63,12 +63,40 @@ const updateReview = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
     security,
     request,
     method: 'patch',
-    summary: '編輯：評價',
+    summary: '編輯：飼主/保姆 評價',
     responses: {
       200: {
         description: 'Update Successfully!',
       },
       ...responses,
+    },
+  });
+};
+
+const getReviewByTaskId = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
+  const { tags, path, security, request } = commonReviewSetting(bearerAuth);
+
+  registry.registerPath({
+    tags,
+    path,
+    security,
+    request: {
+      params: request.params,
+    },
+    method: 'get',
+    summary: '查詢：其中一訂單，飼主/保姆 評價',
+    responses: {
+      200: {
+        description: 'OK',
+        content: {
+          'application/json': {
+            schema: reviewResponseSchema,
+          },
+        },
+      },
+      404: {
+        description: 'Review is not found!',
+      },
     },
   });
 };
