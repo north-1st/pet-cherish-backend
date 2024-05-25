@@ -10,6 +10,7 @@ export const setReviewsSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerA
   updateReview(registry, bearerAuth);
   getReviewByTaskId(registry, bearerAuth);
   getOwnerReviews(registry);
+  getSitterReviews(registry);
 };
 
 const commonReviewSetting = (bearerAuth: BearerAuth) => ({
@@ -109,7 +110,7 @@ const getOwnerReviews = (registry: OpenAPIRegistry) => {
     method: 'get',
     tags: ['Reviews'],
     path: '/api/v1/pet-owners/{user_id}/reviews',
-    summary: '查詢：飼主所有評價。',
+    summary: '查詢：飼主所有評價',
     request: {
       params: userBaseSchema,
     },
@@ -124,6 +125,31 @@ const getOwnerReviews = (registry: OpenAPIRegistry) => {
       },
       404: {
         description: 'User not found',
+      },
+    },
+  });
+};
+
+const getSitterReviews = (registry: OpenAPIRegistry) => {
+  registry.registerPath({
+    method: 'get',
+    tags: ['Reviews'],
+    path: '/api/v1/sitters/{user_id}/reviews',
+    summary: '查詢：保姆所有評價',
+    request: {
+      params: userBaseSchema,
+    },
+    responses: {
+      200: {
+        description: 'OK',
+        content: {
+          'application/json': {
+            schema: z.array(reviewResponseSchema),
+          },
+        },
+      },
+      404: {
+        description: 'Sitter not found',
       },
     },
   });
