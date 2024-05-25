@@ -945,15 +945,26 @@
         }
       }
     },
-    "/api/v1/tasks/:task_id/review": {
+    "/api/v1/tasks/{task_id}/review": {
       "post": {
         "tags": [
           "Reviews"
         ],
-        "summary": "新增：評價",
         "security": [
           {
             "bearerAuth": []
+          }
+        ],
+        "summary": "新增：評價",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "任務編號"
+            },
+            "required": true,
+            "name": "task_id",
+            "in": "path"
           }
         ],
         "requestBody": {
@@ -990,7 +1001,75 @@
         },
         "responses": {
           "201": {
-            "description": "Create review successfully"
+            "description": "Create Successfully!"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Order is not found!"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Reviews"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "編輯：評價",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "任務編號"
+            },
+            "required": true,
+            "name": "task_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": {
+                    "type": "string"
+                  },
+                  "rating": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 5,
+                    "default": 5
+                  },
+                  "content": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "user_id",
+                  "content"
+                ],
+                "example": {
+                  "user_id": "54489faba8bcd77a22dedue8",
+                  "rating": 5,
+                  "content": "評價內容"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update Successfully!"
           },
           "401": {
             "description": "Unauthorized"
