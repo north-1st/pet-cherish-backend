@@ -10,7 +10,7 @@ const requiresAuth: RequestHandler = async (req, res, next) => {
     ? req.headers.authorization[0]
     : req.headers.authorization;
 
-  if (!authHeader?.startsWith('Bearer')) return res.sendStatus(401);
+  if (!authHeader?.startsWith('Bearer')) next(createHttpError(401, 'User not authenticated'));
 
   if (authHeader && authHeader.startsWith('Bearer')) {
     const jwt_token = authHeader.split(' ')[1];

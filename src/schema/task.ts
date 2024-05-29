@@ -106,12 +106,6 @@ export const taskResponseSchema = z
     },
   });
 
-export const reviewBodySchema = z.object({
-  user_id: z.string().openapi({ description: '使用者編號' }),
-  rating: z.number().min(1).max(5).default(5).openapi({ description: '評價幾顆星' }),
-  content: z.string().openapi({ description: '評價內容' }),
-});
-
 export type CreateTaskBody = z.infer<typeof createTaskBodySchema>;
 export type CreateTaskRequest = z.infer<typeof createTaskRequestSchema>;
 
@@ -121,5 +115,3 @@ export type UpdateTaskBody = z.infer<typeof updateTaskBodySchema>;
 export type UpdateTaskRequest = z.infer<typeof updateTaskRequestSchema>;
 
 export type TaskResponse = z.infer<typeof taskResponseSchema>;
-
-export type ReviewRequest = z.infer<typeof reviewBodySchema>;

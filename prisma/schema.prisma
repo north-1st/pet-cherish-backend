@@ -117,7 +117,7 @@ model Order {
   status            OrderStatus @default(PENDING)
   third_party_id    String?
   payment_at        DateTime?
-  report_content    String
+  report_content    String?
   report_image_list String[]
   report_created_at DateTime?
   report_updated_at DateTime?
