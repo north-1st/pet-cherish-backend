@@ -1,6 +1,6 @@
 import { OpenAPIRegistry, OpenApiGeneratorV3 } from '@asteasolutions/zod-to-openapi';
 import { orderBodySchema } from '@schema/orders';
-import { reviewBodySchema } from '@schema/task';
+import { reviewBodySchema } from '@schema/review';
 import { userBaseSchema } from '@schema/user';
 
 // Generate Swagger Definitions

@@ -1,7 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 
 import { OrdersParams } from '@schema/orders';
-import { ReviewRequest } from '@schema/task';
+import { ReviewRequest } from '@schema/review';
 
 export const getTasks: RequestHandler = async (_req, _res, next) => {
   /*
