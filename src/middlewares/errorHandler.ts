@@ -1,7 +1,7 @@
-import { ErrorRequestHandler } from 'express';
-import { isHttpError } from 'http-errors';
+import { ErrorRequestHandler, RequestHandler } from 'express';
+import createHttpError, { isHttpError } from 'http-errors';
 
-const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
+export const errorHandler: ErrorRequestHandler = (error, req, res) => {
   let statusCode = 500;
   let errorMessage = 'An unknown error occurred';
   if (isHttpError(error)) {
@@ -14,4 +14,6 @@ const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
   });
 };
 
-export default errorHandler;
+export const notFoundHandler: RequestHandler = (req, res, next) => {
+  next(createHttpError(404, 'Endpoint not found'));
+};

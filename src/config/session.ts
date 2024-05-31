@@ -1,6 +1,7 @@
-import MongoStore from "connect-mongo";
-import { SessionOptions } from "express-session";
-import env from "../env";
+import MongoStore from 'connect-mongo';
+import { SessionOptions } from 'express-session';
+
+import env from '../env';
 
 const sessionConfig: SessionOptions = {
   secret: env.SESSION_SECRET,

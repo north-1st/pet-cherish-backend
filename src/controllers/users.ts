@@ -2,40 +2,18 @@ import bcrypt from 'bcrypt';
 import { RequestHandler } from 'express';
 import createHttpError from 'http-errors';
 import jwt from 'jsonwebtoken';
+import sharp from 'sharp';
+
+import { Gender } from '@prisma/client';
 
 import env from '../env';
 import prisma from '../prisma';
-
-export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
-  const authenticatedUser = req.user;
-
-  try {
-    if (!authenticatedUser) throw createHttpError(401);
-
-    const user = await prisma.user.findUnique({
-      where: {
-        id: authenticatedUser.id,
-      },
-      omit: {
-        password: true,
-      },
-    });
-
-    res.status(200).json({
-      status: true,
-      message: 'get auth user successd',
-      data: user,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
 
 export const getUser: RequestHandler = async (req, res, next) => {
   try {
     const user = await prisma.user.findUnique({
       where: {
-        id: req.params.userid,
+        id: req.params.user_id,
       },
       omit: {
         password: true,
@@ -65,6 +43,21 @@ interface SignUpBody {
 export const signUp: RequestHandler<unknown, unknown, SignUpBody, unknown> = async (req, res, next) => {
   const { real_name, email, password: passwordRaw } = req.body;
 
+  if (!real_name) {
+    res.status(400);
+    throw new Error('username is required');
+  }
+
+  if (!email) {
+    res.status(400);
+    throw new Error('email is required');
+  }
+
+  if (!passwordRaw) {
+    res.status(400);
+    throw new Error('password is required');
+  }
+
   try {
     const existingUser = await prisma.user.findUnique({
       where: {
@@ -73,7 +66,7 @@ export const signUp: RequestHandler<unknown, unknown, SignUpBody, unknown> = asy
     });
 
     if (existingUser) {
-      throw createHttpError(409, 'User already taken');
+      throw createHttpError(409, `This email is already in use`);
     }
 
     const passwordHashed = await bcrypt.hash(passwordRaw, 10);
@@ -110,6 +103,20 @@ export const signUp: RequestHandler<unknown, unknown, SignUpBody, unknown> = asy
 };
 
 export const logIn: RequestHandler = (req, res) => {
+  const { email, password } = req.body;
+  console.log('🚀 ~ email:', email);
+  console.log('🚀 ~ password:', password);
+
+  if (!email) {
+    res.status(400);
+    throw new Error('email is required');
+  }
+
+  if (!password) {
+    res.status(400);
+    throw new Error('password is required');
+  }
+
   const accessToken = jwt.sign({ id: req.user?.id, iat: Math.floor(Date.now() / 1000) }, env.JWT_ACCESS_SECRET, {
     expiresIn: '7d',
   });
@@ -132,12 +139,13 @@ export const logOut: RequestHandler = (req, res) => {
 };
 
 export const updateUser: RequestHandler = async (req, res, next) => {
-  const { phone, password: passwordRaw } = req.body;
+  const { phone, password: passwordRaw, avatar, nickname, birthdate, gender, self_introduction } = req.body;
+  // const profilePic = req.file;
 
   try {
     const existingUser = await prisma.user.findUnique({
       where: {
-        id: req.params.userid,
+        id: req.params.user_id,
       },
     });
 
@@ -149,9 +157,19 @@ export const updateUser: RequestHandler = async (req, res, next) => {
       phone?: string;
       password?: string;
       lastPasswordChange?: Date;
-    } = {
-      phone,
-    };
+      avatar?: string;
+      nickname?: string;
+      birthdate?: Date;
+      gender?: Gender;
+      self_introduction?: string;
+    } = {};
+
+    if (phone !== undefined) data.phone = phone;
+    if (avatar !== undefined) data.avatar = avatar;
+    if (nickname !== undefined) data.nickname = nickname;
+    if (birthdate !== undefined) data.birthdate = new Date(birthdate);
+    if (gender !== undefined) data.gender = gender as Gender;
+    if (self_introduction !== undefined) data.self_introduction = self_introduction;
 
     if (passwordRaw) {
       const passwordHashed = await bcrypt.hash(passwordRaw, 10);
@@ -159,9 +177,19 @@ export const updateUser: RequestHandler = async (req, res, next) => {
       data.lastPasswordChange = new Date();
     }
 
+    // if (profilePic) {
+    //   const profilePicDestinationPath = '/uploads/profile-pictures/' + req.params.user_id + '.png';
+
+    //   await sharp(profilePic.buffer)
+    //     .resize(500, 500, { withoutEnlargement: true })
+    //     .toFile('./' + profilePicDestinationPath);
+
+    //   data.avatar = env.BACK_END_URL + profilePicDestinationPath + '?lastupdated=' + Date.now();
+    // }
+
     const user = await prisma.user.update({
       where: {
-        id: req.params.userid,
+        id: req.params.user_id,
       },
       data,
       omit: {

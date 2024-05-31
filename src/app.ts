@@ -11,12 +11,14 @@ import swaggerDocument from '@swagger.json';
 import './config/passport';
 import sessionConfig from './config/session';
 import env from './env';
-import errorHandler from './middlewares/errorHandler';
+import { errorHandler, notFoundHandler } from './middlewares/errorHandler';
 import routes from './routes/index';
 
 const app = express();
 
-app.use(morgan('dev'));
+if (env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 
 app.use(express.json());
 
@@ -38,6 +40,7 @@ app.get('/', (req, res) => {
 
 app.use('/api', routes);
 
+app.use(notFoundHandler);
 app.use(errorHandler);
 
 export default app;

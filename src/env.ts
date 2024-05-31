@@ -1,8 +1,10 @@
 import { cleanEnv, email, num, str, url } from 'envalid';
 
 const env = cleanEnv(process.env, {
+  NODE_ENV: str({ default: 'development' }),
   DATABASE_URL: str(),
   WEBSITE_URL: str(),
+  BACK_END_URL: str(),
   SESSION_SECRET: str(),
   JWT_ACCESS_SECRET: str(),
   FIREBASE_TYPE: str(),

@@ -1,9 +1,10 @@
-import passport from "passport";
-import { Strategy as LocalStrategy } from "passport-local";
-import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
-import bcrypt from "bcrypt";
-import prisma from "../prisma";
-import env from "../env";
+import bcrypt from 'bcrypt';
+import passport from 'passport';
+import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
+import { Strategy as LocalStrategy } from 'passport-local';
+
+import env from '../env';
+import prisma from '../prisma';
 
 // Only needed if you are using session-based authentication
 passport.serializeUser((user, cb) => {
@@ -23,8 +24,8 @@ passport.deserializeUser(async (id: string, cb) => {
 passport.use(
   new LocalStrategy(
     {
-      usernameField: "email",
-      passwordField: "password",
+      usernameField: 'email',
+      passwordField: 'password',
     },
     async (email, password, cb) => {
       try {
@@ -35,16 +36,13 @@ passport.use(
         });
 
         if (!existingUser || !existingUser.password) {
-          return cb(null, false, { message: "Incorrect email or password." });
+          return cb(null, false, { message: 'Incorrect email or password.' });
         }
 
-        const passwordMatch = await bcrypt.compare(
-          password,
-          existingUser.password
-        );
+        const passwordMatch = await bcrypt.compare(password, existingUser.password);
 
         if (!passwordMatch) {
-          return cb(null, false, { message: "Incorrect email or password." });
+          return cb(null, false, { message: 'Incorrect email or password.' });
         }
 
         const { password: userPassword, ...user } = existingUser;
