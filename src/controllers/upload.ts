@@ -34,7 +34,9 @@ export const uploadImage = async (req: UploadImageRequest, res: Response, next: 
         }
 
         res.status(201).json({
+          status: true,
           data: publicUrl,
+          message: 'Upload image successfully',
         });
       });
     });
