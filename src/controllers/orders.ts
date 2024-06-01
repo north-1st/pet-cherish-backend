@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 
+import agenda from '@job';
+import { ORDER_STATUS_JOB } from '@job/orderCompletedJob';
 import { OrderStatus, TaskPublic, TaskStatus } from '@prisma/client';
 import {
   createOrderRequestSchema,
@@ -203,27 +205,31 @@ export const payForOrder = async (req: Request, res: Response, next: NextFunctio
   }
 
   try {
-    // 訂單狀態<保姆視角>：任務進度追蹤
-    await prisma.order.update({
-      where: {
-        id: order_id,
-      },
-      data: {
-        status: OrderStatus.TRACKING,
-      },
-    });
+    await prisma.$transaction([
+      // 訂單狀態<保姆視角>：任務進度追蹤
+      prisma.order.update({
+        where: { id: order_id },
+        data: { status: OrderStatus.TRACKING },
+      }),
+      // 訂單狀態<飼主視角>：任務進度追蹤
+      prisma.task.update({
+        where: {
+          user_id: req.user.id,
+          id: task_id,
+        },
+        data: {
+          status: TaskStatus.TRACKING,
+          public: TaskPublic.IN_TRANSACTION,
+        },
+      }),
+    ]);
 
-    // 訂單狀態<飼主視角>：任務進度追蹤
-    await prisma.task.update({
-      where: {
-        user_id: req.user.id,
-        order_id,
-      },
-      data: {
-        status: TaskStatus.TRACKING,
-        public: TaskPublic.IN_TRANSACTION,
-      },
-    });
+    // 服務結束時間 +7天到直接改狀態：後端排程
+    const targetTask = await prisma.task.findUnique({ where: { order_id } });
+    if (targetTask && targetTask.end_at) {
+      const sevenDaysLater = new Date(targetTask.end_at.getTime() + 7 * 24 * 60 * 60 * 1000);
+      await agenda.schedule(sevenDaysLater, ORDER_STATUS_JOB, { order_id, user_id: req.user.id, task_id });
+    }
 
     res.status(200).json({
       message: 'Update Successfully!',
@@ -263,8 +269,6 @@ export const completeOrder = async (req: Request, res: Response, next: NextFunct
         public: TaskPublic.COMPLETED,
       },
     });
-
-    // （補）7天到直接改狀態：後端排程
 
     res.status(200).json({
       message: 'Update Successfully!',
