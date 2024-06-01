@@ -1,7 +1,8 @@
-import { ZodSchema, z } from 'zod';
+import { z } from 'zod';
 
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { OrderStatus, TaskStatus } from '@prisma/client';
+import { createResponsePaginationDataSchema } from '@schema';
 import { paginationRequestSchema, paginationSchema } from '@schema/pagination';
 
 extendZodWithOpenApi(z);
@@ -75,15 +76,6 @@ export const ownerOrdersRequestSchema = z.object({
   query: ownerOrdersQuerySchema,
 });
 
-function createResponseDataSchema<T>(dataSchema: ZodSchema<T>) {
-  return z.object({
-    data: z.array(dataSchema),
-    total: z.number(),
-    total_page: z.number(),
-    status: z.boolean(),
-  });
-}
-
 const ordersResponseDataSchema = z.object({
   id: z.string(),
   sitter_user_id: z.string(),
@@ -100,7 +92,7 @@ const ordersResponseDataSchema = z.object({
   updated_at: z.string().datetime(),
   task_id: z.string(),
 });
-export const ordersResponseSchema = createResponseDataSchema(ordersResponseDataSchema).openapi({
+export const ordersResponseSchema = createResponsePaginationDataSchema(ordersResponseDataSchema).openapi({
   description: '所有訂單',
   example: {
     data: [
