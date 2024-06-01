@@ -1,8 +1,6 @@
-import { z } from 'zod';
-
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { BearerAuth } from '@schema/bearerAuth';
-import { reviewBodySchema, reviewParamSchema, reviewResponseSchema } from '@schema/review';
+import { reviewBodySchema, reviewParamSchema, reviewResponseSchema, reviewsResponseSchema } from '@schema/review';
 import { userBaseSchema } from '@schema/user';
 
 export const setReviewsSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
@@ -88,7 +86,7 @@ const getReviewByTaskId = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) =>
       params: request.params,
     },
     method: 'get',
-    summary: '查詢：其中一訂單，飼主/保姆 評價',
+    summary: '查詢：指定評價',
     responses: {
       200: {
         description: 'OK',
@@ -119,7 +117,7 @@ const getOwnerReviews = (registry: OpenAPIRegistry) => {
         description: 'OK',
         content: {
           'application/json': {
-            schema: z.array(reviewResponseSchema),
+            schema: reviewsResponseSchema,
           },
         },
       },
@@ -144,7 +142,7 @@ const getSitterReviews = (registry: OpenAPIRegistry) => {
         description: 'OK',
         content: {
           'application/json': {
-            schema: z.array(reviewResponseSchema),
+            schema: reviewsResponseSchema,
           },
         },
       },
