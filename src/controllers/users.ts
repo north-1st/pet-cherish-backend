@@ -58,6 +58,10 @@ export const signUp: RequestHandler = async (req, res, next) => {
     return next(createHttpError(400, 'password is required'));
   }
 
+  if (passwordRaw.length < 8) {
+    return next(createHttpError(400, 'passwords must be at least 8 characters long'));
+  }
+
   try {
     const existingUser = await prisma.user.findUnique({
       where: {
@@ -113,8 +117,6 @@ export const signUp: RequestHandler = async (req, res, next) => {
 
 export const logIn: RequestHandler = async (req, res, next) => {
   const { email, password } = req.body;
-  console.log('🚀 ~ email:', email);
-  console.log('🚀 ~ password:', password);
 
   if (!email) {
     return next(createHttpError(400, 'email is required'));
@@ -164,7 +166,7 @@ export const logOut: RequestHandler = (req, res) => {
 };
 
 export const updateUser: RequestHandler = async (req, res, next) => {
-  const { phone, password: passwordRaw, avatar, nickname, birthdate, gender, self_introduction } = req.body;
+  const { phone, avatar, nickname, birthdate, gender, self_introduction } = req.body;
   // const profilePic = req.file;
 
   try {
@@ -175,7 +177,7 @@ export const updateUser: RequestHandler = async (req, res, next) => {
     });
 
     if (!existingUser) {
-      throw createHttpError(409, 'User not found.');
+      return next(createHttpError(409, 'User not found.'));
     }
 
     const data: {
@@ -195,12 +197,6 @@ export const updateUser: RequestHandler = async (req, res, next) => {
     if (birthdate !== undefined) data.birthdate = new Date(birthdate);
     if (gender !== undefined) data.gender = gender as Gender;
     if (self_introduction !== undefined) data.self_introduction = self_introduction;
-
-    if (passwordRaw) {
-      const passwordHashed = await bcrypt.hash(passwordRaw, 10);
-      data.password = passwordHashed;
-      data.lastPasswordChange = new Date();
-    }
 
     // if (profilePic) {
     //   const profilePicDestinationPath = '/uploads/profile-pictures/' + req.params.user_id + '.png';
@@ -222,20 +218,90 @@ export const updateUser: RequestHandler = async (req, res, next) => {
       },
     });
 
-    const accessToken = jwt.sign({ id: user.id, iat: Math.floor(Date.now() / 1000) }, env.JWT_ACCESS_SECRET, {
-      expiresIn: '7d',
-    });
+    // const accessToken = jwt.sign({ id: user.id, iat: Math.floor(Date.now() / 1000) }, env.JWT_ACCESS_SECRET, {
+    //   expiresIn: '7d',
+    // });
 
     res.status(200).json({
       status: true,
       message: 'update user successd',
       data: {
         ...user,
-        accessToken,
+        // accessToken,
       },
     });
   } catch (error) {
     // next(error);
     next(createHttpError(401, 'update user failed'));
+  }
+};
+
+export const resetPassword: RequestHandler = async (req, res, next) => {
+  const { old_password, password, password_confirm } = req.body;
+  try {
+    if (!password) {
+      return next(createHttpError(400, 'password is required'));
+    }
+    if (!password_confirm) {
+      return next(createHttpError(400, 'confirm password is required'));
+    }
+
+    if (password !== password_confirm) {
+      return next(createHttpError(400, 'passwords do not match'));
+    }
+
+    if (password.length < 8) {
+      return next(createHttpError(400, 'passwords must be at least 8 characters long'));
+    }
+
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        id: req.params.user_id,
+      },
+    });
+
+    if (!existingUser) {
+      return next(createHttpError(409, 'User not found.'));
+    }
+
+    if (!existingUser.password) {
+      return next(createHttpError(400, 'User has no password set.'));
+    }
+
+    const passwordMatch = await bcrypt.compare(old_password, existingUser.password);
+
+    if (!passwordMatch) {
+      return next(createHttpError(400, 'Incorrect old password.'));
+    }
+
+    const passwordHashed = await bcrypt.hash(password, 10);
+
+    const user = await prisma.user.update({
+      where: {
+        id: req.params.user_id,
+      },
+      data: {
+        password: passwordHashed,
+        lastPasswordChange: new Date(),
+      },
+      omit: {
+        password: true,
+      },
+    });
+
+    const accessToken = jwt.sign({ id: user.id, iat: Math.floor(Date.now() / 1000) }, env.JWT_ACCESS_SECRET, {
+      expiresIn: '7d',
+    });
+
+    res.status(200).json({
+      status: true,
+      message: 'reset password successd',
+      data: {
+        ...user,
+        accessToken,
+      },
+    });
+  } catch (error) {
+    next(createHttpError(401, 'reset password failed'));
   }
 };

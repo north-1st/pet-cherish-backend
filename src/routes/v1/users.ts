@@ -21,4 +21,6 @@ router.post('/login', UsersController.logIn, s.logIn);
 
 router.post('/logout', UsersController.logOut, s.logOut);
 
+router.post('/:user_id/reset-password', UsersController.resetPassword);
+
 export default router;
