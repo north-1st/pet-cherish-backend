@@ -1,13 +1,24 @@
-import { OpenAPIRegistry, OpenApiGeneratorV3 } from '@asteasolutions/zod-to-openapi';
-import { orderBodySchema } from '@schema/orders';
-import { reviewBodySchema } from '@schema/task';
-import { userBaseSchema } from '@schema/user';
+import { ZodSchema, z } from 'zod';
 
-// Generate Swagger Definitions
-const registry = new OpenAPIRegistry();
-registry.register('Orders', orderBodySchema);
-registry.register('Base', userBaseSchema);
-registry.register('Reviews', reviewBodySchema);
+export function createResponsePaginationDataSchema<T>(dataSchema: ZodSchema<T>) {
+  return z.object({
+    data: z.array(dataSchema),
+    total: z.number(),
+    total_page: z.number(),
+    status: z.boolean(),
+  });
+}
 
-const generator = new OpenApiGeneratorV3(registry.definitions);
-export const openAPIComponents = generator.generateComponents();
+export function createResponseDataSchema<T>(dataSchema: ZodSchema<T>) {
+  return z.object({
+    data: z.array(dataSchema),
+    status: z.boolean(),
+  });
+}
+
+export function createBaseResponseDataSchema(dataSchema: z.AnyZodObject) {
+  return z.object({
+    data: dataSchema,
+    status: z.boolean(),
+  });
+}
