@@ -75,6 +75,24 @@ export const getSitterService = async (_req: SitterRequest, _res: Response, next
   next();
 };
 
+export const getSitterServiceList = async (_req: SitterRequest, _res: Response, next: NextFunction) => {
+  /*
+    #swagger.tags = ['Sitters']
+    #swagger.summary = '取得：保姆服務'
+  */
+
+  /* 
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        $ref: '#/components/schemas/{換成對應的名字}'
+      }
+    }
+  */
+  next();
+};
+
 export const updateSitterService = async (_req: UpdateSitterServiceRequest, _res: Response, next: NextFunction) => {
   /*
     #swagger.tags = ['Sitters']

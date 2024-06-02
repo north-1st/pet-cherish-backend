@@ -1,10 +1,22 @@
 import express from 'express';
 
-import { applySitter, getSitterService, sitterApprove, sitterReject, updateSitterService } from '@controllers/sitters';
+import {
+  applySitter,
+  getSitterService,
+  getSitterServiceList,
+  sitterApprove,
+  sitterReject,
+  updateSitterService,
+} from '@controllers/sitters';
 import requiresAuth from '@middlewares/requiresAuth';
 import * as s from '@middlewares/swaggers/sitters';
 import { validateRequest } from '@middlewares/validateRequest';
-import { applySitterRequestSchema, sitterRequestSchema, updateSitterServiceRequestSchema } from '@schema/sitter';
+import {
+  applySitterRequestSchema,
+  sitterRequestQuerySchema,
+  sitterRequestSchema,
+  updateSitterServiceRequestSchema,
+} from '@schema/sitter';
 
 const router = express.Router();
 
@@ -34,5 +46,6 @@ router.patch(
 );
 
 router.get('/sitters/:user_id', validateRequest(sitterRequestSchema), getSitterService, s.getSitterService);
+router.get('/sitters', validateRequest(sitterRequestQuerySchema), getSitterServiceList, s.getSitterServiceList);
 
 export default router;
