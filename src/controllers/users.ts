@@ -2,7 +2,6 @@ import bcrypt from 'bcrypt';
 import { RequestHandler } from 'express';
 import createHttpError from 'http-errors';
 import jwt from 'jsonwebtoken';
-import sharp from 'sharp';
 
 import { Gender } from '@prisma/client';
 
@@ -30,32 +29,33 @@ export const getUser: RequestHandler = async (req, res, next) => {
       data: user,
     });
   } catch (error) {
-    next(error);
+    // next(error);
+    return res.status(401).json({
+      status: false,
+      message: 'get user failed',
+    });
   }
 };
 
-interface SignUpBody {
-  real_name: string;
-  email: string;
-  password: string;
-}
+// interface SignUpBody {
+//   real_name: string;
+//   email: string;
+//   password: string;
+// }
 
-export const signUp: RequestHandler<unknown, unknown, SignUpBody, unknown> = async (req, res, next) => {
+export const signUp: RequestHandler = async (req, res, next) => {
   const { real_name, email, password: passwordRaw } = req.body;
 
   if (!real_name) {
-    res.status(400);
-    throw new Error('username is required');
+    return next(createHttpError(400, 'username is required'));
   }
 
   if (!email) {
-    res.status(400);
-    throw new Error('email is required');
+    return next(createHttpError(400, 'email is required'));
   }
 
   if (!passwordRaw) {
-    res.status(400);
-    throw new Error('password is required');
+    return next(createHttpError(400, 'password is required'));
   }
 
   try {
@@ -66,7 +66,7 @@ export const signUp: RequestHandler<unknown, unknown, SignUpBody, unknown> = asy
     });
 
     if (existingUser) {
-      throw createHttpError(409, `This email is already in use`);
+      return next(createHttpError(409, 'This email is already in use'));
     }
 
     const passwordHashed = await bcrypt.hash(passwordRaw, 10);
@@ -86,55 +86,80 @@ export const signUp: RequestHandler<unknown, unknown, SignUpBody, unknown> = asy
       expiresIn: '7d',
     });
 
-    req.logIn(newUser, (error) => {
-      if (error) throw createHttpError(401, error);
-      res.status(201).json({
-        status: true,
-        message: 'register successd',
-        data: {
-          ...newUser,
-          accessToken,
-        },
-      });
+    // req.logIn(newUser, (error) => {
+    //   if (error) throw createHttpError(401, error);
+    //   res.status(201).json({
+    //     status: true,
+    //     message: 'register successd',
+    //     data: {
+    //       ...newUser,
+    //       accessToken,
+    //     },
+    //   });
+    // });
+    res.status(201).json({
+      status: true,
+      message: 'register successd',
+      data: {
+        ...newUser,
+        accessToken,
+      },
     });
   } catch (error) {
-    next(error);
+    // next(error);
+    next(createHttpError(401, 'register failed'));
   }
 };
 
-export const logIn: RequestHandler = (req, res) => {
+export const logIn: RequestHandler = async (req, res, next) => {
   const { email, password } = req.body;
   console.log('🚀 ~ email:', email);
   console.log('🚀 ~ password:', password);
 
   if (!email) {
-    res.status(400);
-    throw new Error('email is required');
+    return next(createHttpError(400, 'email is required'));
   }
 
   if (!password) {
-    res.status(400);
-    throw new Error('password is required');
+    return next(createHttpError(400, 'password is required'));
+  }
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
+
+  if (!existingUser || !existingUser.password) {
+    return next(createHttpError(400, 'Incorrect email or password.'));
   }
 
-  const accessToken = jwt.sign({ id: req.user?.id, iat: Math.floor(Date.now() / 1000) }, env.JWT_ACCESS_SECRET, {
+  const passwordMatch = await bcrypt.compare(password, existingUser.password);
+
+  if (!passwordMatch) {
+    return next(createHttpError(400, 'Incorrect email or password.'));
+  }
+
+  const accessToken = jwt.sign({ id: existingUser.id, iat: Math.floor(Date.now() / 1000) }, env.JWT_ACCESS_SECRET, {
     expiresIn: '7d',
   });
 
+  const { password: userPassword, ...user } = existingUser;
+
   res.status(200).json({
     status: true,
-    message: 'login successd',
+    message: 'login successful',
     data: {
-      ...req.user,
+      ...user,
       accessToken,
     },
   });
 };
 
 export const logOut: RequestHandler = (req, res) => {
-  req.logOut((error) => {
-    if (error) throw error;
-    res.sendStatus(200);
+  // if (error) throw createHttpError(401, error);
+  res.status(200).json({
+    status: true,
+    message: 'logout successd',
   });
 };
 
@@ -210,6 +235,7 @@ export const updateUser: RequestHandler = async (req, res, next) => {
       },
     });
   } catch (error) {
-    next(error);
+    // next(error);
+    next(createHttpError(401, 'update user failed'));
   }
 };

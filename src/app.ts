@@ -28,9 +28,9 @@ app.use(
   })
 );
 
-app.use(session(sessionConfig));
+// app.use(session(sessionConfig));
 
-app.use(passport.authenticate('session'));
+// app.use(passport.authenticate('session'));
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

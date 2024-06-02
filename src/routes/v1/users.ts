@@ -11,12 +11,13 @@ const router = express.Router();
 
 router
   .route('/:user_id/profile')
-  .get(requiresAuth, UsersController.getUser, s.getUser)
+  .get(UsersController.getUser, s.getUser)
   .patch(requiresAuth, imageUpload.single('avatar'), UsersController.updateUser, s.updateUser);
 
 router.post('/signup', UsersController.signUp, s.signUp);
 
-router.post('/login', passport.authenticate('local', { session: false }), UsersController.logIn, s.logIn);
+// router.post('/login', passport.authenticate('local', { session: false }), UsersController.logIn, s.logIn);
+router.post('/login', UsersController.logIn, s.logIn);
 
 router.post('/logout', UsersController.logOut, s.logOut);
 
