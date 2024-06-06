@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { OpenAPIRegistry, RouteConfig } from '@asteasolutions/zod-to-openapi';
 import { BearerAuth } from '@schema/bearerAuth';
-import { orderBodySchema, ownerOrdersReturnSchema } from '@schema/orders';
+import { orderBodySchema, ordersResponseSchema } from '@schema/orders';
 import { userBaseSchema } from '@schema/user';
 
 export const setOrdersSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
@@ -67,7 +67,7 @@ const commonGetOrderSetting = (bearerAuth: BearerAuth): RouteConfig => ({
       description: 'OK',
       content: {
         'application/json': {
-          schema: ownerOrdersReturnSchema,
+          schema: ordersResponseSchema,
         },
       },
     },

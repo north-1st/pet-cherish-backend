@@ -2,21 +2,39 @@ import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 
 import { OrderStatus, TaskPublic, TaskStatus } from '@prisma/client';
-import { OrdersParams, OrdersRequest, OwnerOrderParams, SitterOrderParams } from '@schema/orders';
-import { UserBaseSchema } from '@schema/user';
+import {
+  createOrderRequestSchema,
+  orderBodySchema,
+  orderParamSchema,
+  ownerOrdersPaginationSchema,
+  sitterOrdersPaginationSchema,
+} from '@schema/orders';
 
 import prisma from '../prisma';
 
-export const createOrder = async (req: Request<unknown, unknown, OrdersRequest>, res: Response, next: NextFunction) => {
-  const { task_id } = req.body;
-  if (!req.user?.id) {
+export const createOrder = async (_req: Request, res: Response, next: NextFunction) => {
+  const req = createOrderRequestSchema.parse(_req);
+  const { task_id, note } = req.body;
+  if (!_req.user?.id) {
     throw createHttpError(403, 'Forbidden');
   }
 
   try {
     const existingLiveTaskOrders = await prisma.order.findMany({
       where: {
-        AND: [{ task_id }, { status: { notIn: [OrderStatus.CANCELED, OrderStatus.INVALID] } }],
+        AND: [
+          {
+            task_id,
+          },
+          {
+            pet_owner_user_id: _req.user.id,
+          },
+          {
+            status: {
+              notIn: [OrderStatus.CANCELED, OrderStatus.INVALID],
+            },
+          },
+        ],
       },
     });
     if (existingLiveTaskOrders.length > 0) {
@@ -52,9 +70,10 @@ export const createOrder = async (req: Request<unknown, unknown, OrdersRequest>,
 
     // 訂單狀態<保姆視角>：待處理
     const data = {
-      sitter_user_id: req.user.id,
+      sitter_user_id: _req.user.id,
       task_id,
       pet_owner_user_id: targetTask.user_id,
+      note: note || '',
       report_content: '',
       report_image_list: [],
     };
@@ -68,13 +87,9 @@ export const createOrder = async (req: Request<unknown, unknown, OrdersRequest>,
   }
 };
 
-export const refuseSitter = async (
-  req: Request<OrdersParams, unknown, OrdersRequest>,
-  res: Response,
-  next: NextFunction
-) => {
-  const { order_id } = req.params;
-  const { task_id } = req.body;
+export const refuseSitter = async (req: Request, res: Response, next: NextFunction) => {
+  const { order_id } = orderParamSchema.parse(req.params);
+  const { task_id } = orderBodySchema.parse(req.body);
   if (!req.user?.id) {
     throw createHttpError(403, 'Forbidden');
   }
@@ -120,13 +135,9 @@ export const refuseSitter = async (
   }
 };
 
-export const acceptSitter = async (
-  req: Request<OrdersParams, unknown, OrdersRequest>,
-  res: Response,
-  next: NextFunction
-) => {
-  const { order_id } = req.params;
-  const { task_id } = req.body;
+export const acceptSitter = async (req: Request, res: Response, next: NextFunction) => {
+  const { order_id } = orderParamSchema.parse(req.params);
+  const { task_id } = orderBodySchema.parse(req.body);
   if (!req.user?.id) {
     throw createHttpError(403, 'Forbidden');
   }
@@ -184,13 +195,9 @@ export const acceptSitter = async (
   }
 };
 
-export const payForOrder = async (
-  req: Request<OrdersParams, unknown, OrdersRequest>,
-  res: Response,
-  next: NextFunction
-) => {
-  const { order_id } = req.params;
-  const { task_id } = req.body;
+export const payForOrder = async (req: Request, res: Response, next: NextFunction) => {
+  const { order_id } = orderParamSchema.parse(req.params);
+  const { task_id } = orderBodySchema.parse(req.body);
   if (!req.user?.id) {
     throw createHttpError(403, 'Forbidden');
   }
@@ -227,13 +234,9 @@ export const payForOrder = async (
   }
 };
 
-export const completeOrder = async (
-  req: Request<OrdersParams, unknown, OrdersRequest>,
-  res: Response,
-  next: NextFunction
-) => {
-  const { order_id } = req.params;
-  const { task_id } = req.body;
+export const completeOrder = async (req: Request, res: Response, next: NextFunction) => {
+  const { order_id } = orderParamSchema.parse(req.params);
+  const { task_id } = orderBodySchema.parse(req.body);
   if (!req.user?.id) {
     throw createHttpError(403, 'Forbidden');
   }
@@ -272,13 +275,9 @@ export const completeOrder = async (
   }
 };
 
-export const cancelOrder = async (
-  req: Request<OrdersParams, unknown, OrdersRequest>,
-  res: Response,
-  next: NextFunction
-) => {
-  const { order_id } = req.params;
-  const { task_id } = req.body;
+export const cancelOrder = async (req: Request, res: Response, next: NextFunction) => {
+  const { order_id } = orderParamSchema.parse(req.params);
+  const { task_id } = orderBodySchema.parse(req.body);
   if (!req.user?.id) {
     throw createHttpError(403, 'Forbidden');
   }
@@ -297,10 +296,11 @@ export const cancelOrder = async (
     // 訂單狀態<飼主視角>：已取消
     await prisma.task.update({
       where: {
+        id: task_id,
         order_id,
       },
       data: {
-        order_id: undefined,
+        order_id: null,
         status: TaskStatus.NULL,
         public: TaskPublic.OPEN,
       },
@@ -315,18 +315,16 @@ export const cancelOrder = async (
   }
 };
 
-export const getPetOwnerOrders = async (
-  req: Request<OwnerOrderParams, unknown, UserBaseSchema>,
-  res: Response,
-  next: NextFunction
-) => {
-  const { limit, page, status } = req.params;
-  const { user_id } = req.body;
+export const getPetOwnerOrders = async (_req: Request, res: Response, next: NextFunction) => {
+  const { limit, page, status } = ownerOrdersPaginationSchema.parse(_req.query);
+  if (!_req.user?.id) {
+    throw createHttpError(403, 'Forbidden');
+  }
 
   try {
     if (status === OrderStatus.CANCELED || status === OrderStatus.INVALID) {
       const conditions = {
-        pet_owner_user_id: user_id,
+        pet_owner_user_id: _req.user.id,
         status,
       };
       const getData = prisma.order.findMany({
@@ -350,7 +348,7 @@ export const getPetOwnerOrders = async (
       });
     } else {
       const conditions = {
-        user_id,
+        user_id: _req.user.id,
         status,
       };
       const getData = prisma.task.findMany({
@@ -360,6 +358,9 @@ export const getPetOwnerOrders = async (
         orderBy: {
           updated_at: 'desc',
         },
+        include: {
+          Order: true,
+        },
       });
       const getTotal = prisma.task.count({
         where: conditions,
@@ -367,7 +368,7 @@ export const getPetOwnerOrders = async (
 
       const [data, total] = await Promise.all([getData, getTotal]);
       res.status(200).json({
-        data,
+        data: data[0].Order,
         total,
         total_page: Math.ceil(total / limit),
         status: true,
@@ -378,17 +379,15 @@ export const getPetOwnerOrders = async (
   }
 };
 
-export const getSitterOrders = async (
-  req: Request<SitterOrderParams, unknown, UserBaseSchema>,
-  res: Response,
-  next: NextFunction
-) => {
-  const { limit, page, status } = req.params;
-  const { user_id } = req.body;
+export const getSitterOrders = async (_req: Request, res: Response, next: NextFunction) => {
+  const { limit, page, status } = sitterOrdersPaginationSchema.parse(_req.query);
+  if (!_req.user?.id) {
+    throw createHttpError(403, 'Forbidden');
+  }
 
   try {
     const conditions = {
-      sitter_user_id: user_id,
+      sitter_user_id: _req.user.id,
       status,
     };
     const getData = prisma.order.findMany({
