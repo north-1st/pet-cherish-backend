@@ -359,7 +359,7 @@ export const getPetOwnerOrders = async (_req: Request, res: Response, next: Next
           updated_at: 'desc',
         },
         include: {
-          Order: true,
+          order: true,
         },
       });
       const getTotal = prisma.task.count({
@@ -368,7 +368,7 @@ export const getPetOwnerOrders = async (_req: Request, res: Response, next: Next
 
       const [data, total] = await Promise.all([getData, getTotal]);
       res.status(200).json({
-        data: data[0].Order,
+        data: data[0].order,
         total,
         total_page: Math.ceil(total / limit),
         status: true,
