@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { PetSize, SitterStatus } from '@prisma/client';
 import { objectIdSchema } from '@schema/objectId';
+import { paginationSchema } from '@schema/pagination';
 
 extendZodWithOpenApi(z);
 
@@ -107,3 +108,4 @@ export type ApplySitterRequest = z.infer<typeof applySitterRequestSchema>;
 export type UpdateSitterServiceRequest = z.infer<typeof updateSitterServiceRequestSchema>;
 export type SitterRequest = z.infer<typeof sitterRequestSchema>;
 export type SitterResponse = z.infer<typeof sitterResponseSchema>;
+export type SitterRequestQuery = z.infer<typeof sitterRequestQuerySchema>;
