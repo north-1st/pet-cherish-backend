@@ -49,6 +49,15 @@ export const getTasksByUserRequestSchema = z.object({
   }),
 });
 
+export const getTasksByQueryRequestSchema = z.object({
+  query: paginationRequestSchema.extend({
+    service_city: z.string().optional(), // oprional for debugging -> need to change to must.
+    service_district_list: z.array(z.string()).min(1).optional(), // oprional for debugging -> need to change to must.
+    service_type_list: z.array(z.string()).min(1).optional(), // oprional for debugging -> need to change to must.
+    pet_size_list: z.array(z.string()).optional(),
+  }),
+});
+
 export const updateTaskBodySchema = createTaskBodySchema.partial().extend({
   start_at: z.string().datetime(),
   end_at: z.string().datetime(),
@@ -110,6 +119,7 @@ export type CreateTaskBody = z.infer<typeof createTaskBodySchema>;
 export type CreateTaskRequest = z.infer<typeof createTaskRequestSchema>;
 
 export type GetTasksByUserRequest = z.infer<typeof getTasksByUserRequestSchema>;
+export type GetTasksByQueryRequest = z.infer<typeof getTasksByQueryRequestSchema>;
 
 export type UpdateTaskBody = z.infer<typeof updateTaskBodySchema>;
 export type UpdateTaskRequest = z.infer<typeof updateTaskRequestSchema>;
