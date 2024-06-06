@@ -99,10 +99,8 @@ export const sitterResponseSchema = z
 
 export const sitterRequestQuerySchema = z.object({
   query: paginationSchema.extend({
-    service_city: z.string().optional(), // oprional for debugging -> need to change to must.
-    service_district_list: z.array(z.string()).min(1).optional(), // oprional for debugging -> need to change to must.
-    service_type_list: z.array(z.string()).min(1).optional(), // oprional for debugging -> need to change to must.
-    certificate_list: z.array(z.string()).optional(),
+    service_city: z.string(), // oprional for debugging -> need to change to must.
+    service_district_list: z.array(z.string()).min(1), // oprional for debugging -> need to change to must.
   }),
 });
 

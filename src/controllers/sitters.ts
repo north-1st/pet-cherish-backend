@@ -3,6 +3,7 @@ import createHttpError from 'http-errors';
 
 import prisma from '@prisma';
 import { SitterStatus } from '@prisma/client';
+import { paginationSchema } from '@schema/pagination';
 import {
   SitterRequest,
   applySitterRequestSchema,
@@ -148,7 +149,6 @@ export const getSitterService = async (req: SitterRequest, res: Response, next: 
 
 export const getSitterServiceList = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // 将查询参数转换为正确的格式，并处理数组参数
     const service_district_list = req.query.service_district_list
       ? Array.isArray(req.query.service_district_list)
         ? (req.query.service_district_list as string[])[0].split(',')
@@ -156,67 +156,52 @@ export const getSitterServiceList = async (req: Request, res: Response, next: Ne
       : [];
     const service_type_list = req.query.service_type_list
       ? Array.isArray(req.query.service_type_list)
-        ? req.query.service_type_list
+        ? (req.query.service_type_list as string[])[0].split(',').map((type) => type.toLowerCase())
         : [req.query.service_type_list]
       : [];
     const certificate_list = req.query.certificate_list
       ? Array.isArray(req.query.certificate_list)
-        ? req.query.certificate_list
+        ? (req.query.certificate_list as string[])[0].split(',').map((cert) => cert.toLowerCase())
         : [req.query.certificate_list]
       : [];
 
-    // 检查 service_district_list 和 service_type_list 是否为空数组
-    if (service_district_list.length === 0 || service_type_list.length === 0) {
-      res.status(400).json({
-        status: false,
-        message: 'service_district_list and service_type_list must contain at least one element',
-      });
-      return;
-    }
+    const notNullConditions = service_type_list.map((type) => ({ [`${type}_price`]: { not: null } }));
+    const notNullCertificates = certificate_list.map((type) => ({ [`${type}`]: { not: false } }));
+    const { page, limit, offset } = paginationSchema.parse(req.query);
 
     const parsedQuery = sitterRequestQuerySchema.parse({
       query: {
         service_city: req.query.service_city,
         service_district_list,
-        service_type_list,
-        certificate_list,
-        page: req.query.page,
-        limit: req.query.limit,
       },
     }).query;
 
-    const {
-      service_city,
-      // service_district_list: districts,
-      // service_type_list: types,
-      // certificate_list: certificates,
-      page,
-      limit,
-    } = parsedQuery;
     console.log('Parsed Query:', parsedQuery);
+    console.log('service_type_list notNullConditions:', notNullConditions);
+    console.log('certificate_list notNullCertificates:', notNullCertificates);
 
-    const query = {
-      service_city,
-      // service_district_list: { hasSome: districts },
-      // service_size_list: { hasSome: types },
+    const queryParams = {
+      where: {
+        service_city: parsedQuery.service_city,
+        service_district_list: {
+          hasSome: parsedQuery.service_district_list,
+        },
+        AND: [...notNullConditions, ...notNullCertificates],
+      },
     };
 
-    // // if (certificates && certificates.length > 0) {
-    // //   query.certificate_list = { hasSome: certificates };
-    // // }
-
-    console.log('Prisma Query:', query);
-
-    const sitters = await prisma.sitter.findMany({
-      // where: query,
-      where: {
-        service_city: service_city,
-      },
-      // skip: (page - 1) * limit,
-      // take: limit,
-    });
-
-    const total = await prisma.sitter.count({ where: query });
+    console.log('Prisma Query:', queryParams);
+    const [sitters, total] = await prisma.$transaction([
+      prisma.sitter.findMany({
+        ...queryParams,
+        take: limit,
+        skip: (page - 1) * limit + offset,
+        orderBy: {
+          created_at: 'desc',
+        },
+      }),
+      prisma.sitter.count({ ...queryParams }),
+    ]);
 
     res.status(200).json({
       status: true,
@@ -228,8 +213,9 @@ export const getSitterServiceList = async (req: Request, res: Response, next: Ne
           has_next_page: page < Math.ceil(total / limit),
           has_prev_page: page > 1,
         },
+        total: total,
+        message: 'Get sitter service list successfully',
       },
-      message: 'Get sitter service list successfully',
     });
   } catch (error) {
     console.error('Error in getSitterServiceList:', error);
