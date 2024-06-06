@@ -3,7 +3,6 @@ import { z } from 'zod';
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { PetSize, SitterStatus } from '@prisma/client';
 import { objectIdSchema } from '@schema/objectId';
-import { paginationSchema } from '@schema/pagination';
 
 extendZodWithOpenApi(z);
 
@@ -97,17 +96,7 @@ export const sitterResponseSchema = z
     },
   });
 
-export const sitterRequestQuerySchema = z.object({
-  query: paginationSchema.extend({
-    service_city: z.string().optional(), // oprional for debugging -> need to change to must.
-    service_district_list: z.array(z.string()).min(1).optional(), // oprional for debugging -> need to change to must.
-    service_type_list: z.array(z.string()).min(1).optional(), // oprional for debugging -> need to change to must.
-    certificate_list: z.array(z.string()).optional(),
-  }),
-});
-
 export type ApplySitterRequest = z.infer<typeof applySitterRequestSchema>;
 export type UpdateSitterServiceRequest = z.infer<typeof updateSitterServiceRequestSchema>;
 export type SitterRequest = z.infer<typeof sitterRequestSchema>;
 export type SitterResponse = z.infer<typeof sitterResponseSchema>;
-export type SitterRequestQuery = z.infer<typeof sitterRequestQuerySchema>;
