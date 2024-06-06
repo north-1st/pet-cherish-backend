@@ -10,20 +10,24 @@ import {
   payForOrder,
   refuseSitter,
 } from '@controllers/orders';
-import * as s from '@middlewares/swaggers/orders';
+import requiresAuth from '@middlewares/requiresAuth';
 import { validateRequest } from '@middlewares/validateRequest';
-import { orderBodySchema } from '@schema/orders';
+import {
+  createOrderRequestSchema,
+  orderRequestSchema,
+  ownerOrdersRequestSchema,
+  sitterOrdersRequestSchema,
+} from '@schema/orders';
 
 const router = Router();
-// 之後要補 User 登入檢查的 middleware，還要同時回傳 user_id 給 controller 使用
-router.post('/', validateRequest(orderBodySchema), createOrder, s.createOrder);
-router.patch('/:order_id/refuse-sitter', validateRequest(orderBodySchema), refuseSitter, s.refuseSitter);
-router.patch('/:order_id/accept-sitter', validateRequest(orderBodySchema), acceptSitter, s.acceptSitter);
-router.patch('/:order_id/paid', validateRequest(orderBodySchema), payForOrder, s.payForOrder);
-router.patch('/:order_id/complete', validateRequest(orderBodySchema), completeOrder, s.completeOrder);
-router.patch('/:order_id/cancel', validateRequest(orderBodySchema), cancelOrder, s.cancelOrder);
+router.post('/', requiresAuth, validateRequest(createOrderRequestSchema), createOrder);
+router.patch('/:order_id/refuse-sitter', requiresAuth, validateRequest(orderRequestSchema), refuseSitter);
+router.patch('/:order_id/accept-sitter', requiresAuth, validateRequest(orderRequestSchema), acceptSitter);
+router.patch('/:order_id/paid', requiresAuth, validateRequest(orderRequestSchema), payForOrder);
+router.patch('/:order_id/complete', requiresAuth, validateRequest(orderRequestSchema), completeOrder);
+router.patch('/:order_id/cancel', requiresAuth, validateRequest(orderRequestSchema), cancelOrder);
 
-router.get('/pet-owner', getPetOwnerOrders, s.getPetOwnerOrders);
-router.get('/sitter', getSitterOrders, s.getSitterOrders);
+router.get('/pet-owner', requiresAuth, validateRequest(ownerOrdersRequestSchema), getPetOwnerOrders);
+router.get('/sitter', requiresAuth, validateRequest(sitterOrdersRequestSchema), getSitterOrders);
 
 export default router;

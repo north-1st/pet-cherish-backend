@@ -1,13 +1,12 @@
 import express from 'express';
 
-import * as TasksController from '@controllers/tasks';
-import { createTask, deleteTask, getTasksByUser, updateTask } from '@controllers/tasks';
+import { createTask, deleteTask, getTasksByQuery, getTasksByUser, updateTask } from '@controllers/tasks';
 import requiresAuth from '@middlewares/requiresAuth';
-import * as s from '@middlewares/swaggers/tasks';
 import { validateRequest } from '@middlewares/validateRequest';
 import {
   createTaskRequestSchema,
   deleteTaskRequestSchema,
+  getTasksByQueryRequestSchema,
   getTasksByUserRequestSchema,
   updateTaskRequestSchema,
 } from '@schema/task';
@@ -18,6 +17,6 @@ router.post('/tasks', requiresAuth, requiresAuth, validateRequest(createTaskRequ
 router.patch('/tasks/:task_id', requiresAuth, validateRequest(updateTaskRequestSchema), updateTask);
 router.delete('/tasks/:task_id', requiresAuth, validateRequest(deleteTaskRequestSchema), deleteTask);
 router.get('/users/:user_id/tasks', validateRequest(getTasksByUserRequestSchema), getTasksByUser);
-router.post('/:task_id/review', TasksController.createReview, s.createReview);
+router.get('/tasks', validateRequest(getTasksByQueryRequestSchema), getTasksByQuery);
 
 export default router;

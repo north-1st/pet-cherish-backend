@@ -2,12 +2,12 @@ import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 
 import prisma from '@prisma';
-import { OrdersParams } from '@schema/orders';
+import { PetSize, ServiceType } from '@prisma/client';
 import { paginationSchema } from '@schema/pagination';
 import {
   CreateTaskBody,
+  GetTasksByQueryRequest,
   GetTasksByUserRequest,
-  ReviewRequest,
   UpdateTaskBody,
   createTaskRequestSchema,
   deleteTaskRequestSchema,
@@ -171,213 +171,88 @@ export const getTasksByUser = async (req: GetTasksByUserRequest, res: Response, 
   }
 };
 
+export const getTasksByQuery = async (req: GetTasksByQueryRequest, res: Response, next: NextFunction) => {
+  try {
+    const service_district_list = req.query.service_district_list
+      ? Array.isArray(req.query.service_district_list)
+        ? (req.query.service_district_list as string[])[0].split(',')
+        : [req.query.service_district_list]
+      : [];
+    const service_type_list = req.query.service_type_list
+      ? Array.isArray(req.query.service_type_list)
+        ? (req.query.service_type_list as string[])[0].split(',').map((type) => type.toUpperCase())
+        : [req.query.service_type_list]
+      : [];
+    const pet_size_list = req.query.pet_size_list
+      ? Array.isArray(req.query.pet_size_list)
+        ? (req.query.pet_size_list as string[])[0].split(',').map((size) => size.toUpperCase())
+        : [req.query.pet_size_list]
+      : [];
+
+    const { page, limit, offset } = paginationSchema.parse(req.query);
+
+    if (service_district_list.length === 0 || service_type_list.length === 0 || pet_size_list.length === 0) {
+      res.status(400).json({
+        status: false,
+        message: 'service_district_list, service_type_list and pet_size_list must contain at least one element',
+      });
+      return;
+    }
+
+    const queryParams = {
+      where: {
+        city: req.query.service_city,
+        district: {
+          in: service_district_list,
+        },
+        service_type: {
+          in: service_type_list as ServiceType[],
+        },
+        pet: {
+          size: {
+            in: pet_size_list as PetSize[],
+          },
+        },
+      },
+    };
+
+    console.log('Prisma Query:', queryParams);
+    const [tasks, count] = await prisma.$transaction([
+      prisma.task.findMany({
+        ...queryParams,
+        take: limit,
+        skip: (page - 1) * limit + offset,
+        orderBy: {
+          created_at: 'desc',
+        },
+        // include: {
+        //   pet: true, // 這樣可以在查詢結果中包含 Pet 的信息
+        // },
+      }),
+      prisma.task.count({ ...queryParams }),
+    ]);
+
+    res.status(200).json({
+      status: true,
+      data: {
+        tasks_list: tasks,
+        pagination: {
+          current_page: page,
+          total_pages: Math.ceil(count / limit),
+          has_next_page: page < Math.ceil(count / limit),
+          has_prev_page: page > 1,
+        },
+        total: count,
+        message: 'Get tasks successfully',
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
 const calculateTotal = (task: CreateTaskBody | UpdateTaskBody) => {
   const unit = (Date.parse(task.end_at.toString()) - Date.parse(task.start_at.toString())) / 1000 / 60 / 30;
   return unit * task.unit_price;
-};
-
-export const createReview = async (
-  req: Request<OrdersParams, unknown, ReviewRequest>,
-  res: Response,
-  next: NextFunction
-) => {
-  const { order_id } = req.params;
-  const { user_id, rating, content } = req.body;
-
-  const handleOwnerReview = async (task_id: string, sitter_user_id: string, req_body: ReviewRequest) => {
-    const { user_id, rating, content } = req_body;
-
-    try {
-      await prisma.$transaction(async (prisma) => {
-        // (1) 飼主撰寫評價：
-        const newReview = await prisma.review.create({
-          data: {
-            task_id,
-            pet_owner_user_id: user_id,
-            pet_owner_rating: rating,
-            pet_owner_content: content,
-            sitter_user_id,
-          },
-        });
-
-        // (2) Task 掛 review_id
-        await prisma.task.update({
-          where: {
-            id: task_id,
-          },
-          data: {
-            review_id: newReview.id,
-          },
-        });
-
-        // 重新計算[保姆]所有評價平均分：
-        const newAverageRating = await prisma.review.aggregate({
-          where: {
-            sitter_user_id,
-          },
-          _avg: {
-            pet_owner_rating: true,
-          },
-        });
-        // 取得[保姆]評價最新總計：
-        const newTotalReviews = await prisma.sitter.count({
-          where: {
-            user_id: sitter_user_id,
-          },
-        });
-
-        // (3) 更新[保姆] Sitter: average_rating, total_reviews
-        await prisma.sitter.update({
-          where: {
-            user_id: sitter_user_id,
-          },
-          data: {
-            average_rating: newAverageRating._avg.pet_owner_rating || 0,
-            total_reviews: newTotalReviews,
-          },
-        });
-      });
-    } catch (error) {
-      console.log('handleReviewByOwner error: ', error);
-      throw error;
-    }
-  };
-
-  const handleSitterReview = async (task_id: string, pet_owner_user_id: string, req_body: ReviewRequest) => {
-    const { rating, content } = req_body;
-
-    try {
-      await prisma.$transaction(async (prisma) => {
-        // (1) 保姆撰寫評價：
-        await prisma.review.update({
-          where: {
-            task_id,
-          },
-          data: {
-            sitter_rating: rating,
-            sitter_content: content,
-            sitter_user_created_at: new Date(),
-          },
-        });
-
-        // 重新計算[飼主]所有評價平均分：
-        const newAverageRating = await prisma.review.aggregate({
-          where: {
-            pet_owner_user_id,
-          },
-          _avg: {
-            sitter_rating: true,
-          },
-        });
-
-        // 取得[飼主]評價最新總計：
-        const newTotalReviews = await prisma.user.count({
-          where: {
-            id: pet_owner_user_id,
-          },
-        });
-
-        // (2) 更新[飼主] User: average_rating, total_reviews
-        await prisma.user.update({
-          where: {
-            id: pet_owner_user_id,
-          },
-          data: {
-            average_rating: newAverageRating._avg.sitter_rating || 0,
-            total_reviews: newTotalReviews,
-          },
-        });
-      });
-    } catch (error) {
-      console.log('handleSitterReview error: ', error);
-      throw error;
-    }
-  };
-
-  try {
-    // 找到指定訂單
-    const targetOrder = await prisma.order.findUnique({
-      where: {
-        id: order_id,
-      },
-    });
-    if (!targetOrder) {
-      res.status(404).json({
-        message: 'Order is not found!',
-        status: false,
-      });
-      return;
-    }
-
-    if (targetOrder.pet_owner_user_id === user_id) {
-      // 飼主寫評價
-      handleOwnerReview(targetOrder.task_id, targetOrder.sitter_user_id, req.body);
-    } else {
-      // 保姆寫評價
-      handleSitterReview(targetOrder.task_id, targetOrder.pet_owner_user_id, req.body);
-    }
-
-    res.status(201).json({
-      message: 'Create Successfully!',
-      status: true,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const updateReview = async (
-  req: Request<OrdersParams, unknown, ReviewRequest>,
-  res: Response,
-  next: NextFunction
-) => {
-  const { order_id } = req.params;
-  const { user_id, rating, content } = req.body;
-
-  try {
-    // 找到指定訂單
-    const targetOrder = await prisma.order.findUnique({
-      where: {
-        id: order_id,
-      },
-    });
-    if (!targetOrder) {
-      res.status(404).json({
-        message: 'Order is not found!',
-        status: false,
-      });
-      return;
-    }
-
-    if (targetOrder.pet_owner_user_id === user_id) {
-      // 飼主更新評價
-      await prisma.review.update({
-        where: {
-          task_id: targetOrder.task_id,
-        },
-        data: {
-          pet_owner_rating: rating,
-          pet_owner_content: content,
-        },
-      });
-    } else {
-      // 保姆更新評價
-      await prisma.review.update({
-        where: {
-          task_id: targetOrder.task_id,
-        },
-        data: {
-          sitter_rating: rating,
-          sitter_content: content,
-        },
-      });
-    }
-
-    res.status(200).json({
-      message: 'Update Successfully!',
-      status: true,
-    });
-  } catch (error) {
-    next(error);
-  }
 };
