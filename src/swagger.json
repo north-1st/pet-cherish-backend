@@ -915,7 +915,7 @@
                   "unit_price": {
                     "type": "number"
                   },
-                  "detail": {
+                  "description": {
                     "type": "string"
                   },
                   "accept_sitter_contact": {
@@ -941,7 +941,7 @@
                   "city",
                   "district",
                   "unit_price",
-                  "detail",
+                  "description",
                   "accept_sitter_contact",
                   "start_at",
                   "end_at",
@@ -956,7 +956,7 @@
                   "city": "台北市",
                   "district": "中正區",
                   "unit_price": 200,
-                  "detail": "detail",
+                  "description": "任務描述",
                   "accept_sitter_contact": true,
                   "start_at": "2022-01-01T00:00:00.000Z",
                   "end_at": "2022-01-01T03:00:00.000Z",
@@ -1044,7 +1044,7 @@
                   "unit_price": {
                     "type": "number"
                   },
-                  "detail": {
+                  "description": {
                     "type": "string"
                   },
                   "accept_sitter_contact": {
@@ -1076,7 +1076,7 @@
                   "city": "台北市",
                   "district": "中正區",
                   "unit_price": 200,
-                  "detail": "detail",
+                  "description": "任務描述",
                   "accept_sitter_contact": true,
                   "start_at": "2022-01-01T00:00:00.000Z",
                   "end_at": "2022-01-01T03:00:00.000Z",
@@ -1261,7 +1261,7 @@
                       "total": {
                         "type": "number"
                       },
-                      "detail": {
+                      "description": {
                         "type": "string"
                       },
                       "accept_sitter_contact": {
@@ -1294,7 +1294,7 @@
                       "district",
                       "unit_price",
                       "total",
-                      "detail",
+                      "description",
                       "start_at",
                       "end_at",
                       "created_at",
@@ -1311,7 +1311,7 @@
                       "district": "中正區",
                       "unit_price": 200,
                       "total": 1,
-                      "detail": "detail",
+                      "description": "任務描述",
                       "accept_sitter_contact": true,
                       "start_at": "2022-01-01T00:00:00.000Z",
                       "end_at": "2022-01-01T03:00:00.000Z",
