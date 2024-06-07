@@ -13,6 +13,18 @@ export const orderBodySchema = z.object({
   }),
 });
 
+export const reportBodySchema = z
+  .object({
+    body: z.object({
+      report_content: z.string(),
+      report_image_list: z.array(z.string()),
+    }),
+  })
+  .openapi({
+    report_content: '報告內容',
+    report_image_list: ['url_to_photo1.jpg", "url_to_photo2.jpg'],
+  });
+
 export const orderParamSchema = z.object({
   order_id: z.string().openapi({
     description: '訂單編號',
@@ -85,3 +97,4 @@ export type OrdersRequest = z.infer<typeof orderBodySchema>;
 export type OrdersParams = z.infer<typeof orderParamSchema>;
 export type SitterOrderParams = z.infer<typeof sitterOrderParamSchema>;
 export type OwnerOrderParams = z.infer<typeof ownerOrderParamSchema>;
+export type ReportRequest = z.infer<typeof reportBodySchema>;

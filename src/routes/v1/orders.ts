@@ -6,13 +6,15 @@ import {
   completeOrder,
   createOrder,
   getPetOwnerOrders,
+  getReportByOrderId,
   getSitterOrders,
   payForOrder,
   refuseSitter,
+  updateReport,
 } from '@controllers/orders';
 import requiresAuth from '@middlewares/requiresAuth';
 import { validateRequest } from '@middlewares/validateRequest';
-import { orderBodySchema } from '@schema/orders';
+import { orderBodySchema, reportBodySchema } from '@schema/orders';
 
 const router = Router();
 // 之後要補 User 登入檢查的 middleware，還要同時回傳 user_id 給 controller 使用
@@ -25,5 +27,10 @@ router.patch('/:order_id/cancel', requiresAuth, validateRequest(orderBodySchema)
 
 router.get('/pet-owner', getPetOwnerOrders);
 router.get('/sitter', getSitterOrders);
+
+router
+  .route('/:order_id/report')
+  .get(getReportByOrderId)
+  .patch(requiresAuth, validateRequest(reportBodySchema), updateReport);
 
 export default router;
