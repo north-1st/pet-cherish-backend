@@ -261,6 +261,6 @@ export const getTasksByQuery = async (req: GetTasksByQueryRequest, res: Response
 };
 
 const calculateTotal = (task: CreateTaskBody | UpdateTaskBody) => {
-  const unit = (Date.parse(task.end_at.toString()) - Date.parse(task.start_at.toString())) / 1000 / 60 / 30;
+  const unit = Math.ceil((Date.parse(task.end_at.toString()) - Date.parse(task.start_at.toString())) / 1000 / 60 / 30);
   return unit * task.unit_price;
 };
