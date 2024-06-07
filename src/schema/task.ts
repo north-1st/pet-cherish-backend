@@ -4,6 +4,7 @@ import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { ServiceType, TaskPublic, TaskStatus } from '@prisma/client';
 import { objectIdSchema } from '@schema/objectId';
 import { paginationRequestSchema } from '@schema/pagination';
+import { urlSchema } from '@schema/upload';
 
 extendZodWithOpenApi(z);
 
@@ -11,6 +12,7 @@ export const createTaskBodySchema = z
   .object({
     title: z.string(),
     public: z.enum([TaskPublic.OPEN, TaskPublic.CLOSED]),
+    cover: z.string().url(),
     service_type: z.nativeEnum(ServiceType),
     city: z.string(),
     district: z.string(),
@@ -26,6 +28,7 @@ export const createTaskBodySchema = z
     example: {
       title: '任務名稱',
       public: 'OPEN',
+      cover: 'https://picsum.photos/200',
       service_type: 'WALKING',
       city: '台北市',
       district: '中正區',
@@ -83,6 +86,7 @@ export const taskResponseSchema = z
     title: z.string(),
     public: z.nativeEnum(TaskPublic).default(TaskPublic.OPEN),
     status: z.nativeEnum(TaskStatus).default(TaskStatus.NULL),
+    cover: urlSchema,
     service_type: z.nativeEnum(ServiceType),
     city: z.string(),
     district: z.string(),
@@ -101,6 +105,7 @@ export const taskResponseSchema = z
       title: '任務名稱',
       public: 'OPEN',
       status: 'NULL',
+      cover: 'https://picsum.photos/200',
       service_type: 'WALKING',
       city: '台北市',
       district: '中正區',

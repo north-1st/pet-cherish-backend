@@ -85,6 +85,7 @@ model Task {
   title                 String
   public                TaskPublic  @default(OPEN)
   status                TaskStatus  @default(NULL)
+  cover                 String?
   service_type          ServiceType
   city                  String
   district              String
