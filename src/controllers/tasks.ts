@@ -33,6 +33,10 @@ export const createTask = async (_req: Request, res: Response, next: NextFunctio
       throw createHttpError(403, 'Forbidden');
     }
 
+    if (req.body.end_at < req.body.start_at) {
+      throw createHttpError(400, 'End time must be after start time');
+    }
+
     await prisma.task.create({
       data: {
         user_id: _req.user!.id,
@@ -69,6 +73,10 @@ export const updateTask = async (_req: Request, res: Response, next: NextFunctio
 
     if (task.user_id != _req.user?.id) {
       throw createHttpError(403, 'Forbidden');
+    }
+
+    if (req.body.end_at < req.body.start_at) {
+      throw createHttpError(400, 'End time must be after start time');
     }
 
     await prisma.task.update({
