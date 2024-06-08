@@ -492,6 +492,14 @@ export const getReportByOrderId = async (req: Request, res: Response, next: Next
         report_image_list: true,
         report_created_at: true,
         report_updated_at: true,
+        task_id: true,
+        task: {
+          select: {
+            title: true,
+            start_at: true,
+            end_at: true,
+          },
+        },
       },
     });
 
