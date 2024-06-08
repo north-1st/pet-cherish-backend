@@ -413,3 +413,58 @@ export const getSitterOrders = async (_req: Request, res: Response, next: NextFu
     next(error);
   }
 };
+
+export const updateReport = async (req: Request, res: Response, next: NextFunction) => {
+  const { order_id } = req.params;
+  const { report_content, report_image_list } = req.body;
+
+  if (!order_id) {
+    throw createHttpError(403, 'Forbidden');
+  }
+
+  try {
+    await prisma.order.update({
+      where: {
+        id: order_id,
+      },
+      data: {
+        report_content,
+        report_image_list,
+      },
+    });
+
+    res.status(200).json({
+      message: 'Update report successfully!',
+      status: true,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getReportByOrderId = async (req: Request, res: Response, next: NextFunction) => {
+  const { order_id } = req.params;
+
+  if (!order_id) {
+    throw createHttpError(403, 'Forbidden');
+  }
+
+  try {
+    const data = await prisma.order.findUnique({
+      where: {
+        id: order_id,
+      },
+      select: {
+        report_content: true,
+        report_image_list: true,
+      },
+    });
+
+    res.status(200).json({
+      data,
+      status: true,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
