@@ -442,7 +442,7 @@ export const updateReport = async (req: Request, res: Response, next: NextFuncti
         status: false,
       });
     } else {
-      const now = formatDateToUTCPlus8(new Date());
+      const now = formatDateToUTCPlusOffset(new Date(), 8); // datetime concert to UTC+8
       // const now = (new Date()).toISOString();
       if (!current_report.report_created_at) {
         if (!is_input_report_body_empty) {
@@ -504,9 +504,9 @@ export const getReportByOrderId = async (req: Request, res: Response, next: Next
   }
 };
 
-function formatDateToUTCPlus8(currentTime: Date) {
+function formatDateToUTCPlusOffset(currentTime: Date, offset: number) {
   const utcDate = new Date(currentTime.getTime() + currentTime.getTimezoneOffset() * 60000);
-  const utcPlus8Date = new Date(utcDate.getTime() + 8 * 3600000);
+  const utcPlus8Date = new Date(utcDate.getTime() + offset * 3600000);
 
   const year = utcPlus8Date.getFullYear();
   const month = String(utcPlus8Date.getMonth() + 1).padStart(2, '0');
