@@ -442,7 +442,7 @@ export const updateReport = async (req: Request, res: Response, next: NextFuncti
         status: false,
       });
     } else {
-      const now = formatDateToUTCPlusOffset(new Date(), 8); // datetime concert to UTC+8
+      const now = formatDateToUTCPlusOffset(new Date(), 0); // datetime concert to UTC+0
       // const now = (new Date()).toISOString();
       if (!current_report.report_created_at) {
         if (!is_input_report_body_empty) {
