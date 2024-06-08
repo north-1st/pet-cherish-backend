@@ -38,6 +38,10 @@ export const updatePetRequestSchema = z.object({
   body: petRequestSchema.partial(),
 });
 
+export const deletePetRequestSchema = z.object({
+  params: z.object({ pet_id: objectIdSchema }),
+});
+
 export const petResponseSchema = petRequestSchema.extend({
   id: objectIdSchema.openapi({ example: '6649d4e467b627a60555c5fd' }),
 });
@@ -45,4 +49,5 @@ export const petResponseSchema = petRequestSchema.extend({
 export type CreatePetRequest = z.infer<typeof createPetRequestSchema>;
 export type GetPetsByUserRequest = z.infer<typeof getPetsByUserRequestSchema>;
 export type UpdatePetRequest = z.infer<typeof updatePetRequestSchema>;
+export type DeletePetRequest = z.infer<typeof deletePetRequestSchema>;
 export type PetResponse = z.infer<typeof petResponseSchema>;

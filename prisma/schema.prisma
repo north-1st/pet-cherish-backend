@@ -85,12 +85,13 @@ model Task {
   title                 String
   public                TaskPublic  @default(OPEN)
   status                TaskStatus  @default(NULL)
+  cover                 String?
   service_type          ServiceType
   city                  String
   district              String
   unit_price            Int
   total                 Int
-  detail                String
+  description           String
   accept_sitter_contact Boolean     @default(false)
   start_at              DateTime
   end_at                DateTime

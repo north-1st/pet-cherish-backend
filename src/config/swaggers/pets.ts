@@ -4,6 +4,7 @@ import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { BearerAuth } from '@schema/bearerAuth';
 import {
   createPetRequestSchema,
+  deletePetRequestSchema,
   getPetsByUserRequestSchema,
   petResponseSchema,
   updatePetRequestSchema,
@@ -12,6 +13,7 @@ import {
 export const setPetsSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
   createPet(registry, bearerAuth);
   updatePet(registry, bearerAuth);
+  deletePet(registry, bearerAuth);
   getPetsByUser(registry);
 };
 
@@ -62,6 +64,33 @@ const updatePet = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
     responses: {
       200: {
         description: 'Update pet successfully',
+      },
+      401: {
+        description: 'Unauthorized',
+      },
+      403: {
+        description: 'Forbidden',
+      },
+      404: {
+        description: 'Pet not found',
+      },
+    },
+  });
+};
+
+const deletePet = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
+  registry.registerPath({
+    method: 'delete',
+    tags: ['Pets'],
+    path: '/api/v1/pets/{pet_id}',
+    summary: '刪除：寵物',
+    security: [{ [bearerAuth.name]: [] }],
+    request: {
+      params: deletePetRequestSchema.shape.params,
+    },
+    responses: {
+      200: {
+        description: 'Delete pet successfully',
       },
       401: {
         description: 'Unauthorized',

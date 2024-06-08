@@ -33,6 +33,10 @@ export const createTask = async (_req: Request, res: Response, next: NextFunctio
       throw createHttpError(403, 'Forbidden');
     }
 
+    if (req.body.end_at <= req.body.start_at) {
+      throw createHttpError(400, 'End time must be after start time');
+    }
+
     await prisma.task.create({
       data: {
         user_id: _req.user!.id,
@@ -69,6 +73,10 @@ export const updateTask = async (_req: Request, res: Response, next: NextFunctio
 
     if (task.user_id != _req.user?.id) {
       throw createHttpError(403, 'Forbidden');
+    }
+
+    if (req.body.end_at <= req.body.start_at) {
+      throw createHttpError(400, 'End time must be after start time');
     }
 
     await prisma.task.update({
@@ -253,6 +261,6 @@ export const getTasksByQuery = async (req: GetTasksByQueryRequest, res: Response
 };
 
 const calculateTotal = (task: CreateTaskBody | UpdateTaskBody) => {
-  const unit = (Date.parse(task.end_at.toString()) - Date.parse(task.start_at.toString())) / 1000 / 60 / 30;
+  const unit = Math.ceil((Date.parse(task.end_at.toString()) - Date.parse(task.start_at.toString())) / 1000 / 60 / 30);
   return unit * task.unit_price;
 };

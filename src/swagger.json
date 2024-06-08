@@ -751,6 +751,41 @@
             "description": "Pet not found"
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Pets"
+        ],
+        "summary": "刪除：寵物",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "pet_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete pet successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Pet not found"
+          }
+        }
       }
     },
     "/api/v1/users/{user_id}/pets": {
@@ -893,6 +928,10 @@
                       "CLOSED"
                     ]
                   },
+                  "cover": {
+                    "type": "string",
+                    "format": "uri"
+                  },
                   "service_type": {
                     "type": "string",
                     "enum": [
@@ -911,7 +950,7 @@
                   "unit_price": {
                     "type": "number"
                   },
-                  "detail": {
+                  "description": {
                     "type": "string"
                   },
                   "accept_sitter_contact": {
@@ -932,11 +971,12 @@
                 "required": [
                   "title",
                   "public",
+                  "cover",
                   "service_type",
                   "city",
                   "district",
                   "unit_price",
-                  "detail",
+                  "description",
                   "accept_sitter_contact",
                   "start_at",
                   "end_at",
@@ -946,11 +986,12 @@
                 "example": {
                   "title": "任務名稱",
                   "public": "OPEN",
+                  "cover": "https://picsum.photos/200",
                   "service_type": "WALKING",
                   "city": "台北市",
                   "district": "中正區",
                   "unit_price": 200,
-                  "detail": "detail",
+                  "description": "任務描述",
                   "accept_sitter_contact": true,
                   "start_at": "2022-01-01T00:00:00.000Z",
                   "end_at": "2022-01-01T03:00:00.000Z",
@@ -963,6 +1004,9 @@
         "responses": {
           "201": {
             "description": "Create task successfully"
+          },
+          "400": {
+            "description": "End time must be after start time"
           },
           "401": {
             "description": "Unauthorized"
@@ -1013,6 +1057,10 @@
                       "CLOSED"
                     ]
                   },
+                  "cover": {
+                    "type": "string",
+                    "format": "uri"
+                  },
                   "service_type": {
                     "type": "string",
                     "enum": [
@@ -1031,7 +1079,7 @@
                   "unit_price": {
                     "type": "number"
                   },
-                  "detail": {
+                  "description": {
                     "type": "string"
                   },
                   "accept_sitter_contact": {
@@ -1058,11 +1106,12 @@
                 "example": {
                   "title": "任務名稱",
                   "public": "OPEN",
+                  "cover": "https://picsum.photos/200",
                   "service_type": "WALKING",
                   "city": "台北市",
                   "district": "中正區",
                   "unit_price": 200,
-                  "detail": "detail",
+                  "description": "任務描述",
                   "accept_sitter_contact": true,
                   "start_at": "2022-01-01T00:00:00.000Z",
                   "end_at": "2022-01-01T03:00:00.000Z",
@@ -1075,6 +1124,9 @@
         "responses": {
           "200": {
             "description": "Update task successfully"
+          },
+          "400": {
+            "description": "End time must be after start time"
           },
           "401": {
             "description": "Unauthorized"
@@ -1209,6 +1261,20 @@
                         ],
                         "default": "NULL"
                       },
+                      "cover": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "uri"
+                          },
+                          {
+                            "nullable": true
+                          },
+                          {
+                            "nullable": true
+                          }
+                        ]
+                      },
                       "service_type": {
                         "type": "string",
                         "enum": [
@@ -1230,7 +1296,7 @@
                       "total": {
                         "type": "number"
                       },
-                      "detail": {
+                      "description": {
                         "type": "string"
                       },
                       "accept_sitter_contact": {
@@ -1257,12 +1323,13 @@
                     "required": [
                       "id",
                       "title",
+                      "cover",
                       "service_type",
                       "city",
                       "district",
                       "unit_price",
                       "total",
-                      "detail",
+                      "description",
                       "start_at",
                       "end_at",
                       "created_at",
@@ -1273,12 +1340,13 @@
                       "title": "任務名稱",
                       "public": "OPEN",
                       "status": "NULL",
+                      "cover": "https://picsum.photos/200",
                       "service_type": "WALKING",
                       "city": "台北市",
                       "district": "中正區",
                       "unit_price": 200,
                       "total": 1,
-                      "detail": "detail",
+                      "description": "任務描述",
                       "accept_sitter_contact": true,
                       "start_at": "2022-01-01T00:00:00.000Z",
                       "end_at": "2022-01-01T03:00:00.000Z",
