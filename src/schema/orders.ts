@@ -144,8 +144,13 @@ export const reportBodySchema = z
     }),
   })
   .openapi({
-    report_content: '報告內容',
-    report_image_list: ['url_to_photo1.jpg", "url_to_photo2.jpg'],
+    description: '報告',
+    example: {
+      body: {
+        report_content: '報告內容',
+        report_image_list: ['url_to_photo1.jpg", "url_to_photo2.jpg'],
+      },
+    },
   });
 
 export type OrdersRequest = z.infer<typeof orderRequestSchema>;
