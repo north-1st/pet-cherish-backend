@@ -751,6 +751,41 @@
             "description": "Pet not found"
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Pets"
+        ],
+        "summary": "刪除：寵物",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "pet_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete pet successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Pet not found"
+          }
+        }
       }
     },
     "/api/v1/users/{user_id}/pets": {

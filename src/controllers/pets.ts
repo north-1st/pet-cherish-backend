@@ -2,7 +2,12 @@ import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 
 import prisma from '@prisma';
-import { GetPetsByUserRequest, createPetRequestSchema, updatePetRequestSchema } from '@schema/pet';
+import {
+  GetPetsByUserRequest,
+  createPetRequestSchema,
+  deletePetRequestSchema,
+  updatePetRequestSchema,
+} from '@schema/pet';
 
 export const createPet = async (_req: Request, res: Response, next: NextFunction) => {
   try {
@@ -54,6 +59,40 @@ export const updatePet = async (_req: Request, res: Response, next: NextFunction
     res.status(200).json({
       status: true,
       message: 'Update pet successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deletePet = async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const req = deletePetRequestSchema.parse(_req);
+    const userId = _req.user!.id;
+
+    const pet = await prisma.pet.findUnique({
+      where: {
+        id: req.params.pet_id,
+      },
+    });
+
+    if (!pet) {
+      throw createHttpError(404, 'Pet not found');
+    }
+
+    if (pet.owner_user_id !== userId) {
+      throw createHttpError(403, 'Forbidden');
+    }
+
+    await prisma.pet.delete({
+      where: {
+        id: req.params.pet_id,
+      },
+    });
+
+    res.status(200).json({
+      status: true,
+      message: 'Delete pet successfully',
     });
   } catch (error) {
     next(error);
