@@ -91,7 +91,7 @@ model Task {
   district              String
   unit_price            Int
   total                 Int
-  detail                String
+  description           String
   accept_sitter_contact Boolean     @default(false)
   start_at              DateTime
   end_at                DateTime
