@@ -415,14 +415,45 @@ export const getSitterOrders = async (_req: Request, res: Response, next: NextFu
 };
 
 export const updateReport = async (req: Request, res: Response, next: NextFunction) => {
+  let report_created_time: string | null = null;
+  let report_updated_time: string | null = null;
   const { order_id } = req.params;
   const { report_content, report_image_list } = req.body;
+  const is_input_report_body_empty = report_content === '' && report_image_list.length === 0; // To check if all input contents are not filled.
 
   if (!order_id) {
     throw createHttpError(403, 'Forbidden');
   }
 
   try {
+    const current_report = await prisma.order.findUnique({
+      where: {
+        id: order_id,
+      },
+      select: {
+        report_content: true,
+        report_created_at: true,
+      },
+    });
+
+    if (!current_report) {
+      res.status(400).json({
+        message: 'No matched order found!',
+        status: false,
+      });
+    } else {
+      const now = formatDateToUTCPlus8(new Date());
+      // const now = (new Date()).toISOString();
+      if (!current_report.report_created_at) {
+        if (!is_input_report_body_empty) {
+          report_created_time = report_updated_time = now;
+        }
+      } else {
+        report_created_time = current_report.report_created_at.toISOString();
+        report_updated_time = now;
+      }
+    }
+
     await prisma.order.update({
       where: {
         id: order_id,
@@ -430,6 +461,8 @@ export const updateReport = async (req: Request, res: Response, next: NextFuncti
       data: {
         report_content,
         report_image_list,
+        report_created_at: report_created_time,
+        report_updated_at: report_updated_time,
       },
     });
 
@@ -457,6 +490,8 @@ export const getReportByOrderId = async (req: Request, res: Response, next: Next
       select: {
         report_content: true,
         report_image_list: true,
+        report_created_at: true,
+        report_updated_at: true,
       },
     });
 
@@ -468,3 +503,19 @@ export const getReportByOrderId = async (req: Request, res: Response, next: Next
     next(error);
   }
 };
+
+function formatDateToUTCPlus8(currentTime: Date) {
+  const utcDate = new Date(currentTime.getTime() + currentTime.getTimezoneOffset() * 60000);
+  const utcPlus8Date = new Date(utcDate.getTime() + 8 * 3600000);
+
+  const year = utcPlus8Date.getFullYear();
+  const month = String(utcPlus8Date.getMonth() + 1).padStart(2, '0');
+  const day = String(utcPlus8Date.getDate()).padStart(2, '0');
+  const hours = String(utcPlus8Date.getHours()).padStart(2, '0');
+  const minutes = String(utcPlus8Date.getMinutes()).padStart(2, '0');
+  const seconds = String(utcPlus8Date.getSeconds()).padStart(2, '0');
+  const milliseconds = String(utcPlus8Date.getMilliseconds()).padStart(3, '0');
+
+  // '2024-05-30T6:24:42.444Z' to UTC+8 => "2024-05-30T14:24:42.444Z"
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
+}
