@@ -408,13 +408,13 @@
                     },
                     "status": {
                       "type": "string",
+                      "nullable": true,
                       "enum": [
                         "APPROVING",
                         "REJECTED",
                         "PASS",
                         "ON_BOARD"
-                      ],
-                      "default": "APPROVING"
+                      ]
                     }
                   },
                   "required": [
@@ -426,7 +426,8 @@
                     "service_size_list",
                     "image_list",
                     "service_description",
-                    "average_rating"
+                    "average_rating",
+                    "status"
                   ],
                   "example": {
                     "user_id": "54489faba8bcd77a22dedue8",
@@ -2447,8 +2448,7 @@
                       "type": "object",
                       "properties": {
                         "total_reviews": {
-                          "type": "number",
-                          "default": 0
+                          "type": "number"
                         },
                         "average_rating": {
                           "type": "number",
@@ -2501,6 +2501,9 @@
                                   "real_name"
                                 ]
                               },
+                              "sitter_user_id": {
+                                "type": "string"
+                              },
                               "task": {
                                 "type": "object",
                                 "properties": {
@@ -2532,6 +2535,7 @@
                               "sitter_content",
                               "sitter_user_updated_at",
                               "sitter",
+                              "sitter_user_id",
                               "task"
                             ]
                           },
@@ -2539,6 +2543,7 @@
                         }
                       },
                       "required": [
+                        "total_reviews",
                         "average_rating"
                       ]
                     },
@@ -2568,6 +2573,7 @@
                             "nickname": null,
                             "avatar": null
                           },
+                          "sitter_user_id": "6659fb917bce00ca07bcdd14",
                           "task": {
                             "id": "6658a7d754390e6a3ed4370d",
                             "title": "任務標題103",
@@ -2617,12 +2623,10 @@
                       "type": "object",
                       "properties": {
                         "total_reviews": {
-                          "type": "number",
-                          "default": 0
+                          "type": "number"
                         },
                         "average_rating": {
-                          "type": "number",
-                          "nullable": true
+                          "type": "number"
                         },
                         "reviews": {
                           "type": "array",
@@ -2671,6 +2675,9 @@
                                   "real_name"
                                 ]
                               },
+                              "pet_owner_user_id": {
+                                "type": "string"
+                              },
                               "task": {
                                 "type": "object",
                                 "properties": {
@@ -2702,6 +2709,7 @@
                               "pet_owner_content",
                               "pet_owner_updated_at",
                               "pet_owner",
+                              "pet_owner_user_id",
                               "task"
                             ]
                           },
@@ -2709,6 +2717,7 @@
                         }
                       },
                       "required": [
+                        "total_reviews",
                         "average_rating"
                       ]
                     },
@@ -2738,6 +2747,7 @@
                             "nickname": null,
                             "avatar": null
                           },
+                          "pet_owner_user_id": "6658a67f6676e47b02f23e8b",
                           "task": {
                             "id": "6658a7d754390e6a3ed4370d",
                             "title": "任務標題103",
