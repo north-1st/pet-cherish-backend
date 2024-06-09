@@ -293,7 +293,7 @@ export const getOwnerReviews = async (req: Request<UserBaseSchema>, res: Respons
   const { user_id } = req.params;
 
   try {
-    const ownerReviews = await prisma.user.findUnique({
+    const owner_reviews = await prisma.user.findUnique({
       where: {
         id: user_id,
       },
@@ -329,7 +329,13 @@ export const getOwnerReviews = async (req: Request<UserBaseSchema>, res: Respons
       },
     });
 
-    const data = ownerReviewsResponseSchema.shape.data.parse(ownerReviews);
+    const { owner_reviews: reviews, total_reviews, average_rating } = owner_reviews ?? {};
+
+    const data = ownerReviewsResponseSchema.shape.data.parse({
+      total_reviews,
+      average_rating,
+      reviews,
+    });
 
     res.status(200).json({
       data,
@@ -384,7 +390,20 @@ export const getSitterReviews = async (req: Request<UserBaseSchema>, res: Respon
       },
     });
 
-    const data = sitterReviewsResponseSchema.shape.data.parse(sitterReviews);
+    if (sitterReviews?.sitter == null) {
+      throw createHttpError(404, 'Sitter not found');
+    }
+
+    const {
+      sitter: { average_rating, total_reviews },
+      sitter_reviews,
+    } = sitterReviews;
+
+    const data = sitterReviewsResponseSchema.shape.data.parse({
+      total_reviews,
+      average_rating,
+      reviews: sitter_reviews,
+    });
 
     res.status(200).json({
       data,

@@ -3,8 +3,23 @@ import { z } from 'zod';
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { ServiceType } from '@prisma/client';
 import { createBaseResponseDataSchema } from '@schema';
+import { objectIdSchema } from '@schema/objectId';
 
 extendZodWithOpenApi(z);
+
+export const getReviewsParamSchema = z
+  .object({
+    params: z.object({
+      user_id: objectIdSchema,
+    }),
+  })
+  .openapi({
+    example: {
+      params: {
+        user_id: '6659fd29fdf9b075e2a9362c',
+      },
+    },
+  });
 
 export const reviewParamSchema = z.object({
   task_id: z.string().openapi({
@@ -144,7 +159,7 @@ export const ownerReviewsResponseSchema = z
     data: z.object({
       total_reviews: z.number(),
       average_rating: z.number().nullable(),
-      owner_reviews: z.array(ownerReviewResponseDataSchema),
+      reviews: z.array(ownerReviewResponseDataSchema),
     }),
     status: z.boolean(),
   })
@@ -154,7 +169,7 @@ export const ownerReviewsResponseSchema = z
       data: {
         total_reviews: 1,
         average_rating: 3,
-        owner_reviews: [
+        reviews: [
           {
             id: '665ace0f28dba2608ccfd257',
             sitter_rating: 3,
@@ -184,8 +199,8 @@ export const sitterReviewsResponseSchema = z
   .object({
     data: z.object({
       total_reviews: z.number(),
-      average_rating: z.number(),
-      sitter_reviews: z.array(sitterReviewResponseDataSchema).default([]),
+      average_rating: z.number().nullable(),
+      reviews: z.array(sitterReviewResponseDataSchema).default([]),
     }),
     status: z.boolean(),
   })
@@ -195,7 +210,7 @@ export const sitterReviewsResponseSchema = z
       data: {
         total_reviews: 1,
         average_rating: 3,
-        sitter_reviews: [
+        reviews: [
           {
             id: '665ace0f28dba2608ccfd257',
             pet_owner_rating: 3,

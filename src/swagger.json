@@ -2454,7 +2454,7 @@
                           "type": "number",
                           "nullable": true
                         },
-                        "owner_reviews": {
+                        "reviews": {
                           "type": "array",
                           "items": {
                             "type": "object",
@@ -2544,7 +2544,7 @@
                       "required": [
                         "total_reviews",
                         "average_rating",
-                        "owner_reviews"
+                        "reviews"
                       ]
                     },
                     "status": {
@@ -2560,7 +2560,7 @@
                     "data": {
                       "total_reviews": 1,
                       "average_rating": 3,
-                      "owner_reviews": [
+                      "reviews": [
                         {
                           "id": "665ace0f28dba2608ccfd257",
                           "sitter_rating": 3,
@@ -2626,9 +2626,10 @@
                           "type": "number"
                         },
                         "average_rating": {
-                          "type": "number"
+                          "type": "number",
+                          "nullable": true
                         },
-                        "sitter_reviews": {
+                        "reviews": {
                           "type": "array",
                           "items": {
                             "type": "object",
@@ -2734,7 +2735,7 @@
                     "data": {
                       "total_reviews": 1,
                       "average_rating": 3,
-                      "sitter_reviews": [
+                      "reviews": [
                         {
                           "id": "665ace0f28dba2608ccfd257",
                           "pet_owner_rating": 3,
