@@ -54,7 +54,7 @@ model Sitter {
   service_description   String        @default("")
   average_rating        Float?
   total_reviews         Int           @default(0)
-  status                SitterStatus @default(APPROVING)
+  status                SitterStatus?
   created_at            DateTime      @default(now())
   updated_at            DateTime      @updatedAt
   user                  User          @relation(fields: [user_id], references: [id])
