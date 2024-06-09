@@ -139,13 +139,15 @@ model Review {
   pet_owner_rating       Int
   pet_owner_content      String
   pet_owner_created_at   DateTime  @default(now())
+  pet_owner_updated_at   DateTime  @updatedAt
   sitter_user_id         String    @db.ObjectId
   sitter_rating          Int?
   sitter_content         String?
   sitter_user_created_at DateTime?
+  sitter_user_updated_at DateTime? @updatedAt
   task                   Task      @relation(fields: [task_id], references: [id])
   task_id                String    @unique @db.ObjectId
-  owner                  User      @relation("PetOwnerRole", fields: [pet_owner_user_id], references: [id])
+  pet_owner              User      @relation("PetOwnerRole", fields: [pet_owner_user_id], references: [id])
   sitter                 User      @relation("SitterRole", fields: [sitter_user_id], references: [id])
 
   @@map("reviews")
