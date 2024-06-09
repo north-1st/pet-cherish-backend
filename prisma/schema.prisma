@@ -29,6 +29,8 @@ model User {
   sitter             Sitter?
   pet_list           Pet[]
   task_list          Task[]
+  owner_reviews      Review[]  @relation("PetOwnerRole")
+  sitter_reviews     Review[]  @relation("SitterRole")
 
   @@map("users")
 }
@@ -143,6 +145,8 @@ model Review {
   sitter_user_created_at DateTime?
   task                   Task      @relation(fields: [task_id], references: [id])
   task_id                String    @unique @db.ObjectId
+  user                   User      @relation("PetOwnerRole", fields: [pet_owner_user_id], references: [id])
+  sitter                 User      @relation("SitterRole", fields: [sitter_user_id], references: [id])
 
   @@map("reviews")
 }

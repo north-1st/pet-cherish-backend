@@ -244,9 +244,42 @@ export const getOwnerReviews = async (req: Request<UserBaseSchema>, res: Respons
   const { user_id } = req.params;
 
   try {
-    const ownerReviews = await prisma.review.findMany({
+    const ownerReviews = await prisma.user.findMany({
       where: {
-        pet_owner_user_id: user_id,
+        id: user_id,
+      },
+      select: {
+        id: true,
+        email: true,
+        real_name: true,
+        nickname: true,
+        average_rating: true,
+        total_reviews: true,
+        owner_reviews: {
+          select: {
+            // 只回傳保姆對飼主的評價
+            id: true,
+            sitter_rating: true,
+            sitter_content: true,
+            sitter_user_created_at: true,
+            sitter: {
+              select: {
+                id: true,
+                email: true,
+                real_name: true,
+                nickname: true,
+                avatar: true,
+              },
+            },
+            task: {
+              select: {
+                id: true,
+                title: true,
+                service_type: true,
+              },
+            },
+          },
+        },
       },
     });
     res.status(200).json({
