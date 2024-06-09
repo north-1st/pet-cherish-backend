@@ -408,13 +408,13 @@
                     },
                     "status": {
                       "type": "string",
+                      "nullable": true,
                       "enum": [
                         "APPROVING",
                         "REJECTED",
                         "PASS",
                         "ON_BOARD"
-                      ],
-                      "default": "APPROVING"
+                      ]
                     }
                   },
                   "required": [
@@ -426,7 +426,8 @@
                     "service_size_list",
                     "image_list",
                     "service_description",
-                    "average_rating"
+                    "average_rating",
+                    "status"
                   ],
                   "example": {
                     "user_id": "54489faba8bcd77a22dedue8",
@@ -2444,86 +2445,107 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "sitter_rating": {
-                            "type": "number",
-                            "minimum": 1,
-                            "maximum": 5,
-                            "default": 5
-                          },
-                          "sitter_content": {
-                            "type": "string"
-                          },
-                          "sitter_user_updated_at": {
-                            "type": "string"
-                          },
-                          "sitter": {
+                      "type": "object",
+                      "properties": {
+                        "total_reviews": {
+                          "type": "number"
+                        },
+                        "average_rating": {
+                          "type": "number",
+                          "nullable": true
+                        },
+                        "reviews": {
+                          "type": "array",
+                          "items": {
                             "type": "object",
                             "properties": {
                               "id": {
                                 "type": "string"
                               },
-                              "email": {
+                              "sitter_rating": {
+                                "type": "number",
+                                "minimum": 1,
+                                "maximum": 5,
+                                "default": 5
+                              },
+                              "sitter_content": {
                                 "type": "string"
                               },
-                              "real_name": {
+                              "sitter_user_updated_at": {
                                 "type": "string"
                               },
-                              "nickname": {
-                                "type": "string",
-                                "nullable": true
+                              "sitter": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "email": {
+                                    "type": "string"
+                                  },
+                                  "real_name": {
+                                    "type": "string"
+                                  },
+                                  "nickname": {
+                                    "type": "string",
+                                    "nullable": true
+                                  },
+                                  "avatar": {
+                                    "type": "string",
+                                    "nullable": true
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "email",
+                                  "real_name"
+                                ]
                               },
-                              "avatar": {
-                                "type": "string",
-                                "nullable": true
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "email",
-                              "real_name"
-                            ]
-                          },
-                          "task": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
+                              "sitter_user_id": {
                                 "type": "string"
                               },
-                              "title": {
-                                "type": "string"
-                              },
-                              "service_type": {
-                                "type": "string",
-                                "enum": [
-                                  "PHOTOGRAPHY",
-                                  "HEALTH_CARE",
-                                  "BATH",
-                                  "WALKING"
+                              "task": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "title": {
+                                    "type": "string"
+                                  },
+                                  "service_type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "PHOTOGRAPHY",
+                                      "HEALTH_CARE",
+                                      "BATH",
+                                      "WALKING"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "title",
+                                  "service_type"
                                 ]
                               }
                             },
                             "required": [
                               "id",
-                              "title",
-                              "service_type"
+                              "sitter_content",
+                              "sitter_user_updated_at",
+                              "sitter",
+                              "sitter_user_id",
+                              "task"
                             ]
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "sitter_content",
-                          "sitter_user_updated_at",
-                          "sitter",
-                          "task"
-                        ]
-                      }
+                          },
+                          "default": []
+                        }
+                      },
+                      "required": [
+                        "total_reviews",
+                        "average_rating"
+                      ]
                     },
                     "status": {
                       "type": "boolean"
@@ -2535,26 +2557,31 @@
                   ],
                   "description": "<指定飼主>所有評價",
                   "example": {
-                    "data": [
-                      {
-                        "id": "665ace0f28dba2608ccfd257",
-                        "sitter_rating": 3,
-                        "sitter_content": "改改保姆評價內容，推！",
-                        "sitter_user_updated_at": "2024-06-09T09:17:37.811Z",
-                        "sitter": {
-                          "id": "6659fb917bce00ca07bcdd14",
-                          "email": "102@mail.com",
-                          "real_name": "102",
-                          "nickname": null,
-                          "avatar": null
-                        },
-                        "task": {
-                          "id": "6658a7d754390e6a3ed4370d",
-                          "title": "任務標題103",
-                          "service_type": "BATH"
+                    "data": {
+                      "total_reviews": 1,
+                      "average_rating": 3,
+                      "reviews": [
+                        {
+                          "id": "665ace0f28dba2608ccfd257",
+                          "sitter_rating": 3,
+                          "sitter_content": "改改保姆評價內容，推！",
+                          "sitter_user_updated_at": "2024-06-09T09:17:37.811Z",
+                          "sitter": {
+                            "id": "6659fb917bce00ca07bcdd14",
+                            "email": "102@mail.com",
+                            "real_name": "102",
+                            "nickname": null,
+                            "avatar": null
+                          },
+                          "sitter_user_id": "6659fb917bce00ca07bcdd14",
+                          "task": {
+                            "id": "6658a7d754390e6a3ed4370d",
+                            "title": "任務標題103",
+                            "service_type": "BATH"
+                          }
                         }
-                      }
-                    ],
+                      ]
+                    },
                     "status": true
                   }
                 }
@@ -2593,86 +2620,106 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "pet_owner_rating": {
-                            "type": "number",
-                            "minimum": 1,
-                            "maximum": 5,
-                            "default": 5
-                          },
-                          "pet_owner_content": {
-                            "type": "string"
-                          },
-                          "pet_owner_updated_at": {
-                            "type": "string"
-                          },
-                          "pet_owner": {
+                      "type": "object",
+                      "properties": {
+                        "total_reviews": {
+                          "type": "number"
+                        },
+                        "average_rating": {
+                          "type": "number"
+                        },
+                        "reviews": {
+                          "type": "array",
+                          "items": {
                             "type": "object",
                             "properties": {
                               "id": {
                                 "type": "string"
                               },
-                              "email": {
+                              "pet_owner_rating": {
+                                "type": "number",
+                                "minimum": 1,
+                                "maximum": 5,
+                                "default": 5
+                              },
+                              "pet_owner_content": {
                                 "type": "string"
                               },
-                              "real_name": {
+                              "pet_owner_updated_at": {
                                 "type": "string"
                               },
-                              "nickname": {
-                                "type": "string",
-                                "nullable": true
+                              "pet_owner": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "email": {
+                                    "type": "string"
+                                  },
+                                  "real_name": {
+                                    "type": "string"
+                                  },
+                                  "nickname": {
+                                    "type": "string",
+                                    "nullable": true
+                                  },
+                                  "avatar": {
+                                    "type": "string",
+                                    "nullable": true
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "email",
+                                  "real_name"
+                                ]
                               },
-                              "avatar": {
-                                "type": "string",
-                                "nullable": true
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "email",
-                              "real_name"
-                            ]
-                          },
-                          "task": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
+                              "pet_owner_user_id": {
                                 "type": "string"
                               },
-                              "title": {
-                                "type": "string"
-                              },
-                              "service_type": {
-                                "type": "string",
-                                "enum": [
-                                  "PHOTOGRAPHY",
-                                  "HEALTH_CARE",
-                                  "BATH",
-                                  "WALKING"
+                              "task": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "title": {
+                                    "type": "string"
+                                  },
+                                  "service_type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "PHOTOGRAPHY",
+                                      "HEALTH_CARE",
+                                      "BATH",
+                                      "WALKING"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "title",
+                                  "service_type"
                                 ]
                               }
                             },
                             "required": [
                               "id",
-                              "title",
-                              "service_type"
+                              "pet_owner_content",
+                              "pet_owner_updated_at",
+                              "pet_owner",
+                              "pet_owner_user_id",
+                              "task"
                             ]
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "pet_owner_content",
-                          "pet_owner_updated_at",
-                          "pet_owner",
-                          "task"
-                        ]
-                      }
+                          },
+                          "default": []
+                        }
+                      },
+                      "required": [
+                        "total_reviews",
+                        "average_rating"
+                      ]
                     },
                     "status": {
                       "type": "boolean"
@@ -2684,26 +2731,31 @@
                   ],
                   "description": "<指定保姆>所有評價",
                   "example": {
-                    "data": [
-                      {
-                        "id": "665ace0f28dba2608ccfd257",
-                        "pet_owner_rating": 3,
-                        "pet_owner_content": "改改飼主評價內容",
-                        "pet_owner_updated_at": "2024-06-09T09:17:37.813Z",
-                        "pet_owner": {
-                          "id": "6658a67f6676e47b02f23e8b",
-                          "email": "103@mail.com",
-                          "real_name": "103",
-                          "nickname": null,
-                          "avatar": null
-                        },
-                        "task": {
-                          "id": "6658a7d754390e6a3ed4370d",
-                          "title": "任務標題103",
-                          "service_type": "BATH"
+                    "data": {
+                      "total_reviews": 1,
+                      "average_rating": 3,
+                      "reviews": [
+                        {
+                          "id": "665ace0f28dba2608ccfd257",
+                          "pet_owner_rating": 3,
+                          "pet_owner_content": "改改飼主評價內容",
+                          "pet_owner_updated_at": "2024-06-09T09:17:37.813Z",
+                          "pet_owner": {
+                            "id": "6658a67f6676e47b02f23e8b",
+                            "email": "103@mail.com",
+                            "real_name": "103",
+                            "nickname": null,
+                            "avatar": null
+                          },
+                          "pet_owner_user_id": "6658a67f6676e47b02f23e8b",
+                          "task": {
+                            "id": "6658a7d754390e6a3ed4370d",
+                            "title": "任務標題103",
+                            "service_type": "BATH"
+                          }
                         }
-                      }
-                    ],
+                      ]
+                    },
                     "status": true
                   }
                 }
