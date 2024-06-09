@@ -390,14 +390,9 @@ export const getSitterReviews = async (req: Request<UserBaseSchema>, res: Respon
       },
     });
 
-    if (sitterReviews?.sitter == null) {
-      throw createHttpError(404, 'Sitter not found');
-    }
+    const { sitter, sitter_reviews } = sitterReviews ?? {};
 
-    const {
-      sitter: { average_rating, total_reviews },
-      sitter_reviews,
-    } = sitterReviews;
+    const { total_reviews, average_rating } = sitter ?? {};
 
     const data = sitterReviewsResponseSchema.shape.data.parse({
       total_reviews,
