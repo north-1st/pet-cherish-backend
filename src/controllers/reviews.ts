@@ -244,17 +244,11 @@ export const getOwnerReviews = async (req: Request<UserBaseSchema>, res: Respons
   const { user_id } = req.params;
 
   try {
-    const ownerReviews = await prisma.user.findMany({
+    const [ownerReviews] = await prisma.user.findMany({
       where: {
         id: user_id,
       },
       select: {
-        id: true,
-        email: true,
-        real_name: true,
-        nickname: true,
-        average_rating: true,
-        total_reviews: true,
         owner_reviews: {
           select: {
             // 只回傳保姆對飼主的評價
@@ -283,7 +277,7 @@ export const getOwnerReviews = async (req: Request<UserBaseSchema>, res: Respons
       },
     });
     res.status(200).json({
-      data: ownerReviews,
+      data: ownerReviews.owner_reviews,
       status: true,
     });
   } catch (error) {
@@ -295,13 +289,40 @@ export const getSitterReviews = async (req: Request<UserBaseSchema>, res: Respon
   const { user_id } = req.params;
 
   try {
-    const ownerReviews = await prisma.review.findMany({
+    const [sitterReviews] = await prisma.user.findMany({
       where: {
-        sitter_user_id: user_id,
+        id: user_id,
+      },
+      select: {
+        sitter_reviews: {
+          select: {
+            // 只回傳飼主對保姆的評價
+            id: true,
+            pet_owner_rating: true,
+            pet_owner_content: true,
+            pet_owner_created_at: true,
+            owner: {
+              select: {
+                id: true,
+                email: true,
+                real_name: true,
+                nickname: true,
+                avatar: true,
+              },
+            },
+            task: {
+              select: {
+                id: true,
+                title: true,
+                service_type: true,
+              },
+            },
+          },
+        },
       },
     });
     res.status(200).json({
-      data: ownerReviews,
+      data: sitterReviews.sitter_reviews,
       status: true,
     });
   } catch (error) {
