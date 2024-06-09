@@ -81,6 +81,7 @@ export const createReview = async (req: Request, res: Response, next: NextFuncti
             sitter_rating: rating,
             sitter_content: content,
             sitter_user_created_at: new Date(),
+            sitter_user_updated_at: new Date(),
           },
         });
 
@@ -181,6 +182,14 @@ export const updateReview = async (req: Request, res: Response, next: NextFuncti
       return;
     }
 
+    if (targetOrder.pet_owner_user_id !== req.user.id && targetOrder.sitter_user_id !== req.user.id) {
+      res.status(403).json({
+        message: 'Forbidden!',
+        status: false,
+      });
+      return;
+    }
+
     if (targetOrder.pet_owner_user_id === req.user.id) {
       // 飼主更新評價
       await prisma.review.update({
@@ -190,6 +199,7 @@ export const updateReview = async (req: Request, res: Response, next: NextFuncti
         data: {
           pet_owner_rating: rating,
           pet_owner_content: content,
+          pet_owner_updated_at: new Date(),
         },
       });
     } else {
@@ -201,6 +211,7 @@ export const updateReview = async (req: Request, res: Response, next: NextFuncti
         data: {
           sitter_rating: rating,
           sitter_content: content,
+          sitter_user_updated_at: new Date(),
         },
       });
     }
@@ -221,6 +232,39 @@ export const getReviewByTaskId = async (req: Request, res: Response, next: NextF
     const targetReview = await prisma.review.findUnique({
       where: {
         task_id,
+      },
+      select: {
+        pet_owner_rating: true,
+        pet_owner_content: true,
+        pet_owner_updated_at: true,
+        sitter_rating: true,
+        sitter_content: true,
+        sitter_user_updated_at: true,
+        pet_owner: {
+          select: {
+            id: true,
+            email: true,
+            real_name: true,
+            nickname: true,
+            avatar: true,
+          },
+        },
+        sitter: {
+          select: {
+            id: true,
+            email: true,
+            real_name: true,
+            nickname: true,
+            avatar: true,
+          },
+        },
+        task: {
+          select: {
+            id: true,
+            title: true,
+            service_type: true,
+          },
+        },
       },
     });
     if (!targetReview) {
@@ -244,13 +288,40 @@ export const getOwnerReviews = async (req: Request<UserBaseSchema>, res: Respons
   const { user_id } = req.params;
 
   try {
-    const ownerReviews = await prisma.review.findMany({
+    const [ownerReviews] = await prisma.user.findMany({
       where: {
-        pet_owner_user_id: user_id,
+        id: user_id,
+      },
+      select: {
+        owner_reviews: {
+          select: {
+            // 只回傳保姆對飼主的評價
+            id: true,
+            sitter_rating: true,
+            sitter_content: true,
+            sitter_user_updated_at: true,
+            sitter: {
+              select: {
+                id: true,
+                email: true,
+                real_name: true,
+                nickname: true,
+                avatar: true,
+              },
+            },
+            task: {
+              select: {
+                id: true,
+                title: true,
+                service_type: true,
+              },
+            },
+          },
+        },
       },
     });
     res.status(200).json({
-      data: ownerReviews,
+      data: ownerReviews.owner_reviews,
       status: true,
     });
   } catch (error) {
@@ -262,13 +333,40 @@ export const getSitterReviews = async (req: Request<UserBaseSchema>, res: Respon
   const { user_id } = req.params;
 
   try {
-    const ownerReviews = await prisma.review.findMany({
+    const [sitterReviews] = await prisma.user.findMany({
       where: {
-        sitter_user_id: user_id,
+        id: user_id,
+      },
+      select: {
+        sitter_reviews: {
+          select: {
+            // 只回傳飼主對保姆的評價
+            id: true,
+            pet_owner_rating: true,
+            pet_owner_content: true,
+            pet_owner_updated_at: true,
+            pet_owner: {
+              select: {
+                id: true,
+                email: true,
+                real_name: true,
+                nickname: true,
+                avatar: true,
+              },
+            },
+            task: {
+              select: {
+                id: true,
+                title: true,
+                service_type: true,
+              },
+            },
+          },
+        },
       },
     });
     res.status(200).json({
-      data: ownerReviews,
+      data: sitterReviews.sitter_reviews,
       status: true,
     });
   } catch (error) {
