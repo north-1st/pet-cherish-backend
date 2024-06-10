@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { OpenAPIRegistry, RouteConfig } from '@asteasolutions/zod-to-openapi';
 import { BearerAuth } from '@schema/bearerAuth';
-import { orderBodySchema, ordersResponseSchema } from '@schema/orders';
+import { orderBodySchema, orderParamSchema, ordersResponseSchema, reportBodySchema } from '@schema/orders';
 import { userBaseSchema } from '@schema/user';
 
 export const setOrdersSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
@@ -14,6 +14,8 @@ export const setOrdersSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerAu
   cancelOrder(registry, bearerAuth);
   getPetOwnerOrders(registry, bearerAuth);
   getSitterOrders(registry, bearerAuth);
+  updateReport(registry, bearerAuth);
+  getReportByOrderId(registry, bearerAuth);
 };
 
 const commonUpdateOrderSetting = (bearerAuth: BearerAuth): RouteConfig => ({
@@ -94,7 +96,10 @@ const createOrder = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
       body: {
         content: {
           'application/json': {
-            schema: orderBodySchema,
+            schema: {
+              report_content: '報告內容',
+              report_image_list: ['url_to_photo1.jpg", "url_to_photo2.jpg'],
+            },
           },
         },
       },
@@ -172,5 +177,84 @@ const getSitterOrders = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
     ...commonGetOrderSetting(bearerAuth),
     path: '/api/v1/orders/sitter',
     summary: '查詢：所有訂單<保姆視角>',
+  });
+};
+
+const getReportByOrderId = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
+  registry.registerPath({
+    method: 'get',
+    tags: ['Report'],
+    path: '/api/v1/orders/{order_id}/report',
+    security: [{ [bearerAuth.name]: [] }],
+    summary: '取得: 任務報告',
+    parameters: [
+      {
+        name: 'order_id',
+        in: 'path',
+        required: true,
+        schema: { type: 'string', example: '6659fd29fdf9b075e2a9362c' },
+        description: '訂單ID',
+      },
+    ],
+    responses: {
+      200: {
+        description: 'OK',
+        content: {
+          'application/json': {
+            schema: ordersResponseSchema,
+          },
+        },
+      },
+      404: {
+        description: 'Order is not found!',
+      },
+    },
+  });
+};
+
+const updateReport = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
+  registry.registerPath({
+    method: 'patch',
+    tags: ['Report'],
+    path: '/api/v1/orders/{order_id}/report',
+    security: [{ [bearerAuth.name]: [] }],
+    summary: '更新: 任務報告',
+    parameters: [
+      {
+        name: 'order_id',
+        in: 'path',
+        required: true,
+        schema: { type: 'string', example: '6659fd29fdf9b075e2a9362c' },
+        description: '訂單ID',
+      },
+    ],
+    request: {
+      body: {
+        content: {
+          'application/json': {
+            schema: reportBodySchema,
+          },
+        },
+      },
+    },
+    responses: {
+      200: {
+        description: 'OK',
+        content: {
+          'application/json': {
+            schema: ordersResponseSchema,
+          },
+        },
+      },
+      401: {
+        description: 'Unauthorized',
+      },
+      403: {
+        description: 'Forbidden',
+      },
+      404: {
+        description: 'Order is not found!',
+      },
+    },
   });
 };
