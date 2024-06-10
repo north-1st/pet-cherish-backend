@@ -1,9 +1,10 @@
 import { cleanEnv, email, num, str, url } from 'envalid';
 
 const env = cleanEnv(process.env, {
-  NODE_ENV: str(),
+  NODE_ENV: str({ default: 'development' }),
   DATABASE_URL: str(),
   WEBSITE_URL: str(),
+  BACK_END_URL: str(),
   SESSION_SECRET: str(),
   JWT_ACCESS_SECRET: str(),
   FIREBASE_TYPE: str(),
@@ -18,6 +19,7 @@ const env = cleanEnv(process.env, {
   FIREBASE_CLIENT_X509_CERT_URL: url(),
   BACK_END_DEV_URL: str(),
   BACK_END_PROD_URL: str(),
+  PORT: num(),
 });
 
 export default env;

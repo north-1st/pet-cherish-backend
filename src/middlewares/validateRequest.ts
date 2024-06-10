@@ -13,7 +13,7 @@ export const validateRequest = (schema: z.AnyZodObject) => async (req: Request, 
   } catch (error) {
     if (error instanceof ZodError) {
       const issue = error.issues[0];
-      next(createHttpError(400, `${issue.path.join('.')} - ${issue.message}`));
+      next(createHttpError(issue.message == 'Invalid id' ? 404 : 400, `${issue.path.join('.')} - ${issue.message}`));
     } else {
       next(createHttpError(500, 'Internal Server Error'));
     }

@@ -38,7 +38,7 @@ const sitterServiceRequestSchema = z
   })
   .openapi({
     example: {
-      service_city: '台北市',
+      service_city: '臺北市',
       service_district_list: ['中正區', '大同區'],
       photography_price: 100,
       health_care_price: 200,
@@ -76,7 +76,7 @@ export const sitterResponseSchema = z
     service_description: z.string(),
     average_rating: z.number().nullable(),
     total_reviews: z.number().default(0),
-    status: z.nativeEnum(SitterStatus).default(SitterStatus.APPROVING),
+    status: z.nativeEnum(SitterStatus).nullable(),
   })
   .openapi({
     example: {

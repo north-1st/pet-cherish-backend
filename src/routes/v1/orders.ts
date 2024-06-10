@@ -6,9 +6,11 @@ import {
   completeOrder,
   createOrder,
   getPetOwnerOrders,
+  getReportByOrderId,
   getSitterOrders,
   payForOrder,
   refuseSitter,
+  updateReport,
 } from '@controllers/orders';
 import requiresAuth from '@middlewares/requiresAuth';
 import { validateRequest } from '@middlewares/validateRequest';
@@ -16,6 +18,7 @@ import {
   createOrderRequestSchema,
   orderRequestSchema,
   ownerOrdersRequestSchema,
+  reportBodySchema,
   sitterOrdersRequestSchema,
 } from '@schema/orders';
 
@@ -29,5 +32,10 @@ router.patch('/:order_id/cancel', requiresAuth, validateRequest(orderRequestSche
 
 router.get('/pet-owner', requiresAuth, validateRequest(ownerOrdersRequestSchema), getPetOwnerOrders);
 router.get('/sitter', requiresAuth, validateRequest(sitterOrdersRequestSchema), getSitterOrders);
+
+router
+  .route('/:order_id/report')
+  .get(getReportByOrderId)
+  .patch(requiresAuth, validateRequest(reportBodySchema), updateReport);
 
 export default router;
