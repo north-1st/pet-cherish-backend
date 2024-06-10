@@ -19,7 +19,6 @@ const env = cleanEnv(process.env, {
   FIREBASE_CLIENT_X509_CERT_URL: url(),
   BACK_END_DEV_URL: str(),
   BACK_END_PROD_URL: str(),
-  PORT: num(),
 });
 
 export default env;
