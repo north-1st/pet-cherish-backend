@@ -164,6 +164,7 @@
                   },
                   "police_check_image": {
                     "type": "string",
+                    "nullable": true,
                     "format": "uri"
                   }
                 },
@@ -184,8 +185,68 @@
           "201": {
             "description": "Apply sitter successfully"
           },
+          "400": {
+            "description": "Already apply sitter"
+          },
           "401": {
             "description": "Unauthorized"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Sitters"
+        ],
+        "summary": "更新：保姆申請",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "certificate_number": {
+                    "type": "string"
+                  },
+                  "certificate_image": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "police_check_image": {
+                    "type": "string",
+                    "nullable": true,
+                    "format": "uri"
+                  }
+                },
+                "required": [
+                  "certificate_number",
+                  "certificate_image"
+                ],
+                "example": {
+                  "certificate_number": "12345678",
+                  "certificate_image": "https://picsum.photos/200",
+                  "police_check_image": "https://picsum.photos/200"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update sitter application successfully"
+          },
+          "201": {
+            "description": "Apply sitter successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Sitter not found"
           }
         }
       }
@@ -692,9 +753,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Sitter not found"
           },
           "403": {
             "description": "Sitter is not approved"
@@ -2520,6 +2578,394 @@
           },
           "403": {
             "description": "Forbidden"
+          },
+          "404": {
+            "description": "Order is not found!"
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{order_id}/report": {
+      "patch": {
+        "tags": [
+          "Report"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "更新: 任務報告",
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "6659fd29fdf9b075e2a9362c"
+            },
+            "description": "訂單ID"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "report_content": {
+                    "type": "string"
+                  },
+                  "report_image_list": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "report_content",
+                  "report_image_list"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "sitter_user_id": {
+                            "type": "string"
+                          },
+                          "pet_owner_user_id": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "PENDING",
+                              "VALID",
+                              "TRACKING",
+                              "COMPLETED",
+                              "CANCELED",
+                              "INVALID"
+                            ]
+                          },
+                          "note": {
+                            "type": "string"
+                          },
+                          "third_party_id": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "payment_at": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "report_content": {
+                            "type": "string"
+                          },
+                          "report_image_list": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "report_created_at": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "report_updated_at": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "task_id": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "sitter_user_id",
+                          "pet_owner_user_id",
+                          "status",
+                          "note",
+                          "third_party_id",
+                          "payment_at",
+                          "report_content",
+                          "report_image_list",
+                          "report_created_at",
+                          "report_updated_at",
+                          "created_at",
+                          "updated_at",
+                          "task_id"
+                        ]
+                      }
+                    },
+                    "total": {
+                      "type": "number"
+                    },
+                    "total_page": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "total",
+                    "total_page",
+                    "status"
+                  ],
+                  "description": "所有訂單",
+                  "example": {
+                    "data": [
+                      {
+                        "id": "6658a84a54390e6a3ed4370e",
+                        "sitter_user_id": "66571db5146b42a4acc541b6",
+                        "pet_owner_user_id": "6658a67f6676e47b02f23e8b",
+                        "status": "PENDING",
+                        "note": "我是保姆100，想接法鬥案子！",
+                        "third_party_id": null,
+                        "payment_at": null,
+                        "report_content": "",
+                        "report_image_list": [],
+                        "report_created_at": null,
+                        "report_updated_at": null,
+                        "created_at": "2024-05-30T16:24:42.444Z",
+                        "updated_at": "2024-05-30T16:24:42.444Z",
+                        "task_id": "6658a7d754390e6a3ed4370d"
+                      },
+                      {
+                        "id": "6658a256a8b5660a69d5e0d9",
+                        "sitter_user_id": "66571db5146b42a4acc541b6",
+                        "pet_owner_user_id": "66571fc0146b42a4acc541b7",
+                        "status": "PENDING",
+                        "note": "我是保姆100，想接案！",
+                        "third_party_id": null,
+                        "payment_at": null,
+                        "report_content": "",
+                        "report_image_list": [],
+                        "report_created_at": null,
+                        "report_updated_at": null,
+                        "created_at": "2024-05-30T15:59:18.340Z",
+                        "updated_at": "2024-05-30T15:59:18.340Z",
+                        "task_id": "66573506bb73e558b2e52c43"
+                      }
+                    ],
+                    "total": 2,
+                    "total_page": 1,
+                    "status": true
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Order is not found!"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "取得: 任務報告",
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "6659fd29fdf9b075e2a9362c"
+            },
+            "description": "訂單ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "sitter_user_id": {
+                            "type": "string"
+                          },
+                          "pet_owner_user_id": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "PENDING",
+                              "VALID",
+                              "TRACKING",
+                              "COMPLETED",
+                              "CANCELED",
+                              "INVALID"
+                            ]
+                          },
+                          "note": {
+                            "type": "string"
+                          },
+                          "third_party_id": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "payment_at": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "report_content": {
+                            "type": "string"
+                          },
+                          "report_image_list": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "report_created_at": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "report_updated_at": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "task_id": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "sitter_user_id",
+                          "pet_owner_user_id",
+                          "status",
+                          "note",
+                          "third_party_id",
+                          "payment_at",
+                          "report_content",
+                          "report_image_list",
+                          "report_created_at",
+                          "report_updated_at",
+                          "created_at",
+                          "updated_at",
+                          "task_id"
+                        ]
+                      }
+                    },
+                    "total": {
+                      "type": "number"
+                    },
+                    "total_page": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "total",
+                    "total_page",
+                    "status"
+                  ],
+                  "description": "所有訂單",
+                  "example": {
+                    "data": [
+                      {
+                        "id": "6658a84a54390e6a3ed4370e",
+                        "sitter_user_id": "66571db5146b42a4acc541b6",
+                        "pet_owner_user_id": "6658a67f6676e47b02f23e8b",
+                        "status": "PENDING",
+                        "note": "我是保姆100，想接法鬥案子！",
+                        "third_party_id": null,
+                        "payment_at": null,
+                        "report_content": "",
+                        "report_image_list": [],
+                        "report_created_at": null,
+                        "report_updated_at": null,
+                        "created_at": "2024-05-30T16:24:42.444Z",
+                        "updated_at": "2024-05-30T16:24:42.444Z",
+                        "task_id": "6658a7d754390e6a3ed4370d"
+                      },
+                      {
+                        "id": "6658a256a8b5660a69d5e0d9",
+                        "sitter_user_id": "66571db5146b42a4acc541b6",
+                        "pet_owner_user_id": "66571fc0146b42a4acc541b7",
+                        "status": "PENDING",
+                        "note": "我是保姆100，想接案！",
+                        "third_party_id": null,
+                        "payment_at": null,
+                        "report_content": "",
+                        "report_image_list": [],
+                        "report_created_at": null,
+                        "report_updated_at": null,
+                        "created_at": "2024-05-30T15:59:18.340Z",
+                        "updated_at": "2024-05-30T15:59:18.340Z",
+                        "task_id": "66573506bb73e558b2e52c43"
+                      }
+                    ],
+                    "total": 2,
+                    "total_page": 1,
+                    "status": true
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Order is not found!"

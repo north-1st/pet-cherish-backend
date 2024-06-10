@@ -12,7 +12,7 @@ export const applySitterRequestSchema = z.object({
     .object({
       certificate_number: z.string(),
       certificate_image: z.string().url(),
-      police_check_image: z.string().url().optional(),
+      police_check_image: z.string().url().optional().nullable(),
     })
     .openapi({
       example: {

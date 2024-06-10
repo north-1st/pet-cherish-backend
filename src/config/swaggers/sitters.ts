@@ -12,6 +12,7 @@ import {
 
 export const setSittersSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
   applySitter(registry, bearerAuth);
+  updateSitterApplication(registry, bearerAuth);
   updateSitterService(registry, bearerAuth);
   getSitterService(registry, bearerAuth);
   sitterApprove(registry, bearerAuth);
@@ -39,8 +40,44 @@ const applySitter = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
       201: {
         description: 'Apply sitter successfully',
       },
+      400: {
+        description: 'Already apply sitter',
+      },
       401: {
         description: 'Unauthorized',
+      },
+    },
+  });
+};
+
+const updateSitterApplication = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
+  registry.registerPath({
+    method: 'patch',
+    tags: ['Sitters'],
+    path: '/api/v1/apply-sitter',
+    summary: '更新：保姆申請',
+    security: [{ [bearerAuth.name]: [] }],
+    request: {
+      body: {
+        content: {
+          'application/json': {
+            schema: applySitterRequestSchema.shape.body,
+          },
+        },
+      },
+    },
+    responses: {
+      200: {
+        description: 'Update sitter application successfully',
+      },
+      201: {
+        description: 'Apply sitter successfully',
+      },
+      401: {
+        description: 'Unauthorized',
+      },
+      404: {
+        description: 'Sitter not found',
       },
     },
   });
@@ -100,9 +137,6 @@ const getSitterService = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => 
             schema: sitterResponseSchema,
           },
         },
-      },
-      400: {
-        description: 'Sitter not found',
       },
       403: {
         description: 'Sitter is not approved',

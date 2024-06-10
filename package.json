@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon src/server.ts",
     "start": "cross-env NODE_ENV=production nodemon src/server.ts",
-    "build": "tsc",
+    "build": "npx prisma generate && tsc",
     "lint": "eslint . --ext .ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "swagger": "ts-node src/swagger.ts",
