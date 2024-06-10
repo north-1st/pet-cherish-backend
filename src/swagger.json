@@ -316,6 +316,220 @@
             "description": "You are not a sitter"
           }
         }
+      },
+      "get": {
+        "tags": [
+          "Sitters"
+        ],
+        "summary": "查詢: 保母",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "default": "1"
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "default": "0"
+            },
+            "required": false,
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "default": "10"
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "service_city",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "service_district_list",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "service_type_list",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "certificate_list",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get sitters successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "user_id": {
+                        "type": "string"
+                      },
+                      "has_certificate": {
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "has_police_check": {
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "photography_price": {
+                        "type": "number",
+                        "nullable": true
+                      },
+                      "health_care_price": {
+                        "type": "number",
+                        "nullable": true
+                      },
+                      "bath_price": {
+                        "type": "number",
+                        "nullable": true
+                      },
+                      "walking_price": {
+                        "type": "number",
+                        "nullable": true
+                      },
+                      "service_size_list": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "S",
+                            "M",
+                            "L"
+                          ]
+                        },
+                        "minItems": 1,
+                        "maxItems": 3
+                      },
+                      "is_door_to_door": {
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "image_list": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 1,
+                        "maxItems": 3
+                      },
+                      "service_description": {
+                        "type": "string"
+                      },
+                      "average_rating": {
+                        "type": "number",
+                        "nullable": true
+                      },
+                      "total_reviews": {
+                        "type": "number",
+                        "default": 0
+                      },
+                      "certificate_number": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "certificate_image": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri"
+                      },
+                      "police_check_image": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri"
+                      },
+                      "status": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                          "APPROVING",
+                          "REJECTED",
+                          "PASS",
+                          "ON_BOARD"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "user_id",
+                      "photography_price",
+                      "health_care_price",
+                      "bath_price",
+                      "walking_price",
+                      "service_size_list",
+                      "image_list",
+                      "service_description",
+                      "average_rating",
+                      "certificate_number",
+                      "certificate_image",
+                      "police_check_image",
+                      "status"
+                    ],
+                    "example": {
+                      "user_id": "54489faba8bcd77a22dedue8",
+                      "has_certificate": true,
+                      "has_police_check": true,
+                      "photography_price": 100,
+                      "health_care_price": 200,
+                      "bath_price": 300,
+                      "walking_price": 400,
+                      "service_size_list": [
+                        "S",
+                        "M"
+                      ],
+                      "is_door_to_door": true,
+                      "image_list": [
+                        "https://picsum.photos/200",
+                        "https://picsum.photos/200"
+                      ],
+                      "service_description": "服務說明",
+                      "average_rating": 4.5,
+                      "total_reviews": 10,
+                      "certificate_number": "12345678",
+                      "certificate_image": "https://picsum.photos/200",
+                      "police_check_image": "https://picsum.photos/200",
+                      "status": "APPROVING"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get sitters failed"
+          }
+        }
       }
     },
     "/api/v1/sitters/{user_id}": {
