@@ -1,7 +1,10 @@
+import { z } from 'zod';
+
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { BearerAuth } from '@schema/bearerAuth';
 import {
   applySitterRequestSchema,
+  sitterRequestQuerySchema,
   sitterRequestSchema,
   sitterResponseSchema,
   updateSitterServiceRequestSchema,
@@ -13,6 +16,7 @@ export const setSittersSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerA
   getSitterService(registry, bearerAuth);
   sitterApprove(registry, bearerAuth);
   sitterReject(registry, bearerAuth);
+  getSitterServiceList(registry, bearerAuth);
 };
 
 const applySitter = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
@@ -100,6 +104,9 @@ const getSitterService = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => 
       400: {
         description: 'Sitter not found',
       },
+      403: {
+        description: 'Sitter is not approved',
+      },
       404: {
         description: 'Sitter not found',
       },
@@ -156,6 +163,31 @@ const sitterReject = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
       },
       404: {
         description: 'Sitter not found',
+      },
+    },
+  });
+};
+
+const getSitterServiceList = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
+  registry.registerPath({
+    method: 'get',
+    tags: ['Sitters'],
+    path: '/api/v1/sitters',
+    summary: '查詢: 保母',
+    request: {
+      query: sitterRequestQuerySchema.shape.query,
+    },
+    responses: {
+      200: {
+        description: 'Get sitters successfully',
+        content: {
+          'application/json': {
+            schema: z.array(sitterResponseSchema),
+          },
+        },
+      },
+      400: {
+        description: 'Get sitters failed',
       },
     },
   });

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
-import { ServiceType, TaskPublic, TaskStatus } from '@prisma/client';
+import { PetSize, ServiceType, TaskPublic, TaskStatus } from '@prisma/client';
 import { objectIdSchema } from '@schema/objectId';
 import { paginationRequestSchema } from '@schema/pagination';
 import { urlSchema } from '@schema/upload';
@@ -30,7 +30,7 @@ export const createTaskBodySchema = z
       public: 'OPEN',
       cover: 'https://picsum.photos/200',
       service_type: 'WALKING',
-      city: '台北市',
+      city: '臺北市',
       district: '中正區',
       unit_price: 200,
       description: '任務描述',
@@ -52,14 +52,48 @@ export const getTasksByUserRequestSchema = z.object({
   }),
 });
 
-export const getTasksByQueryRequestSchema = z.object({
-  query: paginationRequestSchema.extend({
-    service_city: z.string().optional(), // oprional for debugging -> need to change to must.
-    service_district_list: z.array(z.string()).min(1).optional(), // oprional for debugging -> need to change to must.
-    service_type_list: z.array(z.string()).min(1).optional(), // oprional for debugging -> need to change to must.
-    pet_size_list: z.array(z.string()).optional(),
-  }),
-});
+export const getTasksByQueryRequestSchema = z
+  .object({
+    query: paginationRequestSchema.extend({
+      service_city: z.string().optional(),
+      service_district_list: z
+        .string()
+        .transform((str) => str.split(','))
+        .optional(),
+      service_type_list: z
+        .string()
+        .transform((str) => str.split(','))
+        .refine(
+          (services) => services.every((service) => Object.values(ServiceType).includes(service as ServiceType)),
+          {
+            message: 'Invalid service type',
+          }
+        )
+        .transform((services) => services.map((service) => service as ServiceType))
+        .optional(),
+      pet_size_list: z
+        .string()
+        .transform((str) => str.split(','))
+        .refine((sizes) => sizes.every((size) => Object.values(PetSize).includes(size as PetSize)), {
+          message: 'Invalid pet size',
+        })
+        .transform((sizes) => sizes.map((size) => size as PetSize))
+        .optional(),
+    }),
+  })
+  .openapi({
+    example: {
+      query: {
+        page: '1',
+        offset: '10',
+        limit: '10',
+        service_city: '臺北市',
+        service_district_list: '中和區,板橋區',
+        service_type_list: 'PHOTOGRAPHY,HEALTH_CARE,BATH,WALKING',
+        pet_size_list: 'M,L',
+      },
+    },
+  });
 
 export const updateTaskBodySchema = createTaskBodySchema.partial().extend({
   start_at: z.string().datetime(),
@@ -107,7 +141,7 @@ export const taskResponseSchema = z
       status: 'NULL',
       cover: 'https://picsum.photos/200',
       service_type: 'WALKING',
-      city: '台北市',
+      city: '臺北市',
       district: '中正區',
       unit_price: 200,
       total: 1,
