@@ -54,25 +54,27 @@ export const getTasksByUserRequestSchema = z.object({
 
 export const getTasksByQueryRequestSchema = z.object({
   query: paginationRequestSchema.extend({
-    service_city: z.string().optional(), // oprional for debugging -> need to change to must.
-    service_district_list: z.string().transform((str) => str.split(',')),
-    // .optional(),
+    service_city: z.string().optional(),
+    service_district_list: z
+      .string()
+      .transform((str) => str.split(','))
+      .optional(),
     service_type_list: z
       .string()
       .transform((str) => str.split(','))
       .refine((services) => services.every((service) => Object.values(ServiceType).includes(service as ServiceType)), {
         message: 'Invalid service type',
       })
-      .transform((services) => services.map((service) => service as ServiceType)),
-    // .optional(),
+      .transform((services) => services.map((service) => service as ServiceType))
+      .optional(),
     pet_size_list: z
       .string()
       .transform((str) => str.split(','))
       .refine((sizes) => sizes.every((size) => Object.values(PetSize).includes(size as PetSize)), {
         message: 'Invalid pet size',
       })
-      .transform((sizes) => sizes.map((size) => size as PetSize)),
-    // .optional(),
+      .transform((sizes) => sizes.map((size) => size as PetSize))
+      .optional(),
   }),
 });
 
