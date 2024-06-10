@@ -11,6 +11,10 @@
       "description": "Production server"
     },
     {
+      "url": "https://pet-cherish-backend.zeabur.app",
+      "description": "Zeabur server"
+    },
+    {
       "url": "http://localhost:5000",
       "description": "Development server"
     }
@@ -2538,13 +2542,13 @@
                               "sitter_user_id",
                               "task"
                             ]
-                          },
-                          "default": []
+                          }
                         }
                       },
                       "required": [
                         "total_reviews",
-                        "average_rating"
+                        "average_rating",
+                        "reviews"
                       ]
                     },
                     "status": {
@@ -2626,7 +2630,8 @@
                           "type": "number"
                         },
                         "average_rating": {
-                          "type": "number"
+                          "type": "number",
+                          "nullable": true
                         },
                         "reviews": {
                           "type": "array",
