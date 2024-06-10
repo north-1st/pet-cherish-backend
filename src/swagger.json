@@ -275,7 +275,7 @@
                   "service_description"
                 ],
                 "example": {
-                  "service_city": "台北市",
+                  "service_city": "臺北市",
                   "service_district_list": [
                     "中正區",
                     "大同區"
@@ -410,6 +410,20 @@
                       "type": "number",
                       "default": 0
                     },
+                    "certificate_number": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "certificate_image": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri"
+                    },
+                    "police_check_image": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "uri"
+                    },
                     "status": {
                       "type": "string",
                       "nullable": true,
@@ -431,6 +445,9 @@
                     "image_list",
                     "service_description",
                     "average_rating",
+                    "certificate_number",
+                    "certificate_image",
+                    "police_check_image",
                     "status"
                   ],
                   "example": {
@@ -453,6 +470,9 @@
                     "service_description": "服務說明",
                     "average_rating": 4.5,
                     "total_reviews": 10,
+                    "certificate_number": "12345678",
+                    "certificate_image": "https://picsum.photos/200",
+                    "police_check_image": "https://picsum.photos/200",
                     "status": "APPROVING"
                   }
                 }
@@ -461,6 +481,9 @@
           },
           "400": {
             "description": "Sitter not found"
+          },
+          "403": {
+            "description": "Sitter is not approved"
           },
           "404": {
             "description": "Sitter not found"

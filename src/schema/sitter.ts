@@ -76,6 +76,9 @@ export const sitterResponseSchema = z
     service_description: z.string(),
     average_rating: z.number().nullable(),
     total_reviews: z.number().default(0),
+    certificate_number: z.string().nullable(),
+    certificate_image: z.string().url().nullable(),
+    police_check_image: z.string().url().nullable(),
     status: z.nativeEnum(SitterStatus).nullable(),
   })
   .openapi({
@@ -93,16 +96,43 @@ export const sitterResponseSchema = z
       service_description: '服務說明',
       average_rating: 4.5,
       total_reviews: 10,
+      certificate_number: '12345678',
+      certificate_image: 'https://picsum.photos/200',
+      police_check_image: 'https://picsum.photos/200',
       status: SitterStatus.APPROVING,
     },
   });
 
-export const sitterRequestQuerySchema = z.object({
-  query: paginationSchema.extend({
-    service_city: z.string(), // oprional for debugging -> need to change to must.
-    service_district_list: z.array(z.string()).min(1), // oprional for debugging -> need to change to must.
-  }),
-});
+export const sitterRequestQuerySchema = z
+  .object({
+    query: paginationSchema.extend({
+      service_city: z.string().optional(),
+      service_district_list: z
+        .string()
+        .transform((str) => str.split(','))
+        .optional(),
+      service_type_list: z
+        .string()
+        .transform((str) => str.split(','))
+        .optional(),
+      certificate_list: z
+        .string()
+        .transform((str) => str.split(','))
+        .optional(),
+    }),
+  })
+  .openapi({
+    example: {
+      query: {
+        service_city: '臺北市',
+        service_district_list: '中正區,大安區',
+        service_type_list: 'PHOTOGRAPHY,HEALTH_CARE,BATH,WALKING',
+        certificate_list: 'has_certificate,has_police_check',
+        page: '1',
+        limit: '10',
+      },
+    },
+  });
 
 export type ApplySitterRequest = z.infer<typeof applySitterRequestSchema>;
 export type UpdateSitterServiceRequest = z.infer<typeof updateSitterServiceRequestSchema>;
