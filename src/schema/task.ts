@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
-import { ServiceType, TaskPublic, TaskStatus } from '@prisma/client';
+import { PetSize, ServiceType, TaskPublic, TaskStatus } from '@prisma/client';
 import { objectIdSchema } from '@schema/objectId';
 import { paginationRequestSchema } from '@schema/pagination';
 import { urlSchema } from '@schema/upload';
@@ -54,10 +54,27 @@ export const getTasksByUserRequestSchema = z.object({
 
 export const getTasksByQueryRequestSchema = z.object({
   query: paginationRequestSchema.extend({
-    service_city: z.string().optional(), // oprional for debugging -> need to change to must.
-    service_district_list: z.array(z.string()).min(1).optional(), // oprional for debugging -> need to change to must.
-    service_type_list: z.array(z.string()).min(1).optional(), // oprional for debugging -> need to change to must.
-    pet_size_list: z.array(z.string()).optional(),
+    service_city: z.string().optional(),
+    service_district_list: z
+      .string()
+      .transform((str) => str.split(','))
+      .optional(),
+    service_type_list: z
+      .string()
+      .transform((str) => str.split(','))
+      .refine((services) => services.every((service) => Object.values(ServiceType).includes(service as ServiceType)), {
+        message: 'Invalid service type',
+      })
+      .transform((services) => services.map((service) => service as ServiceType))
+      .optional(),
+    pet_size_list: z
+      .string()
+      .transform((str) => str.split(','))
+      .refine((sizes) => sizes.every((size) => Object.values(PetSize).includes(size as PetSize)), {
+        message: 'Invalid pet size',
+      })
+      .transform((sizes) => sizes.map((size) => size as PetSize))
+      .optional(),
   }),
 });
 
