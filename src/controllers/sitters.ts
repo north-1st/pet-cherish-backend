@@ -154,49 +154,40 @@ export const getSitterService = async (_req: Request, res: Response, next: NextF
   }
 };
 
-export const getSitterServiceList = async (req: Request, res: Response, next: NextFunction) => {
+export const getSitterServiceList = async (_req: Request, res: Response, next: NextFunction) => {
   try {
-    const service_district_list = req.query.service_district_list
-      ? Array.isArray(req.query.service_district_list)
-        ? (req.query.service_district_list as string[])[0].split(',')
-        : [req.query.service_district_list]
-      : [];
-    const service_type_list = req.query.service_type_list
-      ? Array.isArray(req.query.service_type_list)
-        ? (req.query.service_type_list as string[])[0].split(',').map((type) => type.toLowerCase())
-        : [req.query.service_type_list]
-      : [];
-    const certificate_list = req.query.certificate_list
-      ? Array.isArray(req.query.certificate_list)
-        ? (req.query.certificate_list as string[])[0].split(',').map((cert) => cert.toLowerCase())
-        : [req.query.certificate_list]
-      : [];
+    const req = sitterRequestQuerySchema.parse(_req);
 
-    const notNullConditions = service_type_list.map((type) => ({ [`${type}_price`]: { not: null } }));
-    const notNullCertificates = certificate_list.map((type) => ({ [`${type}`]: { not: false } }));
-    const { page, limit, offset } = paginationSchema.parse(req.query);
+    const service_type_list = req.query.service_type_list ?? [];
+    const certificate_list = req.query.certificate_list ?? [];
 
-    const parsedQuery = sitterRequestQuerySchema.parse({
-      query: {
-        service_city: req.query.service_city,
-        service_district_list,
-      },
-    }).query;
-
-    console.log('Parsed Query:', parsedQuery);
-    console.log('service_type_list notNullConditions:', notNullConditions);
-    console.log('certificate_list notNullCertificates:', notNullCertificates);
-
-    const queryParams = {
+    const notNullConditions = service_type_list.map((type) => ({ [`${type}_price`.toLowerCase()]: { not: null } }));
+    const notNullCertificates = certificate_list.map((type) => ({ [type]: { not: false } }));
+    const { page, limit, offset } = paginationSchema.parse(_req.query);
+    type QueryParams = {
       where: {
-        service_city: parsedQuery.service_city,
-        service_district_list: {
-          hasSome: parsedQuery.service_district_list,
-        },
-        AND: [...notNullConditions, ...notNullCertificates],
-      },
+        service_city?: string;
+        service_district_list?: { hasSome: string[] };
+        AND?: { [key: string]: { not: boolean | null } }[];
+      };
+    };
+    const queryParams: QueryParams = {
+      where: {},
     };
 
+    if (req.query.service_city) {
+      queryParams.where.service_city = req.query.service_city;
+    }
+
+    if (req.query.service_district_list && req.query.service_district_list.length > 0) {
+      queryParams.where.service_district_list = {
+        hasSome: req.query.service_district_list,
+      };
+    }
+
+    if (notNullConditions.length > 0 || notNullCertificates.length > 0) {
+      queryParams.where.AND = [...notNullConditions, ...notNullCertificates];
+    }
     console.log('Prisma Query:', queryParams);
     const [sitters, total] = await prisma.$transaction([
       prisma.sitter.findMany({
