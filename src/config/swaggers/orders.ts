@@ -102,10 +102,7 @@ const createOrder = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
       body: {
         content: {
           'application/json': {
-            schema: {
-              report_content: '報告內容',
-              report_image_list: ['url_to_photo1.jpg", "url_to_photo2.jpg'],
-            },
+            schema: orderBodySchema,
           },
         },
       },
