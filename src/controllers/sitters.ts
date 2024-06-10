@@ -205,15 +205,15 @@ export const getSitterServiceList = async (_req: Request, res: Response, next: N
       status: true,
       data: {
         sitter_list: sitters,
-        pagination: {
-          current_page: page,
-          total_pages: Math.ceil(total / limit),
-          has_next_page: page < Math.ceil(total / limit),
-          has_prev_page: page > 1,
-        },
-        total: total,
-        message: 'Get sitter service list successfully',
       },
+      pagination: {
+        current_page: page,
+        total_pages: Math.ceil(total / limit),
+        has_next_page: page < Math.ceil(total / limit),
+        has_prev_page: page > 1,
+      },
+      total: total,
+      message: 'Get sitter service list successfully',
     });
   } catch (error) {
     console.error('Error in getSitterServiceList:', error);

@@ -223,15 +223,15 @@ export const getTasksByQuery = async (_req: Request, res: Response, next: NextFu
       status: true,
       data: {
         tasks_list: tasks,
-        pagination: {
-          current_page: page,
-          total_pages: Math.ceil(count / limit),
-          has_next_page: page < Math.ceil(count / limit),
-          has_prev_page: page > 1,
-        },
-        total: count,
-        message: 'Get tasks successfully',
       },
+      pagination: {
+        current_page: page,
+        total_pages: Math.ceil(count / limit),
+        has_next_page: page < Math.ceil(count / limit),
+        has_prev_page: page > 1,
+      },
+      total: count,
+      message: 'Get tasks successfully',
     });
   } catch (error) {
     console.log(error);

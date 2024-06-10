@@ -5,6 +5,7 @@ import { BearerAuth } from '@schema/bearerAuth';
 import {
   createTaskBodySchema,
   deleteTaskRequestSchema,
+  getTasksByQueryRequestSchema,
   getTasksByUserRequestSchema,
   taskResponseSchema,
   updateTaskRequestSchema,
@@ -15,6 +16,7 @@ export const setTasksSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerAut
   updateTask(registry, bearerAuth);
   deleteTask(registry, bearerAuth);
   getTasksByUser(registry, bearerAuth);
+  getTasksByQuery(registry, bearerAuth);
 };
 
 const createTask = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
@@ -139,6 +141,31 @@ const getTasksByUser = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
       },
       404: {
         description: 'User not found',
+      },
+    },
+  });
+};
+
+const getTasksByQuery = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
+  registry.registerPath({
+    method: 'get',
+    tags: ['Tasks'],
+    path: '/api/v1/tasks',
+    summary: '查詢：任務',
+    request: {
+      query: getTasksByQueryRequestSchema.shape.query,
+    },
+    responses: {
+      200: {
+        description: 'OK',
+        content: {
+          'application/json': {
+            schema: z.array(taskResponseSchema),
+          },
+        },
+      },
+      400: {
+        description: 'Get tasks failed',
       },
     },
   });
