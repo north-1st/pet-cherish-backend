@@ -52,31 +52,48 @@ export const getTasksByUserRequestSchema = z.object({
   }),
 });
 
-export const getTasksByQueryRequestSchema = z.object({
-  query: paginationRequestSchema.extend({
-    service_city: z.string().optional(),
-    service_district_list: z
-      .string()
-      .transform((str) => str.split(','))
-      .optional(),
-    service_type_list: z
-      .string()
-      .transform((str) => str.split(','))
-      .refine((services) => services.every((service) => Object.values(ServiceType).includes(service as ServiceType)), {
-        message: 'Invalid service type',
-      })
-      .transform((services) => services.map((service) => service as ServiceType))
-      .optional(),
-    pet_size_list: z
-      .string()
-      .transform((str) => str.split(','))
-      .refine((sizes) => sizes.every((size) => Object.values(PetSize).includes(size as PetSize)), {
-        message: 'Invalid pet size',
-      })
-      .transform((sizes) => sizes.map((size) => size as PetSize))
-      .optional(),
-  }),
-});
+export const getTasksByQueryRequestSchema = z
+  .object({
+    query: paginationRequestSchema.extend({
+      service_city: z.string().optional(),
+      service_district_list: z
+        .string()
+        .transform((str) => str.split(','))
+        .optional(),
+      service_type_list: z
+        .string()
+        .transform((str) => str.split(','))
+        .refine(
+          (services) => services.every((service) => Object.values(ServiceType).includes(service as ServiceType)),
+          {
+            message: 'Invalid service type',
+          }
+        )
+        .transform((services) => services.map((service) => service as ServiceType))
+        .optional(),
+      pet_size_list: z
+        .string()
+        .transform((str) => str.split(','))
+        .refine((sizes) => sizes.every((size) => Object.values(PetSize).includes(size as PetSize)), {
+          message: 'Invalid pet size',
+        })
+        .transform((sizes) => sizes.map((size) => size as PetSize))
+        .optional(),
+    }),
+  })
+  .openapi({
+    example: {
+      query: {
+        page: '1',
+        offset: '10',
+        limit: '10',
+        service_city: '台北市',
+        service_district_list: '中和區,板橋區',
+        service_type_list: 'PHOTOGRAPHY,HEALTH_CARE,BATH,WALKING',
+        pet_size_list: 'M,L',
+      },
+    },
+  });
 
 export const updateTaskBodySchema = createTaskBodySchema.partial().extend({
   start_at: z.string().datetime(),
