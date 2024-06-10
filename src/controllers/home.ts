@@ -5,7 +5,7 @@ import { Task, TaskStatus } from '@prisma/client';
 
 import prisma from '../prisma';
 
-export const home = async (req: Request, res: Response, next: NextFunction) => {
+export const getHomeInfo = async (req: Request, res: Response, next: NextFunction) => {
   const queryParamsSitters = {};
   const queryParamsReviews = {};
   const queryParamsUsers = {};
