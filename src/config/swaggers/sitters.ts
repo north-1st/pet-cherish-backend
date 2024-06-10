@@ -100,6 +100,9 @@ const getSitterService = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => 
       400: {
         description: 'Sitter not found',
       },
+      403: {
+        description: 'Sitter is not approved',
+      },
       404: {
         description: 'Sitter not found',
       },
