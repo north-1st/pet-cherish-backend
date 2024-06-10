@@ -76,6 +76,9 @@ export const sitterResponseSchema = z
     service_description: z.string(),
     average_rating: z.number().nullable(),
     total_reviews: z.number().default(0),
+    certificate_number: z.string().nullable(),
+    certificate_image: z.string().url().nullable(),
+    police_check_image: z.string().url().nullable(),
     status: z.nativeEnum(SitterStatus).nullable(),
   })
   .openapi({
@@ -93,6 +96,9 @@ export const sitterResponseSchema = z
       service_description: '服務說明',
       average_rating: 4.5,
       total_reviews: 10,
+      certificate_number: '12345678',
+      certificate_image: 'https://picsum.photos/200',
+      police_check_image: 'https://picsum.photos/200',
       status: SitterStatus.APPROVING,
     },
   });
