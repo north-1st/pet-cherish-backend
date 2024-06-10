@@ -1046,6 +1046,212 @@
             "description": "Pet not found"
           }
         }
+      },
+      "get": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "查詢：任務",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "default": "1"
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "default": "0"
+            },
+            "required": false,
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "default": "10"
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "service_city",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "service_district_list",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "service_type_list",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "pet_size_list",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "public": {
+                        "type": "string",
+                        "enum": [
+                          "OPEN",
+                          "CLOSED",
+                          "IN_TRANSACTION",
+                          "DELETED",
+                          "COMPLETED"
+                        ],
+                        "default": "OPEN"
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "NULL",
+                          "PENDING",
+                          "UN_PAID",
+                          "TRACKING",
+                          "COMPLETED"
+                        ],
+                        "default": "NULL"
+                      },
+                      "cover": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "uri"
+                          },
+                          {
+                            "nullable": true
+                          },
+                          {
+                            "nullable": true
+                          }
+                        ]
+                      },
+                      "service_type": {
+                        "type": "string",
+                        "enum": [
+                          "PHOTOGRAPHY",
+                          "HEALTH_CARE",
+                          "BATH",
+                          "WALKING"
+                        ]
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "district": {
+                        "type": "string"
+                      },
+                      "unit_price": {
+                        "type": "number"
+                      },
+                      "total": {
+                        "type": "number"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "accept_sitter_contact": {
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "start_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "end_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "title",
+                      "cover",
+                      "service_type",
+                      "city",
+                      "district",
+                      "unit_price",
+                      "total",
+                      "description",
+                      "start_at",
+                      "end_at",
+                      "created_at",
+                      "updated_at"
+                    ],
+                    "example": {
+                      "id": "66489faba8bcd77a22dedbe3",
+                      "title": "任務名稱",
+                      "public": "OPEN",
+                      "status": "NULL",
+                      "cover": "https://picsum.photos/200",
+                      "service_type": "WALKING",
+                      "city": "台北市",
+                      "district": "中正區",
+                      "unit_price": 200,
+                      "total": 1,
+                      "description": "任務描述",
+                      "accept_sitter_contact": true,
+                      "start_at": "2022-01-01T00:00:00.000Z",
+                      "end_at": "2022-01-01T03:00:00.000Z",
+                      "created_at": "2022-01-01T00:00:00.000Z",
+                      "updated_at": "2022-01-01T00:00:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get tasks failed"
+          }
+        }
       }
     },
     "/api/v1/tasks/{task_id}": {
