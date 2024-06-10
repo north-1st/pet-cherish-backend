@@ -2,7 +2,12 @@ import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 
 import prisma from '@prisma';
-import { reviewBodySchema, reviewParamSchema } from '@schema/review';
+import {
+  ownerReviewsResponseSchema,
+  reviewBodySchema,
+  reviewParamSchema,
+  sitterReviewsResponseSchema,
+} from '@schema/review';
 import { UserBaseSchema } from '@schema/user';
 
 export const createReview = async (req: Request, res: Response, next: NextFunction) => {
@@ -288,11 +293,13 @@ export const getOwnerReviews = async (req: Request<UserBaseSchema>, res: Respons
   const { user_id } = req.params;
 
   try {
-    const [ownerReviews] = await prisma.user.findMany({
+    const owner_reviews = await prisma.user.findUnique({
       where: {
         id: user_id,
       },
       select: {
+        average_rating: true,
+        total_reviews: true,
         owner_reviews: {
           select: {
             // 只回傳保姆對飼主的評價
@@ -309,6 +316,7 @@ export const getOwnerReviews = async (req: Request<UserBaseSchema>, res: Respons
                 avatar: true,
               },
             },
+            sitter_user_id: true,
             task: {
               select: {
                 id: true,
@@ -320,8 +328,17 @@ export const getOwnerReviews = async (req: Request<UserBaseSchema>, res: Respons
         },
       },
     });
+
+    const { owner_reviews: reviews, total_reviews, average_rating } = owner_reviews ?? {};
+
+    const data = ownerReviewsResponseSchema.shape.data.parse({
+      total_reviews,
+      average_rating,
+      reviews,
+    });
+
     res.status(200).json({
-      data: ownerReviews.owner_reviews,
+      data,
       status: true,
     });
   } catch (error) {
@@ -333,11 +350,17 @@ export const getSitterReviews = async (req: Request<UserBaseSchema>, res: Respon
   const { user_id } = req.params;
 
   try {
-    const [sitterReviews] = await prisma.user.findMany({
+    const sitterReviews = await prisma.user.findUnique({
       where: {
         id: user_id,
       },
       select: {
+        sitter: {
+          select: {
+            total_reviews: true,
+            average_rating: true,
+          },
+        },
         sitter_reviews: {
           select: {
             // 只回傳飼主對保姆的評價
@@ -354,6 +377,7 @@ export const getSitterReviews = async (req: Request<UserBaseSchema>, res: Respon
                 avatar: true,
               },
             },
+            pet_owner_user_id: true,
             task: {
               select: {
                 id: true,
@@ -365,8 +389,19 @@ export const getSitterReviews = async (req: Request<UserBaseSchema>, res: Respon
         },
       },
     });
+
+    const { sitter, sitter_reviews } = sitterReviews ?? {};
+
+    const { total_reviews, average_rating } = sitter ?? {};
+
+    const data = sitterReviewsResponseSchema.shape.data.parse({
+      total_reviews,
+      average_rating,
+      reviews: sitter_reviews,
+    });
+
     res.status(200).json({
-      data: sitterReviews.sitter_reviews,
+      data,
       status: true,
     });
   } catch (error) {

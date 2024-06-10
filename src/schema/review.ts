@@ -2,9 +2,24 @@ import { z } from 'zod';
 
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { ServiceType } from '@prisma/client';
-import { createBaseResponseDataSchema, createResponseDataSchema } from '@schema';
+import { createBaseResponseDataSchema } from '@schema';
+import { objectIdSchema } from '@schema/objectId';
 
 extendZodWithOpenApi(z);
+
+export const getReviewsParamSchema = z
+  .object({
+    params: z.object({
+      user_id: objectIdSchema,
+    }),
+  })
+  .openapi({
+    example: {
+      params: {
+        user_id: '6659fd29fdf9b075e2a9362c',
+      },
+    },
+  });
 
 export const reviewParamSchema = z.object({
   task_id: z.string().openapi({
@@ -69,7 +84,7 @@ export const ownerReviewResponseDataSchema = z.object({
   id: z.string(),
   sitter_rating: z.number().min(1).max(5).default(5),
   sitter_content: z.string(),
-  sitter_user_updated_at: z.string(),
+  sitter_user_updated_at: z.date(),
   sitter: z.object({
     id: z.string(),
     email: z.string(),
@@ -77,6 +92,7 @@ export const ownerReviewResponseDataSchema = z.object({
     nickname: z.string().nullable().optional(),
     avatar: z.string().nullable().optional(),
   }),
+  sitter_user_id: z.string(),
   task: z.object({
     id: z.string(),
     title: z.string(),
@@ -88,7 +104,7 @@ export const sitterReviewResponseDataSchema = z.object({
   id: z.string(),
   pet_owner_rating: z.number().min(1).max(5).default(5),
   pet_owner_content: z.string(),
-  pet_owner_updated_at: z.string(),
+  pet_owner_updated_at: z.date(),
   pet_owner: z.object({
     id: z.string(),
     email: z.string(),
@@ -96,6 +112,7 @@ export const sitterReviewResponseDataSchema = z.object({
     nickname: z.string().nullable().optional(),
     avatar: z.string().nullable().optional(),
   }),
+  pet_owner_user_id: z.string(),
   task: z.object({
     id: z.string(),
     title: z.string(),
@@ -137,59 +154,87 @@ export const reviewResponseSchema = createBaseResponseDataSchema(reviewResponseD
   },
 });
 
-export const ownerReviewsResponseSchema = createResponseDataSchema(ownerReviewResponseDataSchema).openapi({
-  description: '<指定飼主>所有評價',
-  example: {
-    data: [
-      {
-        id: '665ace0f28dba2608ccfd257',
-        sitter_rating: 3,
-        sitter_content: '改改保姆評價內容，推！',
-        sitter_user_updated_at: '2024-06-09T09:17:37.811Z',
-        sitter: {
-          id: '6659fb917bce00ca07bcdd14',
-          email: '102@mail.com',
-          real_name: '102',
-          nickname: null,
-          avatar: null,
-        },
-        task: {
-          id: '6658a7d754390e6a3ed4370d',
-          title: '任務標題103',
-          service_type: 'BATH',
-        },
+export const ownerReviewsResponseSchema = z
+  .object({
+    data: z.object({
+      total_reviews: z.number(),
+      average_rating: z.number().nullable(),
+      reviews: z.array(ownerReviewResponseDataSchema),
+    }),
+    status: z.boolean(),
+  })
+  .openapi({
+    description: '<指定飼主>所有評價',
+    example: {
+      data: {
+        total_reviews: 1,
+        average_rating: 3,
+        reviews: [
+          {
+            id: '665ace0f28dba2608ccfd257',
+            sitter_rating: 3,
+            sitter_content: '改改保姆評價內容，推！',
+            sitter_user_updated_at: new Date('2024-06-09T09:17:37.811Z'),
+            sitter: {
+              id: '6659fb917bce00ca07bcdd14',
+              email: '102@mail.com',
+              real_name: '102',
+              nickname: null,
+              avatar: null,
+            },
+            sitter_user_id: '6659fb917bce00ca07bcdd14',
+            task: {
+              id: '6658a7d754390e6a3ed4370d',
+              title: '任務標題103',
+              service_type: 'BATH',
+            },
+          },
+        ],
       },
-    ],
-    status: true,
-  },
-});
+      status: true,
+    },
+  });
 
-export const sitterReviewsResponseSchema = createResponseDataSchema(sitterReviewResponseDataSchema).openapi({
-  description: '<指定保姆>所有評價',
-  example: {
-    data: [
-      {
-        id: '665ace0f28dba2608ccfd257',
-        pet_owner_rating: 3,
-        pet_owner_content: '改改飼主評價內容',
-        pet_owner_updated_at: '2024-06-09T09:17:37.813Z',
-        pet_owner: {
-          id: '6658a67f6676e47b02f23e8b',
-          email: '103@mail.com',
-          real_name: '103',
-          nickname: null,
-          avatar: null,
-        },
-        task: {
-          id: '6658a7d754390e6a3ed4370d',
-          title: '任務標題103',
-          service_type: 'BATH',
-        },
+export const sitterReviewsResponseSchema = z
+  .object({
+    data: z.object({
+      total_reviews: z.number(),
+      average_rating: z.number().nullable(),
+      reviews: z.array(sitterReviewResponseDataSchema).default([]),
+    }),
+    status: z.boolean(),
+  })
+  .openapi({
+    description: '<指定保姆>所有評價',
+    example: {
+      data: {
+        total_reviews: 1,
+        average_rating: 3,
+        reviews: [
+          {
+            id: '665ace0f28dba2608ccfd257',
+            pet_owner_rating: 3,
+            pet_owner_content: '改改飼主評價內容',
+            pet_owner_updated_at: new Date('2024-06-09T09:17:37.813Z'),
+            pet_owner: {
+              id: '6658a67f6676e47b02f23e8b',
+              email: '103@mail.com',
+              real_name: '103',
+              nickname: null,
+              avatar: null,
+            },
+            pet_owner_user_id: '6658a67f6676e47b02f23e8b',
+            task: {
+              id: '6658a7d754390e6a3ed4370d',
+              title: '任務標題103',
+              service_type: 'BATH',
+            },
+          },
+        ],
       },
-    ],
-    status: true,
-  },
-});
+      status: true,
+    },
+  });
 
 export type ReviewParam = z.infer<typeof reviewParamSchema>;
 export type ReviewRequest = z.infer<typeof reviewRequestSchema>;
