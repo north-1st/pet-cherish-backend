@@ -164,6 +164,7 @@
                   },
                   "police_check_image": {
                     "type": "string",
+                    "nullable": true,
                     "format": "uri"
                   }
                 },
@@ -184,8 +185,68 @@
           "201": {
             "description": "Apply sitter successfully"
           },
+          "400": {
+            "description": "Already apply sitter"
+          },
           "401": {
             "description": "Unauthorized"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Sitters"
+        ],
+        "summary": "更新：保姆申請",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "certificate_number": {
+                    "type": "string"
+                  },
+                  "certificate_image": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "police_check_image": {
+                    "type": "string",
+                    "nullable": true,
+                    "format": "uri"
+                  }
+                },
+                "required": [
+                  "certificate_number",
+                  "certificate_image"
+                ],
+                "example": {
+                  "certificate_number": "12345678",
+                  "certificate_image": "https://picsum.photos/200",
+                  "police_check_image": "https://picsum.photos/200"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update sitter application successfully"
+          },
+          "201": {
+            "description": "Apply sitter successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Sitter not found"
           }
         }
       }
@@ -692,9 +753,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Sitter not found"
           },
           "403": {
             "description": "Sitter is not approved"

@@ -17,6 +17,16 @@ export const applySitter = async (_req: Request, res: Response, next: NextFuncti
   try {
     const req = applySitterRequestSchema.parse(_req);
 
+    const sitter = await prisma.sitter.findUnique({
+      where: {
+        user_id: _req.user!.id,
+      },
+    });
+
+    if (sitter) {
+      throw createHttpError(400, 'Already apply sitter');
+    }
+
     await prisma.sitter.create({
       data: {
         user_id: _req.user!.id,
@@ -27,6 +37,38 @@ export const applySitter = async (_req: Request, res: Response, next: NextFuncti
     res.status(201).json({
       status: true,
       message: 'Apply sitter successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateSitterApplication = async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const req = applySitterRequestSchema.parse(_req);
+
+    const sitter = await prisma.sitter.findUnique({
+      where: {
+        user_id: _req.user!.id,
+      },
+    });
+
+    if (!sitter) {
+      applySitter(_req, res, next);
+      return;
+    }
+
+    await prisma.sitter.update({
+      where: {
+        user_id: _req.user!.id,
+      },
+      data: {
+        ...req.body,
+      },
+    });
+    res.status(200).json({
+      status: true,
+      message: 'Update sitter application successfully',
     });
   } catch (error) {
     next(error);
