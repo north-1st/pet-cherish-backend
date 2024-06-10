@@ -3,6 +3,7 @@ import createHttpError from 'http-errors';
 
 import prisma from '@prisma';
 import { UserBaseSchema } from '@schema/user';
+import getPayloadFromToken from '@service/getPayloadFromToken';
 
 const isExistingSitter = async (req: Request<UserBaseSchema>, _res: Response, next: NextFunction) => {
   try {
@@ -18,7 +19,10 @@ const isExistingSitter = async (req: Request<UserBaseSchema>, _res: Response, ne
     if (!sitter) {
       throw createHttpError(404, 'Sitter not found');
     }
-    if (!sitter.user.is_sitter) {
+
+    const { id: user_id } = getPayloadFromToken(req);
+
+    if (!sitter.user.is_sitter && user_id != req.params.user_id) {
       throw createHttpError(403, 'Sitter is not approved');
     }
 
