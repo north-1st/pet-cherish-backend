@@ -1937,9 +1937,16 @@
           "content": {
             "application/json": {
               "schema": {
-                "report_content": "報告內容",
-                "report_image_list": [
-                  "url_to_photo1.jpg\", \"url_to_photo2.jpg"
+                "type": "object",
+                "properties": {
+                  "task_id": {
+                    "type": "string",
+                    "description": "任務編號",
+                    "example": "6658a7d754390e6a3ed4370d"
+                  }
+                },
+                "required": [
+                  "task_id"
                 ]
               }
             }
@@ -2607,37 +2614,20 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "body": {
-                    "type": "object",
-                    "properties": {
-                      "report_content": {
-                        "type": "string"
-                      },
-                      "report_image_list": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        }
-                      }
-                    },
-                    "required": [
-                      "report_content",
-                      "report_image_list"
-                    ]
+                  "report_content": {
+                    "type": "string"
+                  },
+                  "report_image_list": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
                   }
                 },
                 "required": [
-                  "body"
-                ],
-                "description": "報告",
-                "example": {
-                  "body": {
-                    "report_content": "報告內容",
-                    "report_image_list": [
-                      "url_to_photo1.jpg\", \"url_to_photo2.jpg"
-                    ]
-                  }
-                }
+                  "report_content",
+                  "report_image_list"
+                ]
               }
             }
           }

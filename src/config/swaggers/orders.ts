@@ -2,7 +2,13 @@ import { z } from 'zod';
 
 import { OpenAPIRegistry, RouteConfig } from '@asteasolutions/zod-to-openapi';
 import { BearerAuth } from '@schema/bearerAuth';
-import { orderBodySchema, orderParamSchema, ordersResponseSchema, reportBodySchema } from '@schema/orders';
+import {
+  orderBodySchema,
+  orderParamSchema,
+  ordersResponseSchema,
+  reportBodyContentSchema,
+  reportBodySchema,
+} from '@schema/orders';
 import { userBaseSchema } from '@schema/user';
 
 export const setOrdersSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
@@ -96,10 +102,7 @@ const createOrder = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
       body: {
         content: {
           'application/json': {
-            schema: {
-              report_content: '報告內容',
-              report_image_list: ['url_to_photo1.jpg", "url_to_photo2.jpg'],
-            },
+            schema: orderBodySchema,
           },
         },
       },
@@ -232,7 +235,7 @@ const updateReport = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
       body: {
         content: {
           'application/json': {
-            schema: reportBodySchema,
+            schema: reportBodyContentSchema,
           },
         },
       },
