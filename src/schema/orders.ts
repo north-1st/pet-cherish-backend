@@ -136,12 +136,14 @@ export const ordersResponseSchema = createResponsePaginationDataSchema(ordersRes
   },
 });
 
+export const reportBodyContentSchema = z.object({
+  report_content: z.string(),
+  report_image_list: z.array(z.string()),
+});
+
 export const reportBodySchema = z
   .object({
-    body: z.object({
-      report_content: z.string(),
-      report_image_list: z.array(z.string()),
-    }),
+    body: reportBodyContentSchema,
   })
   .openapi({
     description: '報告',
