@@ -8,8 +8,10 @@ import {
   SitterRequest,
   applySitterRequestSchema,
   sitterRequestQuerySchema,
+  sitterRequestSchema,
   updateSitterServiceRequestSchema,
 } from '@schema/sitter';
+import getPayloadFromToken from '@service/getPayloadFromToken';
 
 export const applySitter = async (_req: Request, res: Response, next: NextFunction) => {
   try {
@@ -124,16 +126,21 @@ export const sitterReject = async (req: SitterRequest, res: Response, next: Next
   }
 };
 
-export const getSitterService = async (req: SitterRequest, res: Response, next: NextFunction) => {
+export const getSitterService = async (_req: Request, res: Response, next: NextFunction) => {
   try {
+    const { id: user_id } = getPayloadFromToken(_req);
+    const req = sitterRequestSchema.parse(_req);
+
+    const hideSecret = user_id != req.params.user_id;
+
     const sitterService = await prisma.sitter.findUnique({
       where: {
         user_id: req.params.user_id,
       },
       omit: {
-        certificate_number: true,
-        certificate_image: true,
-        police_check_image: true,
+        certificate_number: hideSecret,
+        certificate_image: hideSecret,
+        police_check_image: hideSecret,
       },
     });
 
