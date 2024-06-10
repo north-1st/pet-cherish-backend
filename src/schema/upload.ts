@@ -6,10 +6,20 @@ extendZodWithOpenApi(z);
 
 export const urlSchema = z.union([z.string().url(), z.null()]);
 
+export const uploadImageTypeSchema = z.enum([
+  'PROFILE',
+  'PET',
+  'TASK',
+  'SITTER',
+  'CERTIFICATE',
+  'POLICE_CHECK',
+  'REPORT',
+]);
+
 export const uploadImageRequestSchema = z.object({
   file: z.custom<Express.Multer.File>().optional(),
   body: z.object({
-    type: z.enum(['PROFILE', 'PET', 'TASK', 'SITTER']),
+    type: uploadImageTypeSchema,
   }),
 });
 export const uploadImageResponseSchema = z.string().url().openapi({
