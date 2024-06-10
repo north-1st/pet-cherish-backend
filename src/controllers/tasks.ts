@@ -229,9 +229,9 @@ export const getTasksByQuery = async (_req: Request, res: Response, next: NextFu
           has_next_page: page < Math.ceil(count / limit),
           has_prev_page: page > 1,
         },
-        total: count,
-        message: 'Get tasks successfully',
       },
+      total: count,
+      message: 'Get tasks successfully',
     });
   } catch (error) {
     console.log(error);
