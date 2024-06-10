@@ -3221,7 +3221,7 @@
         "tags": [
           "Home"
         ],
-        "summary": "查詢：任務",
+        "summary": "取得: 首頁資訊",
         "responses": {
           "200": {
             "description": "Get homepage successfully",
