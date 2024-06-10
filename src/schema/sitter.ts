@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { PetSize, SitterStatus } from '@prisma/client';
 import { objectIdSchema } from '@schema/objectId';
-import { paginationSchema } from '@schema/pagination';
+import { paginationRequestSchema, paginationSchema } from '@schema/pagination';
 
 extendZodWithOpenApi(z);
 
@@ -105,7 +105,7 @@ export const sitterResponseSchema = z
 
 export const sitterRequestQuerySchema = z
   .object({
-    query: paginationSchema.extend({
+    query: paginationRequestSchema.extend({
       service_city: z.string().optional(),
       service_district_list: z
         .string()
@@ -130,6 +130,7 @@ export const sitterRequestQuerySchema = z
         certificate_list: 'has_certificate,has_police_check',
         page: '1',
         limit: '10',
+        offset: '10',
       },
     },
   });

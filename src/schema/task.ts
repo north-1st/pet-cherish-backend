@@ -87,7 +87,7 @@ export const getTasksByQueryRequestSchema = z
         page: '1',
         offset: '10',
         limit: '10',
-        service_city: '台北市',
+        service_city: '臺北市',
         service_district_list: '中和區,板橋區',
         service_type_list: 'PHOTOGRAPHY,HEALTH_CARE,BATH,WALKING',
         pet_size_list: 'M,L',
