@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 
 import prisma from '@prisma';
-import { PetSize, ServiceType } from '@prisma/client';
 import { paginationSchema } from '@schema/pagination';
 import {
   CreateTaskBody,

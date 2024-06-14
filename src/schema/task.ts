@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { PetSize, ServiceType, TaskPublic, TaskStatus } from '@prisma/client';
+import { createBaseResponseDataSchema } from '@schema';
 import { objectIdSchema } from '@schema/objectId';
 import { paginationRequestSchema } from '@schema/pagination';
 import { urlSchema } from '@schema/upload';
@@ -159,6 +160,59 @@ export const taskResponseSchema = z
       updated_at: '2022-01-01T00:00:00.000Z',
     },
   });
+
+const taskByIdResponseDataSchema = z.object({
+  id: objectIdSchema,
+  title: z.string(),
+  public: z.nativeEnum(TaskPublic).default(TaskPublic.OPEN),
+  status: z.nativeEnum(TaskStatus).default(TaskStatus.NULL),
+  cover: urlSchema,
+  service_type: z.nativeEnum(ServiceType),
+  city: z.string(),
+  district: z.string(),
+  unit_price: z.number(),
+  total: z.number(),
+  description: z.string(),
+  accept_sitter_contact: z.boolean().default(false),
+  start_at: z.string().datetime(),
+  end_at: z.string().datetime(),
+  created_at: z.string().datetime(),
+  updated_at: z.string().datetime(),
+  user_id: objectIdSchema,
+  pet_id: objectIdSchema,
+  order_id: z.string().nullable().optional(),
+  review_id: z.string().nullable().optional(),
+});
+
+export const taskByIdResponseSchema = createBaseResponseDataSchema(taskByIdResponseDataSchema).openapi({
+  description: '查詢：指定任務',
+  example: {
+    status: true,
+    data: {
+      id: '6658a7d754390e6a3ed4370d',
+      title: '任務標題103',
+      public: 'OPEN',
+      status: 'PENDING',
+      cover:
+        'https://storage.googleapis.com/pet-cherish-dev.appspot.com/task/3af7e666-7a77-4c34-a764-fbdf8cef63dd.jpeg?GoogleAccessId=firebase-adminsdk-ldt7v%40pet-cherish-dev.iam.gserviceaccount.com&Expires=16730294400&Signature=CjOf4xZi5dBPHxF6ngdcrAtmIu1htxiVoAK7S%2BFpxuYrt8MUY1lLybUMSqhtWMqx39gwR4rpWDWjsaLqID0mdtj9EfJVtROxhdqzbCkfcEdtboYI2RTFE5%2BgWomhBJw0M36hgCuqVCzxh%2F260%2BIIXKwNQcde6RwLx4B4Jhkekkwp4yKqDPciwFJmpK3%2BNX5sp5BSf%2B9e22E9tqju3rg1uNulTQIN6Si1qBf3qAG4Puwcd6IJv6W7ki02VWFovwTYZHvCppgB57YSd4donrICNoJpmDDCnrbvz6UqaF%2Fa36sdzv8AysB7mNSYQsOunUH6Qz3KtWWu6dlPCJnAqRl7sA%3D%3D',
+      service_type: 'BATH',
+      city: '臺北市',
+      district: '大同區',
+      unit_price: 1500,
+      total: 3000,
+      description: '柴犬定期洗澡',
+      accept_sitter_contact: false,
+      start_at: '2024-06-01T12:52:17.708Z',
+      end_at: '2024-06-01T13:52:17.708Z',
+      created_at: '2024-05-30T16:22:47.700Z',
+      updated_at: '2024-06-10T14:22:47.211Z',
+      user_id: '6658a67f6676e47b02f23e8b',
+      pet_id: '6658a7ba54390e6a3ed4370c',
+      order_id: null,
+      review_id: '665ace0f28dba2608ccfd257',
+    },
+  },
+});
 
 export type CreateTaskBody = z.infer<typeof createTaskBodySchema>;
 export type CreateTaskRequest = z.infer<typeof createTaskRequestSchema>;
