@@ -1327,6 +1327,125 @@
                         "review_id": {
                           "type": "string",
                           "nullable": true
+                        },
+                        "user": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "email": {
+                              "type": "string"
+                            },
+                            "real_name": {
+                              "type": "string"
+                            },
+                            "nickname": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "average_rating": {
+                              "type": "number",
+                              "default": 0
+                            },
+                            "total_reviews": {
+                              "type": "number",
+                              "default": 0
+                            },
+                            "avatar": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "email",
+                            "real_name",
+                            "avatar"
+                          ]
+                        },
+                        "pet": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "example": "寵物名稱"
+                            },
+                            "breed": {
+                              "type": "string",
+                              "example": "寵物品種"
+                            },
+                            "size": {
+                              "type": "string",
+                              "enum": [
+                                "S",
+                                "M",
+                                "L"
+                              ],
+                              "example": "S"
+                            },
+                            "character_list": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": [
+                                  "IRRITABLE",
+                                  "CUTE",
+                                  "SMART",
+                                  "FRIENDLY",
+                                  "GREEDY",
+                                  "NAUGHTY",
+                                  "SNOOZE",
+                                  "ENERGETIC"
+                                ]
+                              },
+                              "minItems": 1,
+                              "maxItems": 3,
+                              "example": [
+                                "CUTE",
+                                "ENERGETIC"
+                              ]
+                            },
+                            "has_microchipped": {
+                              "type": "boolean",
+                              "example": false
+                            },
+                            "is_neutered": {
+                              "type": "boolean",
+                              "example": false
+                            },
+                            "health_description": {
+                              "type": "string",
+                              "example": "健康狀況描述"
+                            },
+                            "avatar_list": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "format": "uri"
+                              },
+                              "minItems": 1,
+                              "maxItems": 3,
+                              "example": [
+                                "https://picsum.photos/200"
+                              ]
+                            },
+                            "id": {
+                              "type": "string",
+                              "example": "6649d4e467b627a60555c5fd"
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "breed",
+                            "size",
+                            "character_list",
+                            "has_microchipped",
+                            "is_neutered",
+                            "health_description",
+                            "avatar_list",
+                            "id"
+                          ]
                         }
                       },
                       "required": [
@@ -1344,7 +1463,9 @@
                         "created_at",
                         "updated_at",
                         "user_id",
-                        "pet_id"
+                        "pet_id",
+                        "user",
+                        "pet"
                       ]
                     },
                     "status": {
@@ -1378,7 +1499,35 @@
                       "user_id": "6658a67f6676e47b02f23e8b",
                       "pet_id": "6658a7ba54390e6a3ed4370c",
                       "order_id": null,
-                      "review_id": "665ace0f28dba2608ccfd257"
+                      "review_id": "665ace0f28dba2608ccfd257",
+                      "user": {
+                        "id": "6658a67f6676e47b02f23e8b",
+                        "email": "103@mail.com",
+                        "real_name": "103",
+                        "nickname": null,
+                        "avatar": null,
+                        "average_rating": 4.7,
+                        "total_reviews": 1
+                      },
+                      "pet": {
+                        "id": "6658a7ba54390e6a3ed4370c",
+                        "name": "寵物Lauch",
+                        "breed": "法鬥",
+                        "size": "S",
+                        "character_list": [
+                          "IRRITABLE",
+                          "SMART"
+                        ],
+                        "has_microchipped": true,
+                        "is_neutered": true,
+                        "health_description": "法鬥健康描述",
+                        "avatar_list": [
+                          "https://firebasestorage.googleapis.com/v0/b/pet-cherish-dev.appspot.com/o/sitter%2F1ffb99a5-373d-4519-ab85-75b6e74054e3.png?alt=media&token=b153feb4-51eb-4601-b0fc-2a4572efabe1"
+                        ],
+                        "created_at": "2024-05-30T16:22:18.216Z",
+                        "updated_at": "2024-05-30T16:22:18.216Z",
+                        "owner_user_id": "6658a67f6676e47b02f23e8b"
+                      }
                     }
                   }
                 }

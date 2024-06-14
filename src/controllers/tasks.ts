@@ -22,18 +22,32 @@ export const getTaskById = async (_req: Request, res: Response, next: NextFuncti
       where: {
         id: task_id,
       },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            real_name: true,
+            nickname: true,
+            average_rating: true,
+            total_reviews: true,
+            avatar: true,
+          },
+        },
+        pet: true,
+      },
     });
     if (!data) {
       res.status(404).json({
         status: false,
         message: 'Task not found.',
       });
-    } else {
-      res.status(200).json({
-        status: true,
-        data,
-      });
     }
+
+    res.status(200).json({
+      status: true,
+      data,
+    });
   } catch (error) {
     next(error);
   }

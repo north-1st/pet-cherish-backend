@@ -5,6 +5,7 @@ import { PetSize, ServiceType, TaskPublic, TaskStatus } from '@prisma/client';
 import { createBaseResponseDataSchema } from '@schema';
 import { objectIdSchema } from '@schema/objectId';
 import { paginationRequestSchema } from '@schema/pagination';
+import { petResponseSchema } from '@schema/pet';
 import { urlSchema } from '@schema/upload';
 
 extendZodWithOpenApi(z);
@@ -182,6 +183,16 @@ const taskByIdResponseDataSchema = z.object({
   pet_id: objectIdSchema,
   order_id: z.string().nullable().optional(),
   review_id: z.string().nullable().optional(),
+  user: z.object({
+    id: objectIdSchema,
+    email: z.string(),
+    real_name: z.string(),
+    nickname: z.string().nullable().optional(),
+    average_rating: z.number().default(0),
+    total_reviews: z.number().default(0),
+    avatar: z.string().nullable(),
+  }),
+  pet: petResponseSchema,
 });
 
 export const taskByIdResponseSchema = createBaseResponseDataSchema(taskByIdResponseDataSchema).openapi({
@@ -210,6 +221,31 @@ export const taskByIdResponseSchema = createBaseResponseDataSchema(taskByIdRespo
       pet_id: '6658a7ba54390e6a3ed4370c',
       order_id: null,
       review_id: '665ace0f28dba2608ccfd257',
+      user: {
+        id: '6658a67f6676e47b02f23e8b',
+        email: '103@mail.com',
+        real_name: '103',
+        nickname: null,
+        avatar: null,
+        average_rating: 4.7,
+        total_reviews: 1,
+      },
+      pet: {
+        id: '6658a7ba54390e6a3ed4370c',
+        name: '寵物Lauch',
+        breed: '法鬥',
+        size: 'S',
+        character_list: ['IRRITABLE', 'SMART'],
+        has_microchipped: true,
+        is_neutered: true,
+        health_description: '法鬥健康描述',
+        avatar_list: [
+          'https://firebasestorage.googleapis.com/v0/b/pet-cherish-dev.appspot.com/o/sitter%2F1ffb99a5-373d-4519-ab85-75b6e74054e3.png?alt=media&token=b153feb4-51eb-4601-b0fc-2a4572efabe1',
+        ],
+        created_at: '2024-05-30T16:22:18.216Z',
+        updated_at: '2024-05-30T16:22:18.216Z',
+        owner_user_id: '6658a67f6676e47b02f23e8b',
+      },
     },
   },
 });
