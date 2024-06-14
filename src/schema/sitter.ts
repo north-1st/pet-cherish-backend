@@ -64,6 +64,10 @@ export const sitterRequestSchema = z.object({
 export const sitterResponseSchema = z
   .object({
     user_id: objectIdSchema,
+    user: z.object({
+      avatar: z.string().url().nullable(),
+      nickname: z.string().default(''),
+    }),
     has_certificate: z.boolean().default(false),
     has_police_check: z.boolean().default(false),
     service_city: z.string().nullable(),
@@ -86,6 +90,10 @@ export const sitterResponseSchema = z
   .openapi({
     example: {
       user_id: '54489faba8bcd77a22dedue8',
+      user: {
+        avatar: 'https://picsum.photos/200',
+        nickname: '綽號',
+      },
       has_certificate: true,
       has_police_check: true,
       service_city: '臺北市',

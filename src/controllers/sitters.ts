@@ -85,7 +85,6 @@ export const updateSitterService = async (_req: Request, res: Response, next: Ne
         user_id: _req.user!.id,
       },
     });
-    console.log(req);
 
     if (!sitter) {
       throw createHttpError(404, 'Sitter not found');
@@ -200,6 +199,14 @@ export const getSitterService = async (_req: Request, res: Response, next: NextF
     const sitterService = await prisma.sitter.findUnique({
       where: {
         user_id: req.params.user_id,
+      },
+      include: {
+        user: {
+          select: {
+            avatar: true,
+            nickname: true,
+          },
+        },
       },
       omit: {
         certificate_number: hideSecret,
