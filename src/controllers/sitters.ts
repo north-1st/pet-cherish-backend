@@ -201,12 +201,21 @@ export const getSitterService = async (_req: Request, res: Response, next: NextF
       where: {
         user_id: req.params.user_id,
       },
+      include: {
+        user: {
+          select: {
+            avatar: true,
+            nickname: true,
+          },
+        },
+      },
       omit: {
         certificate_number: hideSecret,
         certificate_image: hideSecret,
         police_check_image: hideSecret,
       },
     });
+    console.log(sitterService);
 
     res.status(200).json({
       status: true,
