@@ -24,6 +24,10 @@ export const homeResponseSchema = z
       suggestion_sitter_list: [
         {
           user_id: '54489faba8bcd77a22dedue8',
+          user: {
+            avatar: 'https://picsum.photos/200',
+            nickname: '綽號',
+          },
           has_certificate: true,
           has_police_check: true,
           service_city: '臺北市',
