@@ -2,18 +2,56 @@ import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 
 import prisma from '@prisma';
-import { PetSize, ServiceType } from '@prisma/client';
 import { paginationSchema } from '@schema/pagination';
 import {
   CreateTaskBody,
-  GetTasksByQueryRequest,
   GetTasksByUserRequest,
   UpdateTaskBody,
   createTaskRequestSchema,
   deleteTaskRequestSchema,
+  getTaskByIdRequestSchema,
   getTasksByQueryRequestSchema,
   updateTaskRequestSchema,
 } from '@schema/task';
+
+export const getTaskById = async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const req = getTaskByIdRequestSchema.parse(_req);
+    const { task_id } = req.params;
+    const data = await prisma.task.findUnique({
+      where: {
+        id: task_id,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            real_name: true,
+            nickname: true,
+            average_rating: true,
+            total_reviews: true,
+            avatar: true,
+          },
+        },
+        pet: true,
+      },
+    });
+    if (!data) {
+      res.status(404).json({
+        status: false,
+        message: 'Task not found.',
+      });
+    }
+
+    res.status(200).json({
+      status: true,
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const createTask = async (_req: Request, res: Response, next: NextFunction) => {
   try {

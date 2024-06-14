@@ -27,13 +27,7 @@ router
   .post(requiresAuth, validateRequest(applySitterRequestSchema), applySitter)
   .patch(requiresAuth, validateRequest(applySitterRequestSchema), updateSitterApplication);
 
-router.patch(
-  '/sitters',
-  requiresAuth,
-  validateRequest(updateSitterServiceRequestSchema),
-  isExistingSitter,
-  updateSitterService
-);
+router.patch('/sitters', requiresAuth, validateRequest(updateSitterServiceRequestSchema), updateSitterService);
 
 router.patch(
   '/sitters/:user_id/approve',

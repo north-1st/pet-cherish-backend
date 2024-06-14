@@ -2,7 +2,6 @@ import { z } from 'zod';
 
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { PetSize, SitterStatus } from '@prisma/client';
-import { objectIdSchema } from '@schema/objectId';
 import { reviewResponseDataSchema } from '@schema/review';
 import { sitterResponseSchema } from '@schema/sitter';
 
@@ -27,6 +26,8 @@ export const homeResponseSchema = z
           user_id: '54489faba8bcd77a22dedue8',
           has_certificate: true,
           has_police_check: true,
+          service_city: '臺北市',
+          service_district_list: ['中正區', '大同區'],
           photography_price: 100,
           health_care_price: 200,
           bath_price: 300,
