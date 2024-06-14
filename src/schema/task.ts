@@ -45,6 +45,12 @@ export const createTaskRequestSchema = z.object({
   body: createTaskBodySchema,
 });
 
+export const getTaskByIdRequestSchema = z.object({
+  params: z.object({
+    task_id: objectIdSchema,
+  }),
+});
+
 export const getTasksByUserRequestSchema = z.object({
   query: paginationRequestSchema,
   params: z.object({
@@ -157,6 +163,7 @@ export const taskResponseSchema = z
 export type CreateTaskBody = z.infer<typeof createTaskBodySchema>;
 export type CreateTaskRequest = z.infer<typeof createTaskRequestSchema>;
 
+export type GetTaskByIdRequest = z.infer<typeof getTaskByIdRequestSchema>;
 export type GetTasksByUserRequest = z.infer<typeof getTasksByUserRequestSchema>;
 export type GetTasksByQueryRequest = z.infer<typeof getTasksByQueryRequestSchema>;
 
