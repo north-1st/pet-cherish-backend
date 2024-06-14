@@ -85,7 +85,6 @@ export const updateSitterService = async (_req: Request, res: Response, next: Ne
         user_id: _req.user!.id,
       },
     });
-    console.log(req);
 
     if (!sitter) {
       throw createHttpError(404, 'Sitter not found');
@@ -215,7 +214,6 @@ export const getSitterService = async (_req: Request, res: Response, next: NextF
         police_check_image: hideSecret,
       },
     });
-    console.log(sitterService);
 
     res.status(200).json({
       status: true,
