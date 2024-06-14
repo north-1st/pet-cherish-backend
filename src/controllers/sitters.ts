@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
+import { z } from 'zod';
 
 import prisma from '@prisma';
 import { SitterStatus } from '@prisma/client';
@@ -79,9 +80,30 @@ export const updateSitterService = async (_req: Request, res: Response, next: Ne
   try {
     const req = updateSitterServiceRequestSchema.parse(_req);
 
+    const sitter = await prisma.sitter.findUnique({
+      where: {
+        user_id: _req.user!.id,
+      },
+    });
+    console.log(req);
+
+    if (!sitter) {
+      throw createHttpError(404, 'Sitter not found');
+    }
+
+    if (sitter.status != SitterStatus.PASS && sitter.status != SitterStatus.ON_BOARD) {
+      throw createHttpError(403, 'Sitter is not approved');
+    }
+
     const { photography_price, health_care_price, bath_price, walking_price } = req.body;
 
-    if (!photography_price && !health_care_price && !bath_price && !walking_price) {
+    const numberSchema = z.number();
+    if (
+      !numberSchema.safeParse(photography_price).success &&
+      !numberSchema.safeParse(health_care_price).success &&
+      !numberSchema.safeParse(bath_price).success &&
+      !numberSchema.safeParse(walking_price).success
+    ) {
       throw createHttpError(400, 'Please provide at least one service');
     }
 
