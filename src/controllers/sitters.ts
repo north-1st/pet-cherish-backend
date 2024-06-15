@@ -268,14 +268,77 @@ export const getSitterServiceList = async (_req: Request, res: Response, next: N
         orderBy: {
           created_at: 'desc',
         },
+        select: {
+          id: true,
+          image_list: true,
+          average_rating: true,
+          total_reviews: true,
+          photography_price: true,
+          health_care_price: true,
+          bath_price: true,
+          walking_price: true,
+          has_certificate: true,
+          has_police_check: true,
+          service_description: true,
+          service_city: true,
+          service_district_list: true,
+          user_id: true,
+          user: {
+            select: {
+              real_name: true,
+              avatar: true,
+            },
+          },
+        },
       }),
       prisma.sitter.count({ ...queryParams }),
     ]);
 
+    const formattedSitters = sitters.map((sitter) => {
+      // Initialize the service_type_list array
+      const serviceTypeList = [];
+      const certificateList = [];
+      // Check each price and add the corresponding service type to the list if it's not null
+      if (sitter.photography_price !== null) {
+        serviceTypeList.push('PHOTOGRAPHY');
+      }
+      if (sitter.health_care_price !== null) {
+        serviceTypeList.push('HEALTH_CARE');
+      }
+      if (sitter.bath_price !== null) {
+        serviceTypeList.push('BATH');
+      }
+      if (sitter.walking_price !== null) {
+        serviceTypeList.push('WALKING');
+      }
+
+      if (sitter.has_certificate) {
+        certificateList.push('has_certificate');
+      }
+      if (sitter.has_police_check) {
+        certificateList.push('has_police_check');
+      }
+
+      // Return the formatted sitter object with the service_type_list included
+      return {
+        id: sitter.id,
+        real_name: sitter.user.real_name,
+        user_id: sitter.user_id,
+        avatar: sitter.user.avatar,
+        service_city: sitter.service_city,
+        service_district_list: sitter.service_district_list,
+        average_rating: sitter.average_rating,
+        total_reviews: sitter.total_reviews,
+        service_type_list: serviceTypeList,
+        certificate_list: certificateList,
+        service_description: sitter.service_description,
+      };
+    });
+
     res.status(200).json({
       status: true,
       data: {
-        sitter_list: sitters,
+        sitter_list: formattedSitters,
       },
       pagination: {
         current_page: page,
