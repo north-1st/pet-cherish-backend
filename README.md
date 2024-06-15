@@ -24,6 +24,12 @@ docker compose up -d
 DATABASE_URL=mongodb://root:prisma@localhost:27017/pet-cherish?authSource=admin&retryWrites=true&w=majority
 ```
 
+## 新增初始化資料
+
+```bash
+npx ts-node src/prisma/seed.ts
+```
+
 ## 產生 swagger.json
 
 ```bash
