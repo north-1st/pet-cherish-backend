@@ -255,11 +255,7 @@ export const getTasksByQuery = async (_req: Request, res: Response, next: NextFu
           created_at: 'desc',
         },
         include: {
-          pet: {
-            select: {
-              size: true,
-            },
-          },
+          pet: true,
         },
       }),
       prisma.task.count({ ...queryParams }),
