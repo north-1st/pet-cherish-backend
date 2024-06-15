@@ -408,13 +408,13 @@
                     },
                     "status": {
                       "type": "string",
+                      "nullable": true,
                       "enum": [
                         "APPROVING",
                         "REJECTED",
                         "PASS",
                         "ON_BOARD"
-                      ],
-                      "default": "APPROVING"
+                      ]
                     }
                   },
                   "required": [
@@ -426,7 +426,8 @@
                     "service_size_list",
                     "image_list",
                     "service_description",
-                    "average_rating"
+                    "average_rating",
+                    "status"
                   ],
                   "example": {
                     "user_id": "54489faba8bcd77a22dedue8",
@@ -751,6 +752,41 @@
             "description": "Pet not found"
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Pets"
+        ],
+        "summary": "刪除：寵物",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "pet_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete pet successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Pet not found"
+          }
+        }
       }
     },
     "/api/v1/users/{user_id}/pets": {
@@ -893,6 +929,10 @@
                       "CLOSED"
                     ]
                   },
+                  "cover": {
+                    "type": "string",
+                    "format": "uri"
+                  },
                   "service_type": {
                     "type": "string",
                     "enum": [
@@ -911,7 +951,7 @@
                   "unit_price": {
                     "type": "number"
                   },
-                  "detail": {
+                  "description": {
                     "type": "string"
                   },
                   "accept_sitter_contact": {
@@ -932,11 +972,12 @@
                 "required": [
                   "title",
                   "public",
+                  "cover",
                   "service_type",
                   "city",
                   "district",
                   "unit_price",
-                  "detail",
+                  "description",
                   "accept_sitter_contact",
                   "start_at",
                   "end_at",
@@ -946,11 +987,12 @@
                 "example": {
                   "title": "任務名稱",
                   "public": "OPEN",
+                  "cover": "https://picsum.photos/200",
                   "service_type": "WALKING",
                   "city": "台北市",
                   "district": "中正區",
                   "unit_price": 200,
-                  "detail": "detail",
+                  "description": "任務描述",
                   "accept_sitter_contact": true,
                   "start_at": "2022-01-01T00:00:00.000Z",
                   "end_at": "2022-01-01T03:00:00.000Z",
@@ -963,6 +1005,9 @@
         "responses": {
           "201": {
             "description": "Create task successfully"
+          },
+          "400": {
+            "description": "End time must be after start time"
           },
           "401": {
             "description": "Unauthorized"
@@ -1013,6 +1058,10 @@
                       "CLOSED"
                     ]
                   },
+                  "cover": {
+                    "type": "string",
+                    "format": "uri"
+                  },
                   "service_type": {
                     "type": "string",
                     "enum": [
@@ -1031,7 +1080,7 @@
                   "unit_price": {
                     "type": "number"
                   },
-                  "detail": {
+                  "description": {
                     "type": "string"
                   },
                   "accept_sitter_contact": {
@@ -1058,11 +1107,12 @@
                 "example": {
                   "title": "任務名稱",
                   "public": "OPEN",
+                  "cover": "https://picsum.photos/200",
                   "service_type": "WALKING",
                   "city": "台北市",
                   "district": "中正區",
                   "unit_price": 200,
-                  "detail": "detail",
+                  "description": "任務描述",
                   "accept_sitter_contact": true,
                   "start_at": "2022-01-01T00:00:00.000Z",
                   "end_at": "2022-01-01T03:00:00.000Z",
@@ -1075,6 +1125,9 @@
         "responses": {
           "200": {
             "description": "Update task successfully"
+          },
+          "400": {
+            "description": "End time must be after start time"
           },
           "401": {
             "description": "Unauthorized"
@@ -1209,6 +1262,20 @@
                         ],
                         "default": "NULL"
                       },
+                      "cover": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "uri"
+                          },
+                          {
+                            "nullable": true
+                          },
+                          {
+                            "nullable": true
+                          }
+                        ]
+                      },
                       "service_type": {
                         "type": "string",
                         "enum": [
@@ -1230,7 +1297,7 @@
                       "total": {
                         "type": "number"
                       },
-                      "detail": {
+                      "description": {
                         "type": "string"
                       },
                       "accept_sitter_contact": {
@@ -1257,12 +1324,13 @@
                     "required": [
                       "id",
                       "title",
+                      "cover",
                       "service_type",
                       "city",
                       "district",
                       "unit_price",
                       "total",
-                      "detail",
+                      "description",
                       "start_at",
                       "end_at",
                       "created_at",
@@ -1273,12 +1341,13 @@
                       "title": "任務名稱",
                       "public": "OPEN",
                       "status": "NULL",
+                      "cover": "https://picsum.photos/200",
                       "service_type": "WALKING",
                       "city": "台北市",
                       "district": "中正區",
                       "unit_price": 200,
                       "total": 1,
-                      "detail": "detail",
+                      "description": "任務描述",
                       "accept_sitter_contact": true,
                       "start_at": "2022-01-01T00:00:00.000Z",
                       "end_at": "2022-01-01T03:00:00.000Z",
@@ -1367,7 +1436,8 @@
                 "properties": {
                   "task_id": {
                     "type": "string",
-                    "description": "任務編號"
+                    "description": "任務編號",
+                    "example": "6658a7d754390e6a3ed4370d"
                   }
                 },
                 "required": [
@@ -1415,7 +1485,8 @@
                 "properties": {
                   "task_id": {
                     "type": "string",
-                    "description": "任務編號"
+                    "description": "任務編號",
+                    "example": "6658a7d754390e6a3ed4370d"
                   }
                 },
                 "required": [
@@ -1460,7 +1531,8 @@
                 "properties": {
                   "task_id": {
                     "type": "string",
-                    "description": "任務編號"
+                    "description": "任務編號",
+                    "example": "6658a7d754390e6a3ed4370d"
                   }
                 },
                 "required": [
@@ -1505,7 +1577,8 @@
                 "properties": {
                   "task_id": {
                     "type": "string",
-                    "description": "任務編號"
+                    "description": "任務編號",
+                    "example": "6658a7d754390e6a3ed4370d"
                   }
                 },
                 "required": [
@@ -1550,7 +1623,8 @@
                 "properties": {
                   "task_id": {
                     "type": "string",
-                    "description": "任務編號"
+                    "description": "任務編號",
+                    "example": "6658a7d754390e6a3ed4370d"
                   }
                 },
                 "required": [
@@ -1595,7 +1669,8 @@
                 "properties": {
                   "task_id": {
                     "type": "string",
-                    "description": "任務編號"
+                    "description": "任務編號",
+                    "example": "6658a7d754390e6a3ed4370d"
                   }
                 },
                 "required": [
@@ -1675,20 +1750,41 @@
                           "status": {
                             "type": "string",
                             "enum": [
-                              "NULL",
                               "PENDING",
-                              "UN_PAID",
+                              "VALID",
                               "TRACKING",
                               "COMPLETED",
                               "CANCELED",
                               "INVALID"
                             ]
                           },
+                          "note": {
+                            "type": "string"
+                          },
+                          "third_party_id": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "payment_at": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "report_content": {
+                            "type": "string"
+                          },
                           "report_image_list": {
                             "type": "array",
                             "items": {
                               "type": "string"
                             }
+                          },
+                          "report_created_at": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "report_updated_at": {
+                            "type": "string",
+                            "nullable": true
                           },
                           "created_at": {
                             "type": "string",
@@ -1707,7 +1803,13 @@
                           "sitter_user_id",
                           "pet_owner_user_id",
                           "status",
+                          "note",
+                          "third_party_id",
+                          "payment_at",
+                          "report_content",
                           "report_image_list",
+                          "report_created_at",
+                          "report_updated_at",
                           "created_at",
                           "updated_at",
                           "task_id"
@@ -1730,21 +1832,44 @@
                     "total_page",
                     "status"
                   ],
+                  "description": "所有訂單",
                   "example": {
                     "data": [
                       {
-                        "id": "95489faba8bcd77a22dedb86",
-                        "sitter_user_id": "84489faba8bcd77a22dedb54",
-                        "pet_owner_user_id": "96489faba8bcd77a22dedb53",
-                        "status": "TRACKING",
+                        "id": "6658a84a54390e6a3ed4370e",
+                        "sitter_user_id": "66571db5146b42a4acc541b6",
+                        "pet_owner_user_id": "6658a67f6676e47b02f23e8b",
+                        "status": "PENDING",
+                        "note": "我是保姆100，想接法鬥案子！",
+                        "third_party_id": null,
+                        "payment_at": null,
+                        "report_content": "",
                         "report_image_list": [],
-                        "created_at": "2022-01-01T00:00:00Z",
-                        "updated_at": "2022-01-02T00:00:00Z",
-                        "task_id": "95489faba8bcd77a22dedbws"
+                        "report_created_at": null,
+                        "report_updated_at": null,
+                        "created_at": "2024-05-30T16:24:42.444Z",
+                        "updated_at": "2024-05-30T16:24:42.444Z",
+                        "task_id": "6658a7d754390e6a3ed4370d"
+                      },
+                      {
+                        "id": "6658a256a8b5660a69d5e0d9",
+                        "sitter_user_id": "66571db5146b42a4acc541b6",
+                        "pet_owner_user_id": "66571fc0146b42a4acc541b7",
+                        "status": "PENDING",
+                        "note": "我是保姆100，想接案！",
+                        "third_party_id": null,
+                        "payment_at": null,
+                        "report_content": "",
+                        "report_image_list": [],
+                        "report_created_at": null,
+                        "report_updated_at": null,
+                        "created_at": "2024-05-30T15:59:18.340Z",
+                        "updated_at": "2024-05-30T15:59:18.340Z",
+                        "task_id": "66573506bb73e558b2e52c43"
                       }
                     ],
-                    "total": 23,
-                    "total_page": 3,
+                    "total": 2,
+                    "total_page": 1,
                     "status": true
                   }
                 }
@@ -1817,20 +1942,41 @@
                           "status": {
                             "type": "string",
                             "enum": [
-                              "NULL",
                               "PENDING",
-                              "UN_PAID",
+                              "VALID",
                               "TRACKING",
                               "COMPLETED",
                               "CANCELED",
                               "INVALID"
                             ]
                           },
+                          "note": {
+                            "type": "string"
+                          },
+                          "third_party_id": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "payment_at": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "report_content": {
+                            "type": "string"
+                          },
                           "report_image_list": {
                             "type": "array",
                             "items": {
                               "type": "string"
                             }
+                          },
+                          "report_created_at": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "report_updated_at": {
+                            "type": "string",
+                            "nullable": true
                           },
                           "created_at": {
                             "type": "string",
@@ -1849,7 +1995,13 @@
                           "sitter_user_id",
                           "pet_owner_user_id",
                           "status",
+                          "note",
+                          "third_party_id",
+                          "payment_at",
+                          "report_content",
                           "report_image_list",
+                          "report_created_at",
+                          "report_updated_at",
                           "created_at",
                           "updated_at",
                           "task_id"
@@ -1872,21 +2024,44 @@
                     "total_page",
                     "status"
                   ],
+                  "description": "所有訂單",
                   "example": {
                     "data": [
                       {
-                        "id": "95489faba8bcd77a22dedb86",
-                        "sitter_user_id": "84489faba8bcd77a22dedb54",
-                        "pet_owner_user_id": "96489faba8bcd77a22dedb53",
-                        "status": "TRACKING",
+                        "id": "6658a84a54390e6a3ed4370e",
+                        "sitter_user_id": "66571db5146b42a4acc541b6",
+                        "pet_owner_user_id": "6658a67f6676e47b02f23e8b",
+                        "status": "PENDING",
+                        "note": "我是保姆100，想接法鬥案子！",
+                        "third_party_id": null,
+                        "payment_at": null,
+                        "report_content": "",
                         "report_image_list": [],
-                        "created_at": "2022-01-01T00:00:00Z",
-                        "updated_at": "2022-01-02T00:00:00Z",
-                        "task_id": "95489faba8bcd77a22dedbws"
+                        "report_created_at": null,
+                        "report_updated_at": null,
+                        "created_at": "2024-05-30T16:24:42.444Z",
+                        "updated_at": "2024-05-30T16:24:42.444Z",
+                        "task_id": "6658a7d754390e6a3ed4370d"
+                      },
+                      {
+                        "id": "6658a256a8b5660a69d5e0d9",
+                        "sitter_user_id": "66571db5146b42a4acc541b6",
+                        "pet_owner_user_id": "66571fc0146b42a4acc541b7",
+                        "status": "PENDING",
+                        "note": "我是保姆100，想接案！",
+                        "third_party_id": null,
+                        "payment_at": null,
+                        "report_content": "",
+                        "report_image_list": [],
+                        "report_created_at": null,
+                        "report_updated_at": null,
+                        "created_at": "2024-05-30T15:59:18.340Z",
+                        "updated_at": "2024-05-30T15:59:18.340Z",
+                        "task_id": "66573506bb73e558b2e52c43"
                       }
                     ],
-                    "total": 23,
-                    "total_page": 3,
+                    "total": 2,
+                    "total_page": 1,
                     "status": true
                   }
                 }
@@ -1920,7 +2095,8 @@
           {
             "schema": {
               "type": "string",
-              "description": "任務編號"
+              "description": "任務編號",
+              "example": "66573506bb73e558b2e52c43"
             },
             "required": true,
             "name": "task_id",
@@ -1933,7 +2109,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "user_id": {
+                  "order_id": {
                     "type": "string"
                   },
                   "rating": {
@@ -1947,11 +2123,11 @@
                   }
                 },
                 "required": [
-                  "user_id",
+                  "order_id",
                   "content"
                 ],
                 "example": {
-                  "user_id": "54489faba8bcd77a22dedue8",
+                  "order_id": "6659fd29fdf9b075e2a9362c",
                   "rating": 5,
                   "content": "評價內容"
                 }
@@ -1988,7 +2164,8 @@
           {
             "schema": {
               "type": "string",
-              "description": "任務編號"
+              "description": "任務編號",
+              "example": "66573506bb73e558b2e52c43"
             },
             "required": true,
             "name": "task_id",
@@ -2001,7 +2178,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "user_id": {
+                  "order_id": {
                     "type": "string"
                   },
                   "rating": {
@@ -2015,11 +2192,11 @@
                   }
                 },
                 "required": [
-                  "user_id",
+                  "order_id",
                   "content"
                 ],
                 "example": {
-                  "user_id": "54489faba8bcd77a22dedue8",
+                  "order_id": "6659fd29fdf9b075e2a9362c",
                   "rating": 5,
                   "content": "評價內容"
                 }
@@ -2051,12 +2228,13 @@
             "bearerAuth": []
           }
         ],
-        "summary": "查詢：其中一訂單，飼主/保姆 評價",
+        "summary": "查詢：指定評價",
         "parameters": [
           {
             "schema": {
               "type": "string",
-              "description": "任務編號"
+              "description": "任務編號",
+              "example": "66573506bb73e558b2e52c43"
             },
             "required": true,
             "name": "task_id",
@@ -2071,64 +2249,165 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string"
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "pet_owner_rating": {
+                          "type": "number",
+                          "minimum": 1,
+                          "maximum": 5,
+                          "default": 5
+                        },
+                        "pet_owner_content": {
+                          "type": "string"
+                        },
+                        "pet_owner_updated_at": {
+                          "type": "string"
+                        },
+                        "sitter_rating": {
+                          "type": "number",
+                          "minimum": 1,
+                          "maximum": 5,
+                          "default": 5
+                        },
+                        "sitter_content": {
+                          "type": "string"
+                        },
+                        "sitter_user_updated_at": {
+                          "type": "string"
+                        },
+                        "pet_owner": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "email": {
+                              "type": "string"
+                            },
+                            "real_name": {
+                              "type": "string"
+                            },
+                            "nickname": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "avatar": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "email",
+                            "real_name"
+                          ]
+                        },
+                        "sitter": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "email": {
+                              "type": "string"
+                            },
+                            "real_name": {
+                              "type": "string"
+                            },
+                            "nickname": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "avatar": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "email",
+                            "real_name"
+                          ]
+                        },
+                        "task": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "title": {
+                              "type": "string"
+                            },
+                            "service_type": {
+                              "type": "string",
+                              "enum": [
+                                "PHOTOGRAPHY",
+                                "HEALTH_CARE",
+                                "BATH",
+                                "WALKING"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "title",
+                            "service_type"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "pet_owner_content",
+                        "pet_owner_updated_at",
+                        "sitter_content",
+                        "sitter_user_updated_at",
+                        "pet_owner",
+                        "sitter",
+                        "task"
+                      ]
                     },
-                    "pet_owner_user_id": {
-                      "type": "string"
-                    },
-                    "pet_owner_rating": {
-                      "type": "number",
-                      "minimum": 1,
-                      "maximum": 5,
-                      "default": 5
-                    },
-                    "pet_owner_content": {
-                      "type": "string"
-                    },
-                    "pet_owner_created_at": {
-                      "type": "string"
-                    },
-                    "sitter_user_id": {
-                      "type": "string"
-                    },
-                    "sitter_rating": {
-                      "type": "number",
-                      "minimum": 1,
-                      "maximum": 5,
-                      "default": 5
-                    },
-                    "sitter_content": {
-                      "type": "string"
-                    },
-                    "sitter_user_created_at": {
-                      "type": "string"
-                    },
-                    "task_id": {
-                      "type": "string"
+                    "status": {
+                      "type": "boolean"
                     }
                   },
                   "required": [
-                    "id",
-                    "pet_owner_user_id",
-                    "pet_owner_content",
-                    "pet_owner_created_at",
-                    "sitter_user_id",
-                    "sitter_content",
-                    "sitter_user_created_at",
-                    "task_id"
+                    "data",
+                    "status"
                   ],
+                  "description": "指定評價資料",
                   "example": {
-                    "id": "595489faba8bcd77a22dedu05",
-                    "pet_owner_user_id": "54489faba8bcd77a22dedue8",
-                    "pet_owner_rating": 5,
-                    "pet_owner_content": "飼主寫的評價內容",
-                    "pet_owner_created_at": "2022-01-01T00:00:00.000Z",
-                    "sitter_user_id": "66489faba8bcd77a22dedu09",
-                    "sitter_rating": 5,
-                    "sitter_content": "保姆寫的評價內容",
-                    "sitter_user_created_at": "2022-01-01T00:00:00.000Z",
-                    "task_id": "86489faba8bcd77a22dedu97"
+                    "data": {
+                      "pet_owner_rating": 3,
+                      "pet_owner_content": "改改飼主評價內容",
+                      "pet_owner_updated_at": "2024-06-09T09:17:37.813Z",
+                      "sitter_rating": 3,
+                      "sitter_content": "改改保姆評價內容，推！",
+                      "sitter_user_updated_at": "2024-06-09T09:17:37.811Z",
+                      "pet_owner": {
+                        "id": "6658a67f6676e47b02f23e8b",
+                        "email": "103@mail.com",
+                        "real_name": "103",
+                        "nickname": null,
+                        "avatar": null
+                      },
+                      "sitter": {
+                        "id": "6659fb917bce00ca07bcdd14",
+                        "email": "102@mail.com",
+                        "real_name": "102",
+                        "nickname": null,
+                        "avatar": null
+                      },
+                      "task": {
+                        "id": "6658a7d754390e6a3ed4370d",
+                        "title": "任務標題103",
+                        "service_type": "BATH"
+                      }
+                    },
+                    "status": true
                   }
                 }
               }
@@ -2163,69 +2442,147 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "total_reviews": {
+                          "type": "number"
+                        },
+                        "average_rating": {
+                          "type": "number",
+                          "nullable": true
+                        },
+                        "reviews": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "sitter_rating": {
+                                "type": "number",
+                                "minimum": 1,
+                                "maximum": 5,
+                                "default": 5
+                              },
+                              "sitter_content": {
+                                "type": "string"
+                              },
+                              "sitter_user_updated_at": {
+                                "type": "string"
+                              },
+                              "sitter": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "email": {
+                                    "type": "string"
+                                  },
+                                  "real_name": {
+                                    "type": "string"
+                                  },
+                                  "nickname": {
+                                    "type": "string",
+                                    "nullable": true
+                                  },
+                                  "avatar": {
+                                    "type": "string",
+                                    "nullable": true
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "email",
+                                  "real_name"
+                                ]
+                              },
+                              "sitter_user_id": {
+                                "type": "string"
+                              },
+                              "task": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "title": {
+                                    "type": "string"
+                                  },
+                                  "service_type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "PHOTOGRAPHY",
+                                      "HEALTH_CARE",
+                                      "BATH",
+                                      "WALKING"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "title",
+                                  "service_type"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "sitter_content",
+                              "sitter_user_updated_at",
+                              "sitter",
+                              "sitter_user_id",
+                              "task"
+                            ]
+                          },
+                          "default": []
+                        }
                       },
-                      "pet_owner_user_id": {
-                        "type": "string"
-                      },
-                      "pet_owner_rating": {
-                        "type": "number",
-                        "minimum": 1,
-                        "maximum": 5,
-                        "default": 5
-                      },
-                      "pet_owner_content": {
-                        "type": "string"
-                      },
-                      "pet_owner_created_at": {
-                        "type": "string"
-                      },
-                      "sitter_user_id": {
-                        "type": "string"
-                      },
-                      "sitter_rating": {
-                        "type": "number",
-                        "minimum": 1,
-                        "maximum": 5,
-                        "default": 5
-                      },
-                      "sitter_content": {
-                        "type": "string"
-                      },
-                      "sitter_user_created_at": {
-                        "type": "string"
-                      },
-                      "task_id": {
-                        "type": "string"
-                      }
+                      "required": [
+                        "total_reviews",
+                        "average_rating"
+                      ]
                     },
-                    "required": [
-                      "id",
-                      "pet_owner_user_id",
-                      "pet_owner_content",
-                      "pet_owner_created_at",
-                      "sitter_user_id",
-                      "sitter_content",
-                      "sitter_user_created_at",
-                      "task_id"
-                    ],
-                    "example": {
-                      "id": "595489faba8bcd77a22dedu05",
-                      "pet_owner_user_id": "54489faba8bcd77a22dedue8",
-                      "pet_owner_rating": 5,
-                      "pet_owner_content": "飼主寫的評價內容",
-                      "pet_owner_created_at": "2022-01-01T00:00:00.000Z",
-                      "sitter_user_id": "66489faba8bcd77a22dedu09",
-                      "sitter_rating": 5,
-                      "sitter_content": "保姆寫的評價內容",
-                      "sitter_user_created_at": "2022-01-01T00:00:00.000Z",
-                      "task_id": "86489faba8bcd77a22dedu97"
+                    "status": {
+                      "type": "boolean"
                     }
+                  },
+                  "required": [
+                    "data",
+                    "status"
+                  ],
+                  "description": "<指定飼主>所有評價",
+                  "example": {
+                    "data": {
+                      "total_reviews": 1,
+                      "average_rating": 3,
+                      "reviews": [
+                        {
+                          "id": "665ace0f28dba2608ccfd257",
+                          "sitter_rating": 3,
+                          "sitter_content": "改改保姆評價內容，推！",
+                          "sitter_user_updated_at": "2024-06-09T09:17:37.811Z",
+                          "sitter": {
+                            "id": "6659fb917bce00ca07bcdd14",
+                            "email": "102@mail.com",
+                            "real_name": "102",
+                            "nickname": null,
+                            "avatar": null
+                          },
+                          "sitter_user_id": "6659fb917bce00ca07bcdd14",
+                          "task": {
+                            "id": "6658a7d754390e6a3ed4370d",
+                            "title": "任務標題103",
+                            "service_type": "BATH"
+                          }
+                        }
+                      ]
+                    },
+                    "status": true
                   }
                 }
               }
@@ -2260,69 +2617,146 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "total_reviews": {
+                          "type": "number"
+                        },
+                        "average_rating": {
+                          "type": "number"
+                        },
+                        "reviews": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "pet_owner_rating": {
+                                "type": "number",
+                                "minimum": 1,
+                                "maximum": 5,
+                                "default": 5
+                              },
+                              "pet_owner_content": {
+                                "type": "string"
+                              },
+                              "pet_owner_updated_at": {
+                                "type": "string"
+                              },
+                              "pet_owner": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "email": {
+                                    "type": "string"
+                                  },
+                                  "real_name": {
+                                    "type": "string"
+                                  },
+                                  "nickname": {
+                                    "type": "string",
+                                    "nullable": true
+                                  },
+                                  "avatar": {
+                                    "type": "string",
+                                    "nullable": true
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "email",
+                                  "real_name"
+                                ]
+                              },
+                              "pet_owner_user_id": {
+                                "type": "string"
+                              },
+                              "task": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "title": {
+                                    "type": "string"
+                                  },
+                                  "service_type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "PHOTOGRAPHY",
+                                      "HEALTH_CARE",
+                                      "BATH",
+                                      "WALKING"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "title",
+                                  "service_type"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "pet_owner_content",
+                              "pet_owner_updated_at",
+                              "pet_owner",
+                              "pet_owner_user_id",
+                              "task"
+                            ]
+                          },
+                          "default": []
+                        }
                       },
-                      "pet_owner_user_id": {
-                        "type": "string"
-                      },
-                      "pet_owner_rating": {
-                        "type": "number",
-                        "minimum": 1,
-                        "maximum": 5,
-                        "default": 5
-                      },
-                      "pet_owner_content": {
-                        "type": "string"
-                      },
-                      "pet_owner_created_at": {
-                        "type": "string"
-                      },
-                      "sitter_user_id": {
-                        "type": "string"
-                      },
-                      "sitter_rating": {
-                        "type": "number",
-                        "minimum": 1,
-                        "maximum": 5,
-                        "default": 5
-                      },
-                      "sitter_content": {
-                        "type": "string"
-                      },
-                      "sitter_user_created_at": {
-                        "type": "string"
-                      },
-                      "task_id": {
-                        "type": "string"
-                      }
+                      "required": [
+                        "total_reviews",
+                        "average_rating"
+                      ]
                     },
-                    "required": [
-                      "id",
-                      "pet_owner_user_id",
-                      "pet_owner_content",
-                      "pet_owner_created_at",
-                      "sitter_user_id",
-                      "sitter_content",
-                      "sitter_user_created_at",
-                      "task_id"
-                    ],
-                    "example": {
-                      "id": "595489faba8bcd77a22dedu05",
-                      "pet_owner_user_id": "54489faba8bcd77a22dedue8",
-                      "pet_owner_rating": 5,
-                      "pet_owner_content": "飼主寫的評價內容",
-                      "pet_owner_created_at": "2022-01-01T00:00:00.000Z",
-                      "sitter_user_id": "66489faba8bcd77a22dedu09",
-                      "sitter_rating": 5,
-                      "sitter_content": "保姆寫的評價內容",
-                      "sitter_user_created_at": "2022-01-01T00:00:00.000Z",
-                      "task_id": "86489faba8bcd77a22dedu97"
+                    "status": {
+                      "type": "boolean"
                     }
+                  },
+                  "required": [
+                    "data",
+                    "status"
+                  ],
+                  "description": "<指定保姆>所有評價",
+                  "example": {
+                    "data": {
+                      "total_reviews": 1,
+                      "average_rating": 3,
+                      "reviews": [
+                        {
+                          "id": "665ace0f28dba2608ccfd257",
+                          "pet_owner_rating": 3,
+                          "pet_owner_content": "改改飼主評價內容",
+                          "pet_owner_updated_at": "2024-06-09T09:17:37.813Z",
+                          "pet_owner": {
+                            "id": "6658a67f6676e47b02f23e8b",
+                            "email": "103@mail.com",
+                            "real_name": "103",
+                            "nickname": null,
+                            "avatar": null
+                          },
+                          "pet_owner_user_id": "6658a67f6676e47b02f23e8b",
+                          "task": {
+                            "id": "6658a7d754390e6a3ed4370d",
+                            "title": "任務標題103",
+                            "service_type": "BATH"
+                          }
+                        }
+                      ]
+                    },
+                    "status": true
                   }
                 }
               }

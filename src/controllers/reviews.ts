@@ -1,16 +1,21 @@
 import { NextFunction, Request, Response } from 'express';
+import createHttpError from 'http-errors';
 
 import prisma from '@prisma';
-import { ReviewParam, ReviewRequest } from '@schema/review';
+import {
+  ownerReviewsResponseSchema,
+  reviewBodySchema,
+  reviewParamSchema,
+  sitterReviewsResponseSchema,
+} from '@schema/review';
 import { UserBaseSchema } from '@schema/user';
 
-export const createReview = async (
-  req: Request<ReviewParam, unknown, ReviewRequest>,
-  res: Response,
-  next: NextFunction
-) => {
-  const { task_id } = req.params;
-  const { user_id, rating, content } = req.body;
+export const createReview = async (req: Request, res: Response, next: NextFunction) => {
+  const { task_id } = reviewParamSchema.parse(req.params);
+  const { order_id, rating, content } = reviewBodySchema.parse(req.body);
+  if (!req.user?.id) {
+    throw createHttpError(403, 'Forbidden');
+  }
 
   const handleOwnerReview = async (sitter_user_id: string) => {
     try {
@@ -19,7 +24,7 @@ export const createReview = async (
         const newReview = await prisma.review.create({
           data: {
             task_id,
-            pet_owner_user_id: user_id,
+            pet_owner_user_id: req.user!.id,
             pet_owner_rating: rating,
             pet_owner_content: content,
             sitter_user_id,
@@ -81,6 +86,7 @@ export const createReview = async (
             sitter_rating: rating,
             sitter_content: content,
             sitter_user_created_at: new Date(),
+            sitter_user_updated_at: new Date(),
           },
         });
 
@@ -122,7 +128,10 @@ export const createReview = async (
     // 找到指定訂單
     const targetOrder = await prisma.order.findUnique({
       where: {
-        id: task_id,
+        id: order_id,
+      },
+      include: {
+        task: true,
       },
     });
     if (!targetOrder) {
@@ -132,8 +141,14 @@ export const createReview = async (
       });
       return;
     }
+    if (targetOrder.task.review_id) {
+      res.status(400).json({
+        message: 'Review has been created!',
+        status: false,
+      });
+    }
 
-    if (targetOrder.pet_owner_user_id === req.body.user_id) {
+    if (targetOrder.pet_owner_user_id === req.user.id) {
       // 飼主寫評價
       handleOwnerReview(targetOrder.sitter_user_id);
     } else {
@@ -150,19 +165,18 @@ export const createReview = async (
   }
 };
 
-export const updateReview = async (
-  req: Request<ReviewParam, unknown, ReviewRequest>,
-  res: Response,
-  next: NextFunction
-) => {
-  const { task_id } = req.params;
-  const { user_id, rating, content } = req.body;
+export const updateReview = async (req: Request, res: Response, next: NextFunction) => {
+  const { task_id } = reviewParamSchema.parse(req.params);
+  const { order_id, rating, content } = reviewBodySchema.parse(req.body);
+  if (!req.user?.id) {
+    throw createHttpError(403, 'Forbidden');
+  }
 
   try {
     // 找到指定訂單
     const targetOrder = await prisma.order.findUnique({
       where: {
-        id: task_id,
+        id: order_id,
       },
     });
     if (!targetOrder) {
@@ -173,26 +187,36 @@ export const updateReview = async (
       return;
     }
 
-    if (targetOrder.pet_owner_user_id === user_id) {
+    if (targetOrder.pet_owner_user_id !== req.user.id && targetOrder.sitter_user_id !== req.user.id) {
+      res.status(403).json({
+        message: 'Forbidden!',
+        status: false,
+      });
+      return;
+    }
+
+    if (targetOrder.pet_owner_user_id === req.user.id) {
       // 飼主更新評價
       await prisma.review.update({
         where: {
-          task_id: targetOrder.task_id,
+          task_id,
         },
         data: {
           pet_owner_rating: rating,
           pet_owner_content: content,
+          pet_owner_updated_at: new Date(),
         },
       });
     } else {
       // 保姆更新評價
       await prisma.review.update({
         where: {
-          task_id: targetOrder.task_id,
+          task_id,
         },
         data: {
           sitter_rating: rating,
           sitter_content: content,
+          sitter_user_updated_at: new Date(),
         },
       });
     }
@@ -206,13 +230,46 @@ export const updateReview = async (
   }
 };
 
-export const getReviewByTaskId = async (req: Request<ReviewParam>, res: Response, next: NextFunction) => {
-  const { task_id } = req.params;
+export const getReviewByTaskId = async (req: Request, res: Response, next: NextFunction) => {
+  const { task_id } = reviewParamSchema.parse(req.params);
 
   try {
     const targetReview = await prisma.review.findUnique({
       where: {
-        id: task_id,
+        task_id,
+      },
+      select: {
+        pet_owner_rating: true,
+        pet_owner_content: true,
+        pet_owner_updated_at: true,
+        sitter_rating: true,
+        sitter_content: true,
+        sitter_user_updated_at: true,
+        pet_owner: {
+          select: {
+            id: true,
+            email: true,
+            real_name: true,
+            nickname: true,
+            avatar: true,
+          },
+        },
+        sitter: {
+          select: {
+            id: true,
+            email: true,
+            real_name: true,
+            nickname: true,
+            avatar: true,
+          },
+        },
+        task: {
+          select: {
+            id: true,
+            title: true,
+            service_type: true,
+          },
+        },
       },
     });
     if (!targetReview) {
@@ -236,13 +293,46 @@ export const getOwnerReviews = async (req: Request<UserBaseSchema>, res: Respons
   const { user_id } = req.params;
 
   try {
-    const ownerReviews = await prisma.review.findMany({
+    const ownerReviews = await prisma.user.findUnique({
       where: {
-        pet_owner_user_id: user_id,
+        id: user_id,
+      },
+      select: {
+        average_rating: true,
+        total_reviews: true,
+        owner_reviews: {
+          select: {
+            // 只回傳保姆對飼主的評價
+            id: true,
+            sitter_rating: true,
+            sitter_content: true,
+            sitter_user_updated_at: true,
+            sitter: {
+              select: {
+                id: true,
+                email: true,
+                real_name: true,
+                nickname: true,
+                avatar: true,
+              },
+            },
+            sitter_user_id: true,
+            task: {
+              select: {
+                id: true,
+                title: true,
+                service_type: true,
+              },
+            },
+          },
+        },
       },
     });
+
+    const data = ownerReviewsResponseSchema.shape.data.parse(ownerReviews);
+
     res.status(200).json({
-      data: ownerReviews,
+      data,
       status: true,
     });
   } catch (error) {
@@ -254,13 +344,50 @@ export const getSitterReviews = async (req: Request<UserBaseSchema>, res: Respon
   const { user_id } = req.params;
 
   try {
-    const ownerReviews = await prisma.review.findMany({
+    const sitterReviews = await prisma.user.findUnique({
       where: {
-        sitter_user_id: user_id,
+        id: user_id,
+      },
+      select: {
+        sitter: {
+          select: {
+            total_reviews: true,
+            average_rating: true,
+          },
+        },
+        sitter_reviews: {
+          select: {
+            // 只回傳飼主對保姆的評價
+            id: true,
+            pet_owner_rating: true,
+            pet_owner_content: true,
+            pet_owner_updated_at: true,
+            pet_owner: {
+              select: {
+                id: true,
+                email: true,
+                real_name: true,
+                nickname: true,
+                avatar: true,
+              },
+            },
+            pet_owner_user_id: true,
+            task: {
+              select: {
+                id: true,
+                title: true,
+                service_type: true,
+              },
+            },
+          },
+        },
       },
     });
+
+    const data = sitterReviewsResponseSchema.shape.data.parse(sitterReviews);
+
     res.status(200).json({
-      data: ownerReviews,
+      data,
       status: true,
     });
   } catch (error) {

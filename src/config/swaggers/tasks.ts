@@ -37,6 +37,9 @@ const createTask = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
       201: {
         description: 'Create task successfully',
       },
+      400: {
+        description: 'End time must be after start time',
+      },
       401: {
         description: 'Unauthorized',
       },
@@ -70,6 +73,9 @@ const updateTask = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
     responses: {
       200: {
         description: 'Update task successfully',
+      },
+      400: {
+        description: 'End time must be after start time',
       },
       401: {
         description: 'Unauthorized',
