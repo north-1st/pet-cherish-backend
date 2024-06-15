@@ -138,12 +138,12 @@ model Order {
 model Review {
   id                     String    @id @default(auto()) @map("_id") @db.ObjectId
   pet_owner_user_id      String    @db.ObjectId
-  pet_owner_rating       Int
+  pet_owner_rating       Float
   pet_owner_content      String
   pet_owner_created_at   DateTime  @default(now())
   pet_owner_updated_at   DateTime  @updatedAt
   sitter_user_id         String    @db.ObjectId
-  sitter_rating          Int?
+  sitter_rating          Float?
   sitter_content         String?
   sitter_user_created_at DateTime?
   sitter_user_updated_at DateTime? @updatedAt

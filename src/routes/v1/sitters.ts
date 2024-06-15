@@ -6,6 +6,7 @@ import {
   getSitterServiceList,
   sitterApprove,
   sitterReject,
+  updateSitterApplication,
   updateSitterService,
 } from '@controllers/sitters';
 import isExistingSitter from '@middlewares/isExistingSitter';
@@ -21,15 +22,12 @@ import {
 
 const router = express.Router();
 
-router.post('/apply-sitter', requiresAuth, validateRequest(applySitterRequestSchema), applySitter);
+router
+  .route('/apply-sitter')
+  .post(requiresAuth, validateRequest(applySitterRequestSchema), applySitter)
+  .patch(requiresAuth, validateRequest(applySitterRequestSchema), updateSitterApplication);
 
-router.patch(
-  '/sitters',
-  requiresAuth,
-  validateRequest(updateSitterServiceRequestSchema),
-  isExistingSitter,
-  updateSitterService
-);
+router.patch('/sitters', requiresAuth, validateRequest(updateSitterServiceRequestSchema), updateSitterService);
 
 router.patch(
   '/sitters/:user_id/approve',

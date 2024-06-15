@@ -3,8 +3,23 @@ import { z } from 'zod';
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { ServiceType } from '@prisma/client';
 import { createBaseResponseDataSchema } from '@schema';
+import { objectIdSchema } from '@schema/objectId';
 
 extendZodWithOpenApi(z);
+
+export const getReviewsParamSchema = z
+  .object({
+    params: z.object({
+      user_id: objectIdSchema,
+    }),
+  })
+  .openapi({
+    example: {
+      params: {
+        user_id: '6659fd29fdf9b075e2a9362c',
+      },
+    },
+  });
 
 export const reviewParamSchema = z.object({
   task_id: z.string().openapi({
@@ -69,7 +84,7 @@ export const ownerReviewResponseDataSchema = z.object({
   id: z.string(),
   sitter_rating: z.number().min(1).max(5).default(5),
   sitter_content: z.string(),
-  sitter_user_updated_at: z.string(),
+  sitter_user_updated_at: z.date(),
   sitter: z.object({
     id: z.string(),
     email: z.string(),
@@ -89,7 +104,7 @@ export const sitterReviewResponseDataSchema = z.object({
   id: z.string(),
   pet_owner_rating: z.number().min(1).max(5).default(5),
   pet_owner_content: z.string(),
-  pet_owner_updated_at: z.string(),
+  pet_owner_updated_at: z.date(),
   pet_owner: z.object({
     id: z.string(),
     email: z.string(),
@@ -144,7 +159,7 @@ export const ownerReviewsResponseSchema = z
     data: z.object({
       total_reviews: z.number(),
       average_rating: z.number().nullable(),
-      reviews: z.array(ownerReviewResponseDataSchema).default([]),
+      reviews: z.array(ownerReviewResponseDataSchema),
     }),
     status: z.boolean(),
   })
@@ -159,7 +174,7 @@ export const ownerReviewsResponseSchema = z
             id: '665ace0f28dba2608ccfd257',
             sitter_rating: 3,
             sitter_content: '改改保姆評價內容，推！',
-            sitter_user_updated_at: '2024-06-09T09:17:37.811Z',
+            sitter_user_updated_at: new Date('2024-06-09T09:17:37.811Z'),
             sitter: {
               id: '6659fb917bce00ca07bcdd14',
               email: '102@mail.com',
@@ -184,7 +199,7 @@ export const sitterReviewsResponseSchema = z
   .object({
     data: z.object({
       total_reviews: z.number(),
-      average_rating: z.number(),
+      average_rating: z.number().nullable(),
       reviews: z.array(sitterReviewResponseDataSchema).default([]),
     }),
     status: z.boolean(),
@@ -200,7 +215,7 @@ export const sitterReviewsResponseSchema = z
             id: '665ace0f28dba2608ccfd257',
             pet_owner_rating: 3,
             pet_owner_content: '改改飼主評價內容',
-            pet_owner_updated_at: '2024-06-09T09:17:37.813Z',
+            pet_owner_updated_at: new Date('2024-06-09T09:17:37.813Z'),
             pet_owner: {
               id: '6658a67f6676e47b02f23e8b',
               email: '103@mail.com',
