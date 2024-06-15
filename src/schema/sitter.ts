@@ -82,9 +82,9 @@ export const sitterResponseSchema = z
     service_description: z.string(),
     average_rating: z.number().nullable(),
     total_reviews: z.number().default(0),
-    certificate_number: z.string().nullable(),
-    certificate_image: z.string().url().nullable(),
-    police_check_image: z.string().url().nullable(),
+    certificate_number: z.string().nullable().optional(),
+    certificate_image: z.string().url().nullable().optional(),
+    police_check_image: z.string().url().nullable().optional(),
     status: z.nativeEnum(SitterStatus).nullable(),
   })
   .openapi({

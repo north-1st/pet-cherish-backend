@@ -32,6 +32,12 @@ export const getTaskById = async (_req: Request, res: Response, next: NextFuncti
             average_rating: true,
             total_reviews: true,
             avatar: true,
+            pet_list: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
         pet: true,
@@ -212,8 +218,6 @@ export const getTasksByUser = async (req: GetTasksByUserRequest, res: Response, 
       data: tasks,
     });
   } catch (error) {
-    console.log(error);
-
     next(error);
   }
 };
