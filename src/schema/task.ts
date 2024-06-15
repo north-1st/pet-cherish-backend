@@ -229,6 +229,12 @@ export const taskByIdResponseSchema = createBaseResponseDataSchema(taskByIdRespo
         avatar: null,
         average_rating: 4.7,
         total_reviews: 1,
+        pet_list: [
+          {
+            id: '6658a7ba54390e6a3ed4370c',
+            name: '寵物Lauch',
+          },
+        ],
       },
       pet: {
         id: '6658a7ba54390e6a3ed4370c',
