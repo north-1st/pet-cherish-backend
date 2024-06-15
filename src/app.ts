@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import passport from 'passport';
 import swaggerUi from 'swagger-ui-express';
 
+import { seedDatabase } from '@prisma/seed';
 import swaggerDocument from '@swagger.json';
 
 import './config/passport';
@@ -36,6 +37,16 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
+});
+
+app.get('/init', async (req, res) => {
+  try {
+    await seedDatabase();
+    res.send('Database initialized successfully!');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('An error occurred while initializing the database');
+  }
 });
 
 app.use('/api', routes);
