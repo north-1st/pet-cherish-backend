@@ -227,23 +227,26 @@ export const getSitterService = async (_req: Request, res: Response, next: NextF
 
 export const getSitterServiceList = async (_req: Request, res: Response, next: NextFunction) => {
   try {
+    const needCheckCertificateList: boolean = false;
+
     const req = sitterRequestQuerySchema.parse(_req);
 
     const service_type_list = req.query.service_type_list ?? [];
-    const certificate_list = req.query.certificate_list ?? [];
 
     const notNullConditions = service_type_list.map((type) => ({ [`${type}_price`.toLowerCase()]: { not: null } }));
-    const notNullCertificates = certificate_list.map((type) => ({ [type]: { not: false } }));
     const { page, limit, offset } = paginationSchema.parse(_req.query);
     type QueryParams = {
       where: {
         service_city?: string;
+        status?: SitterStatus;
         service_district_list?: { hasSome: string[] };
-        AND?: { [key: string]: { not: boolean | null } }[];
+        OR?: { [key: string]: { not: boolean | null } }[];
       };
     };
     const queryParams: QueryParams = {
-      where: {},
+      where: {
+        status: SitterStatus.ON_BOARD,
+      },
     };
 
     if (req.query.service_city) {
@@ -256,8 +259,14 @@ export const getSitterServiceList = async (_req: Request, res: Response, next: N
       };
     }
 
-    if (notNullConditions.length > 0 || notNullCertificates.length > 0) {
-      queryParams.where.AND = [...notNullConditions, ...notNullCertificates];
+    if (needCheckCertificateList) {
+      const certificate_list = req.query.certificate_list ?? [];
+      const notNullCertificates = certificate_list.map((type) => ({ [type]: { not: false } }));
+      if (notNullConditions.length > 0 || notNullCertificates.length > 0) {
+        queryParams.where.OR = [...notNullConditions, ...notNullCertificates];
+      }
+    } else if (notNullConditions.length > 0) {
+      queryParams.where.OR = [...notNullConditions];
     }
     console.log('Prisma Query:', queryParams);
     const [sitters, total] = await prisma.$transaction([
@@ -269,8 +278,7 @@ export const getSitterServiceList = async (_req: Request, res: Response, next: N
           created_at: 'desc',
         },
         select: {
-          id: true,
-          image_list: true,
+          // id: true,
           average_rating: true,
           total_reviews: true,
           photography_price: true,
@@ -283,10 +291,12 @@ export const getSitterServiceList = async (_req: Request, res: Response, next: N
           service_city: true,
           service_district_list: true,
           user_id: true,
+          status: true,
           user: {
             select: {
               real_name: true,
               avatar: true,
+              nickname: true,
             },
           },
         },
@@ -312,16 +322,21 @@ export const getSitterServiceList = async (_req: Request, res: Response, next: N
         serviceTypeList.push('WALKING');
       }
 
-      if (sitter.has_certificate) {
-        certificateList.push('has_certificate');
-      }
-      if (sitter.has_police_check) {
-        certificateList.push('has_police_check');
+      if (needCheckCertificateList) {
+        if (sitter.has_certificate) {
+          certificateList.push('CERTIFICATE');
+        }
+        if (sitter.has_police_check) {
+          certificateList.push('POLICE_CHECK');
+        }
+      } else {
+        certificateList.push(['CERTIFICATE', 'POLICE_CHECK']);
       }
 
       // Return the formatted sitter object with the service_type_list included
       return {
-        id: sitter.id,
+        // id: sitter.id,
+        nickname: sitter.user.nickname,
         real_name: sitter.user.real_name,
         user_id: sitter.user_id,
         avatar: sitter.user.avatar,
@@ -332,6 +347,7 @@ export const getSitterServiceList = async (_req: Request, res: Response, next: N
         service_type_list: serviceTypeList,
         certificate_list: certificateList,
         service_description: sitter.service_description,
+        status: sitter.status,
       };
     });
 
