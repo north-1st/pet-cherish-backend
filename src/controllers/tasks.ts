@@ -254,9 +254,9 @@ export const getTasksByQuery = async (_req: Request, res: Response, next: NextFu
         orderBy: {
           created_at: 'desc',
         },
-        // include: {
-        //   pet: true, // 這樣可以在查詢結果中包含 Pet 的信息
-        // },
+        include: {
+          pet: true,
+        },
       }),
       prisma.task.count({ ...queryParams }),
     ]);
