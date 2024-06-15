@@ -575,9 +575,6 @@
                       "image_list",
                       "service_description",
                       "average_rating",
-                      "certificate_number",
-                      "certificate_image",
-                      "police_check_image",
                       "status"
                     ],
                     "example": {
@@ -779,9 +776,6 @@
                     "image_list",
                     "service_description",
                     "average_rating",
-                    "certificate_number",
-                    "certificate_image",
-                    "police_check_image",
                     "status"
                   ],
                   "example": {
@@ -4216,9 +4210,6 @@
                             "image_list",
                             "service_description",
                             "average_rating",
-                            "certificate_number",
-                            "certificate_image",
-                            "police_check_image",
                             "status"
                           ],
                           "example": {
