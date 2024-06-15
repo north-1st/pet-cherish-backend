@@ -64,6 +64,10 @@ export const sitterRequestSchema = z.object({
 export const sitterResponseSchema = z
   .object({
     user_id: objectIdSchema,
+    user: z.object({
+      avatar: z.string().url().nullable(),
+      nickname: z.string().default(''),
+    }),
     has_certificate: z.boolean().default(false),
     has_police_check: z.boolean().default(false),
     service_city: z.string().nullable(),
@@ -78,14 +82,18 @@ export const sitterResponseSchema = z
     service_description: z.string(),
     average_rating: z.number().nullable(),
     total_reviews: z.number().default(0),
-    certificate_number: z.string().nullable(),
-    certificate_image: z.string().url().nullable(),
-    police_check_image: z.string().url().nullable(),
+    certificate_number: z.string().nullable().optional(),
+    certificate_image: z.string().url().nullable().optional(),
+    police_check_image: z.string().url().nullable().optional(),
     status: z.nativeEnum(SitterStatus).nullable(),
   })
   .openapi({
     example: {
       user_id: '54489faba8bcd77a22dedue8',
+      user: {
+        avatar: 'https://picsum.photos/200',
+        nickname: '綽號',
+      },
       has_certificate: true,
       has_police_check: true,
       service_city: '臺北市',

@@ -218,8 +218,6 @@ export const getTasksByUser = async (req: GetTasksByUserRequest, res: Response, 
       data: tasks,
     });
   } catch (error) {
-    console.log(error);
-
     next(error);
   }
 };

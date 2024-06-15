@@ -453,6 +453,23 @@
                       "user_id": {
                         "type": "string"
                       },
+                      "user": {
+                        "type": "object",
+                        "properties": {
+                          "avatar": {
+                            "type": "string",
+                            "nullable": true,
+                            "format": "uri"
+                          },
+                          "nickname": {
+                            "type": "string",
+                            "default": ""
+                          }
+                        },
+                        "required": [
+                          "avatar"
+                        ]
+                      },
                       "has_certificate": {
                         "type": "boolean",
                         "default": false
@@ -548,6 +565,7 @@
                     },
                     "required": [
                       "user_id",
+                      "user",
                       "service_city",
                       "photography_price",
                       "health_care_price",
@@ -557,13 +575,14 @@
                       "image_list",
                       "service_description",
                       "average_rating",
-                      "certificate_number",
-                      "certificate_image",
-                      "police_check_image",
                       "status"
                     ],
                     "example": {
                       "user_id": "54489faba8bcd77a22dedue8",
+                      "user": {
+                        "avatar": "https://picsum.photos/200",
+                        "nickname": "綽號"
+                      },
                       "has_certificate": true,
                       "has_police_check": true,
                       "service_city": "臺北市",
@@ -634,6 +653,23 @@
                   "properties": {
                     "user_id": {
                       "type": "string"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "avatar": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "uri"
+                        },
+                        "nickname": {
+                          "type": "string",
+                          "default": ""
+                        }
+                      },
+                      "required": [
+                        "avatar"
+                      ]
                     },
                     "has_certificate": {
                       "type": "boolean",
@@ -730,6 +766,7 @@
                   },
                   "required": [
                     "user_id",
+                    "user",
                     "service_city",
                     "photography_price",
                     "health_care_price",
@@ -739,13 +776,14 @@
                     "image_list",
                     "service_description",
                     "average_rating",
-                    "certificate_number",
-                    "certificate_image",
-                    "police_check_image",
                     "status"
                   ],
                   "example": {
                     "user_id": "54489faba8bcd77a22dedue8",
+                    "user": {
+                      "avatar": "https://picsum.photos/200",
+                      "nickname": "綽號"
+                    },
                     "has_certificate": true,
                     "has_police_check": true,
                     "service_city": "臺北市",
@@ -4056,6 +4094,23 @@
                             "user_id": {
                               "type": "string"
                             },
+                            "user": {
+                              "type": "object",
+                              "properties": {
+                                "avatar": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "format": "uri"
+                                },
+                                "nickname": {
+                                  "type": "string",
+                                  "default": ""
+                                }
+                              },
+                              "required": [
+                                "avatar"
+                              ]
+                            },
                             "has_certificate": {
                               "type": "boolean",
                               "default": false
@@ -4151,6 +4206,7 @@
                           },
                           "required": [
                             "user_id",
+                            "user",
                             "service_city",
                             "photography_price",
                             "health_care_price",
@@ -4160,13 +4216,14 @@
                             "image_list",
                             "service_description",
                             "average_rating",
-                            "certificate_number",
-                            "certificate_image",
-                            "police_check_image",
                             "status"
                           ],
                           "example": {
                             "user_id": "54489faba8bcd77a22dedue8",
+                            "user": {
+                              "avatar": "https://picsum.photos/200",
+                              "nickname": "綽號"
+                            },
                             "has_certificate": true,
                             "has_police_check": true,
                             "service_city": "臺北市",
@@ -4345,6 +4402,10 @@
                       "suggestion_sitter_list": [
                         {
                           "user_id": "54489faba8bcd77a22dedue8",
+                          "user": {
+                            "avatar": "https://picsum.photos/200",
+                            "nickname": "綽號"
+                          },
                           "has_certificate": true,
                           "has_police_check": true,
                           "service_city": "臺北市",
