@@ -308,8 +308,7 @@
                     "maxItems": 3
                   },
                   "is_door_to_door": {
-                    "type": "boolean",
-                    "default": false
+                    "type": "boolean"
                   },
                   "image_list": {
                     "type": "array",
@@ -327,11 +326,8 @@
                 "required": [
                   "service_city",
                   "service_district_list",
-                  "photography_price",
-                  "health_care_price",
-                  "bath_price",
-                  "walking_price",
                   "service_size_list",
+                  "is_door_to_door",
                   "image_list",
                   "service_description"
                 ],
@@ -457,6 +453,23 @@
                       "user_id": {
                         "type": "string"
                       },
+                      "user": {
+                        "type": "object",
+                        "properties": {
+                          "avatar": {
+                            "type": "string",
+                            "nullable": true,
+                            "format": "uri"
+                          },
+                          "nickname": {
+                            "type": "string",
+                            "default": ""
+                          }
+                        },
+                        "required": [
+                          "avatar"
+                        ]
+                      },
                       "has_certificate": {
                         "type": "boolean",
                         "default": false
@@ -464,6 +477,17 @@
                       "has_police_check": {
                         "type": "boolean",
                         "default": false
+                      },
+                      "service_city": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "service_district_list": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "default": []
                       },
                       "photography_price": {
                         "type": "number",
@@ -490,9 +514,7 @@
                             "M",
                             "L"
                           ]
-                        },
-                        "minItems": 1,
-                        "maxItems": 3
+                        }
                       },
                       "is_door_to_door": {
                         "type": "boolean",
@@ -501,10 +523,9 @@
                       "image_list": {
                         "type": "array",
                         "items": {
-                          "type": "string"
-                        },
-                        "minItems": 1,
-                        "maxItems": 3
+                          "type": "string",
+                          "format": "uri"
+                        }
                       },
                       "service_description": {
                         "type": "string"
@@ -544,6 +565,8 @@
                     },
                     "required": [
                       "user_id",
+                      "user",
+                      "service_city",
                       "photography_price",
                       "health_care_price",
                       "bath_price",
@@ -552,15 +575,21 @@
                       "image_list",
                       "service_description",
                       "average_rating",
-                      "certificate_number",
-                      "certificate_image",
-                      "police_check_image",
                       "status"
                     ],
                     "example": {
                       "user_id": "54489faba8bcd77a22dedue8",
+                      "user": {
+                        "avatar": "https://picsum.photos/200",
+                        "nickname": "綽號"
+                      },
                       "has_certificate": true,
                       "has_police_check": true,
+                      "service_city": "臺北市",
+                      "service_district_list": [
+                        "中正區",
+                        "大同區"
+                      ],
                       "photography_price": 100,
                       "health_care_price": 200,
                       "bath_price": 300,
@@ -625,6 +654,23 @@
                     "user_id": {
                       "type": "string"
                     },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "avatar": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "uri"
+                        },
+                        "nickname": {
+                          "type": "string",
+                          "default": ""
+                        }
+                      },
+                      "required": [
+                        "avatar"
+                      ]
+                    },
                     "has_certificate": {
                       "type": "boolean",
                       "default": false
@@ -632,6 +678,17 @@
                     "has_police_check": {
                       "type": "boolean",
                       "default": false
+                    },
+                    "service_city": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "service_district_list": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "default": []
                     },
                     "photography_price": {
                       "type": "number",
@@ -658,9 +715,7 @@
                           "M",
                           "L"
                         ]
-                      },
-                      "minItems": 1,
-                      "maxItems": 3
+                      }
                     },
                     "is_door_to_door": {
                       "type": "boolean",
@@ -669,10 +724,9 @@
                     "image_list": {
                       "type": "array",
                       "items": {
-                        "type": "string"
-                      },
-                      "minItems": 1,
-                      "maxItems": 3
+                        "type": "string",
+                        "format": "uri"
+                      }
                     },
                     "service_description": {
                       "type": "string"
@@ -712,6 +766,8 @@
                   },
                   "required": [
                     "user_id",
+                    "user",
+                    "service_city",
                     "photography_price",
                     "health_care_price",
                     "bath_price",
@@ -720,15 +776,21 @@
                     "image_list",
                     "service_description",
                     "average_rating",
-                    "certificate_number",
-                    "certificate_image",
-                    "police_check_image",
                     "status"
                   ],
                   "example": {
                     "user_id": "54489faba8bcd77a22dedue8",
+                    "user": {
+                      "avatar": "https://picsum.photos/200",
+                      "nickname": "綽號"
+                    },
                     "has_certificate": true,
                     "has_police_check": true,
+                    "service_city": "臺北市",
+                    "service_district_list": [
+                      "中正區",
+                      "大同區"
+                    ],
                     "photography_price": 100,
                     "health_care_price": 200,
                     "bath_price": 300,
@@ -4008,6 +4070,427 @@
         }
       }
     },
+    "/api/v1/tasks/{task_id}/comments": {
+      "post": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "新增：評論",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "task_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  },
+                  "parent_comment_id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ],
+                "description": "建立評論",
+                "example": {
+                  "text": "This is a sample comment",
+                  "parent_comment_id": "60d21b4667d0d8992e610c86"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Create comment successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Task not found"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "取得：評論列表",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "task_id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "continueAfterId",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "default": "3"
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "comments": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "parent_comment_id": {
+                            "type": "string"
+                          },
+                          "text": {
+                            "type": "string"
+                          },
+                          "author_id": {
+                            "type": "string"
+                          },
+                          "task_id": {
+                            "type": "string"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "author": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "real_name": {
+                                "type": "string"
+                              },
+                              "avatar": {
+                                "type": "string"
+                              },
+                              "nickname": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "real_name"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "text",
+                          "author_id",
+                          "task_id",
+                          "created_at",
+                          "author"
+                        ],
+                        "example": {
+                          "id": "60d21b4667d0d8992e610c86",
+                          "parent_comment_id": "60d21b4667d0d8992e610c87",
+                          "text": "This is a sample comment",
+                          "author_id": "60d21b4667d0d8992e610c85",
+                          "task_id": "60d21b4667d0d8992e610c84",
+                          "created_at": "2022-01-01T00:00:00.000Z",
+                          "author": {
+                            "id": "60d21b4667d0d8992e610c85",
+                            "real_name": "John Doe",
+                            "avatar": "https://example.com/avatar.jpg",
+                            "nickname": "Johnny"
+                          }
+                        }
+                      }
+                    },
+                    "endOfPaginationReached": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "comments",
+                    "endOfPaginationReached"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Comments not found"
+          }
+        }
+      }
+    },
+    "/api/v1/comments/{comment_id}/replies": {
+      "get": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "取得：評論回覆列表",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "comment_id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "continueAfterId",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "default": "3"
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "comments": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "parent_comment_id": {
+                            "type": "string"
+                          },
+                          "text": {
+                            "type": "string"
+                          },
+                          "author_id": {
+                            "type": "string"
+                          },
+                          "task_id": {
+                            "type": "string"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "author": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "real_name": {
+                                "type": "string"
+                              },
+                              "avatar": {
+                                "type": "string"
+                              },
+                              "nickname": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "real_name"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "text",
+                          "author_id",
+                          "task_id",
+                          "created_at",
+                          "author"
+                        ],
+                        "example": {
+                          "id": "60d21b4667d0d8992e610c86",
+                          "parent_comment_id": "60d21b4667d0d8992e610c87",
+                          "text": "This is a sample comment",
+                          "author_id": "60d21b4667d0d8992e610c85",
+                          "task_id": "60d21b4667d0d8992e610c84",
+                          "created_at": "2022-01-01T00:00:00.000Z",
+                          "author": {
+                            "id": "60d21b4667d0d8992e610c85",
+                            "real_name": "John Doe",
+                            "avatar": "https://example.com/avatar.jpg",
+                            "nickname": "Johnny"
+                          }
+                        }
+                      }
+                    },
+                    "endOfPaginationReached": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "comments",
+                    "endOfPaginationReached"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Comment replies not found"
+          }
+        }
+      }
+    },
+    "/api/v1/comments/{comment_id}": {
+      "patch": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "更新：評論",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "comment_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ],
+                "description": "更新評論",
+                "example": {
+                  "text": "This is an updated comment"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update comment successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Comment not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Comments"
+        ],
+        "summary": "刪除：評論",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "comment_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete comment successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Comment not found"
+          }
+        }
+      }
+    },
     "/api/v1/home": {
       "get": {
         "tags": [
@@ -4032,6 +4515,23 @@
                             "user_id": {
                               "type": "string"
                             },
+                            "user": {
+                              "type": "object",
+                              "properties": {
+                                "avatar": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "format": "uri"
+                                },
+                                "nickname": {
+                                  "type": "string",
+                                  "default": ""
+                                }
+                              },
+                              "required": [
+                                "avatar"
+                              ]
+                            },
                             "has_certificate": {
                               "type": "boolean",
                               "default": false
@@ -4039,6 +4539,17 @@
                             "has_police_check": {
                               "type": "boolean",
                               "default": false
+                            },
+                            "service_city": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "service_district_list": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "default": []
                             },
                             "photography_price": {
                               "type": "number",
@@ -4065,9 +4576,7 @@
                                   "M",
                                   "L"
                                 ]
-                              },
-                              "minItems": 1,
-                              "maxItems": 3
+                              }
                             },
                             "is_door_to_door": {
                               "type": "boolean",
@@ -4076,10 +4585,9 @@
                             "image_list": {
                               "type": "array",
                               "items": {
-                                "type": "string"
-                              },
-                              "minItems": 1,
-                              "maxItems": 3
+                                "type": "string",
+                                "format": "uri"
+                              }
                             },
                             "service_description": {
                               "type": "string"
@@ -4119,6 +4627,8 @@
                           },
                           "required": [
                             "user_id",
+                            "user",
+                            "service_city",
                             "photography_price",
                             "health_care_price",
                             "bath_price",
@@ -4127,15 +4637,21 @@
                             "image_list",
                             "service_description",
                             "average_rating",
-                            "certificate_number",
-                            "certificate_image",
-                            "police_check_image",
                             "status"
                           ],
                           "example": {
                             "user_id": "54489faba8bcd77a22dedue8",
+                            "user": {
+                              "avatar": "https://picsum.photos/200",
+                              "nickname": "綽號"
+                            },
                             "has_certificate": true,
                             "has_police_check": true,
+                            "service_city": "臺北市",
+                            "service_district_list": [
+                              "中正區",
+                              "大同區"
+                            ],
                             "photography_price": 100,
                             "health_care_price": 200,
                             "bath_price": 300,
@@ -4307,8 +4823,17 @@
                       "suggestion_sitter_list": [
                         {
                           "user_id": "54489faba8bcd77a22dedue8",
+                          "user": {
+                            "avatar": "https://picsum.photos/200",
+                            "nickname": "綽號"
+                          },
                           "has_certificate": true,
                           "has_police_check": true,
+                          "service_city": "臺北市",
+                          "service_district_list": [
+                            "中正區",
+                            "大同區"
+                          ],
                           "photography_price": 100,
                           "health_care_price": 200,
                           "bath_price": 300,
