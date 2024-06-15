@@ -29,6 +29,7 @@ model User {
   sitter             Sitter?
   pet_list           Pet[]
   task_list          Task[]
+  comments           Comment[] @relation("UserComments")
 
   @@map("users")
 }
@@ -101,12 +102,13 @@ model Task {
   pet                   Pet         @relation(fields: [pet_id], references: [id])
   pet_id                String      @db.ObjectId
   Order                 Order[]
-  order_id              String?      @db.ObjectId @unique
+  order_id              String?     @unique @db.ObjectId
   Review                Review?     @relation
   review_id             String?     @unique @db.ObjectId
+  comments              Comment[]
 
   @@unique([id, user_id])
-  @@unique([user_id, order_id])  // 查詢 Task 下 Order 使用
+  @@unique([user_id, order_id]) // 查詢 Task 下 Order 使用
   @@map("tasks")
 }
 
@@ -143,6 +145,20 @@ model Review {
   task_id                String    @unique @db.ObjectId
 
   @@map("reviews")
+}
+
+model Comment {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  parent_comment_id String?  @db.ObjectId
+  author_id         String   @db.ObjectId
+  author            User     @relation(fields: [author_id], references: [id], name: "UserComments")
+  text              String
+  task_id           String   @db.ObjectId
+  Task              Task     @relation(fields: [task_id], references: [id])
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  @@map("comments")
 }
 
 enum Gender {

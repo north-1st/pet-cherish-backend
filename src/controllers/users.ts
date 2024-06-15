@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import { RequestHandler } from 'express';
 import createHttpError from 'http-errors';
 import jwt from 'jsonwebtoken';
+import { ObjectId } from 'mongodb';
 
 import { Gender } from '@prisma/client';
 
@@ -10,6 +11,11 @@ import prisma from '../prisma';
 
 export const getUser: RequestHandler = async (req, res, next) => {
   try {
+    // 檢查 user_id 是否為有效的 ObjectID
+    if (!ObjectId.isValid(req.params.user_id)) {
+      return next(createHttpError(400, 'invalid user ID format'));
+    }
+
     const user = await prisma.user.findUnique({
       where: {
         id: req.params.user_id,
@@ -20,7 +26,7 @@ export const getUser: RequestHandler = async (req, res, next) => {
     });
 
     if (!user) {
-      throw createHttpError(404, 'User not found');
+      return next(createHttpError(400, 'user not found'));
     }
 
     res.status(200).json({
@@ -29,11 +35,7 @@ export const getUser: RequestHandler = async (req, res, next) => {
       data: user,
     });
   } catch (error) {
-    // next(error);
-    return res.status(401).json({
-      status: false,
-      message: 'get user failed',
-    });
+    next(createHttpError(401, 'get user failed'));
   }
 };
 
