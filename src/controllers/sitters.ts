@@ -330,7 +330,8 @@ export const getSitterServiceList = async (_req: Request, res: Response, next: N
           certificateList.push('POLICE_CHECK');
         }
       } else {
-        certificateList.push(['CERTIFICATE', 'POLICE_CHECK']);
+        certificateList.push('CERTIFICATE');
+        certificateList.push('POLICE_CHECK');
       }
 
       // Return the formatted sitter object with the service_type_list included
