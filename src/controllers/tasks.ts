@@ -9,8 +9,55 @@ import {
   UpdateTaskBody,
   createTaskRequestSchema,
   deleteTaskRequestSchema,
+  getTaskByIdRequestSchema,
+  getTasksByQueryRequestSchema,
   updateTaskRequestSchema,
 } from '@schema/task';
+
+export const getTaskById = async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const req = getTaskByIdRequestSchema.parse(_req);
+    const { task_id } = req.params;
+    const data = await prisma.task.findUnique({
+      where: {
+        id: task_id,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            real_name: true,
+            nickname: true,
+            average_rating: true,
+            total_reviews: true,
+            avatar: true,
+            pet_list: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        pet: true,
+      },
+    });
+    if (!data) {
+      res.status(404).json({
+        status: false,
+        message: 'Task not found.',
+      });
+    }
+
+    res.status(200).json({
+      status: true,
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const createTask = async (_req: Request, res: Response, next: NextFunction) => {
   try {
@@ -29,6 +76,10 @@ export const createTask = async (_req: Request, res: Response, next: NextFunctio
 
     if (pet.owner_user_id !== _req.user!.id) {
       throw createHttpError(403, 'Forbidden');
+    }
+
+    if (req.body.end_at <= req.body.start_at) {
+      throw createHttpError(400, 'End time must be after start time');
     }
 
     await prisma.task.create({
@@ -67,6 +118,10 @@ export const updateTask = async (_req: Request, res: Response, next: NextFunctio
 
     if (task.user_id != _req.user?.id) {
       throw createHttpError(403, 'Forbidden');
+    }
+
+    if (req.body.end_at <= req.body.start_at) {
+      throw createHttpError(400, 'End time must be after start time');
     }
 
     await prisma.task.update({
@@ -163,13 +218,70 @@ export const getTasksByUser = async (req: GetTasksByUserRequest, res: Response, 
       data: tasks,
     });
   } catch (error) {
-    console.log(error);
+    next(error);
+  }
+};
 
+export const getTasksByQuery = async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const req = getTasksByQueryRequestSchema.parse(_req);
+
+    const { page, limit, offset } = paginationSchema.parse(req.query);
+
+    const queryParams = {
+      where: {
+        city: req.query.service_city,
+        district: {
+          in: req.query.service_district_list,
+        },
+        service_type: {
+          in: req.query.service_type_list,
+        },
+        pet: {
+          size: {
+            in: req.query.pet_size_list,
+          },
+        },
+      },
+    };
+
+    console.log('Prisma Query:', queryParams);
+    const [tasks, count] = await prisma.$transaction([
+      prisma.task.findMany({
+        ...queryParams,
+        take: limit,
+        skip: (page - 1) * limit + offset,
+        orderBy: {
+          created_at: 'desc',
+        },
+        // include: {
+        //   pet: true, // 這樣可以在查詢結果中包含 Pet 的信息
+        // },
+      }),
+      prisma.task.count({ ...queryParams }),
+    ]);
+
+    res.status(200).json({
+      status: true,
+      data: {
+        tasks_list: tasks,
+      },
+      pagination: {
+        current_page: page,
+        total_pages: Math.ceil(count / limit),
+        has_next_page: page < Math.ceil(count / limit),
+        has_prev_page: page > 1,
+      },
+      total: count,
+      message: 'Get tasks successfully',
+    });
+  } catch (error) {
+    console.log(error);
     next(error);
   }
 };
 
 const calculateTotal = (task: CreateTaskBody | UpdateTaskBody) => {
-  const unit = (Date.parse(task.end_at.toString()) - Date.parse(task.start_at.toString())) / 1000 / 60 / 30;
+  const unit = Math.ceil((Date.parse(task.end_at.toString()) - Date.parse(task.start_at.toString())) / 1000 / 60 / 30);
   return unit * task.unit_price;
 };

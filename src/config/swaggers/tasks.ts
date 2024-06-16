@@ -5,16 +5,49 @@ import { BearerAuth } from '@schema/bearerAuth';
 import {
   createTaskBodySchema,
   deleteTaskRequestSchema,
+  getTaskByIdRequestSchema,
+  getTasksByQueryRequestSchema,
   getTasksByUserRequestSchema,
+  taskByIdResponseSchema,
   taskResponseSchema,
   updateTaskRequestSchema,
 } from '@schema/task';
 
 export const setTasksSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
+  getTaskById(registry);
   createTask(registry, bearerAuth);
   updateTask(registry, bearerAuth);
   deleteTask(registry, bearerAuth);
   getTasksByUser(registry, bearerAuth);
+  getTasksByQuery(registry, bearerAuth);
+};
+
+const getTaskById = (registry: OpenAPIRegistry) => {
+  registry.registerPath({
+    method: 'get',
+    tags: ['Tasks'],
+    path: '/api/v1/tasks/{task_id}',
+    summary: '查詢：指定任務',
+    request: {
+      params: getTaskByIdRequestSchema.shape.params,
+    },
+    responses: {
+      200: {
+        description: 'OK',
+        content: {
+          'application/json': {
+            schema: taskByIdResponseSchema,
+          },
+        },
+      },
+      400: {
+        description: 'Get task failed',
+      },
+      404: {
+        description: 'Task not found',
+      },
+    },
+  });
 };
 
 const createTask = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
@@ -36,6 +69,9 @@ const createTask = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
     responses: {
       201: {
         description: 'Create task successfully',
+      },
+      400: {
+        description: 'End time must be after start time',
       },
       401: {
         description: 'Unauthorized',
@@ -70,6 +106,9 @@ const updateTask = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
     responses: {
       200: {
         description: 'Update task successfully',
+      },
+      400: {
+        description: 'End time must be after start time',
       },
       401: {
         description: 'Unauthorized',
@@ -133,6 +172,31 @@ const getTasksByUser = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
       },
       404: {
         description: 'User not found',
+      },
+    },
+  });
+};
+
+const getTasksByQuery = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
+  registry.registerPath({
+    method: 'get',
+    tags: ['Tasks'],
+    path: '/api/v1/tasks',
+    summary: '查詢：任務',
+    request: {
+      query: getTasksByQueryRequestSchema.shape.query,
+    },
+    responses: {
+      200: {
+        description: 'OK',
+        content: {
+          'application/json': {
+            schema: z.array(taskResponseSchema),
+          },
+        },
+      },
+      400: {
+        description: 'Get tasks failed',
       },
     },
   });
