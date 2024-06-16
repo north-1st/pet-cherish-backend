@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { OrderStatus, TaskStatus } from '@prisma/client';
 import { createResponsePaginationDataSchema } from '@schema';
+import { objectIdSchema } from '@schema/objectId';
 import { paginationRequestSchema, paginationSchema } from '@schema/pagination';
 
 extendZodWithOpenApi(z);
@@ -55,6 +56,7 @@ export const sitterOrdersRequestSchema = z.object({
 });
 
 export const ownerOrdersQuerySchema = paginationRequestSchema.extend({
+  task_id: z.string().optional(),
   status: z
     .nativeEnum({
       ...TaskStatus,
@@ -67,6 +69,7 @@ export const ownerOrdersQuerySchema = paginationRequestSchema.extend({
     }),
 });
 export const ownerOrdersPaginationSchema = paginationSchema.extend({
+  task_id: z.string().optional(),
   status: z.nativeEnum({
     ...TaskStatus,
     CANCELED: OrderStatus.CANCELED,

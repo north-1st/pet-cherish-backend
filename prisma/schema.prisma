@@ -31,6 +31,7 @@ model User {
   task_list          Task[]
   owner_reviews      Review[]  @relation("PetOwnerRole")
   sitter_reviews     Review[]  @relation("SitterRole")
+  order              Order[]   @relation("SitterUser")
 
   @@map("users")
 }
@@ -115,7 +116,6 @@ model Task {
 
 model Order {
   id                String      @id @default(auto()) @map("_id") @db.ObjectId
-  sitter_user_id    String
   pet_owner_user_id String      @db.ObjectId
   status            OrderStatus @default(PENDING)
   note              String
@@ -129,6 +129,8 @@ model Order {
   updated_at        DateTime    @updatedAt
   task              Task        @relation(fields: [task_id, pet_owner_user_id], references: [id, user_id])
   task_id           String      @db.ObjectId
+  sitter_user       User        @relation("SitterUser", fields: [sitter_user_id], references: [id])
+  sitter_user_id    String      @db.ObjectId
 
   @@map("orders")
 }

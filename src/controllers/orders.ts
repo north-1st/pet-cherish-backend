@@ -320,7 +320,7 @@ export const cancelOrder = async (req: Request, res: Response, next: NextFunctio
 };
 
 export const getPetOwnerOrders = async (_req: Request, res: Response, next: NextFunction) => {
-  const { limit, page, status } = ownerOrdersPaginationSchema.parse(_req.query);
+  const { limit, page, status, task_id } = ownerOrdersPaginationSchema.parse(_req.query);
   if (!_req.user?.id) {
     throw createHttpError(403, 'Forbidden');
   }
@@ -330,20 +330,34 @@ export const getPetOwnerOrders = async (_req: Request, res: Response, next: Next
       const conditions = {
         pet_owner_user_id: _req.user.id,
         status,
+        ...(task_id && { task_id }),
       };
-      const getData = prisma.order.findMany({
-        take: limit,
-        skip: (page - 1) * limit,
-        where: conditions,
-        orderBy: {
-          updated_at: 'desc',
-        },
-      });
-      const getTotal = prisma.order.count({
-        where: conditions,
+
+      const [data, total] = await prisma.$transaction(async (transaction_prisma) => {
+        const getData = await transaction_prisma.order.findMany({
+          take: limit,
+          skip: (page - 1) * limit,
+          where: conditions,
+          include: {
+            sitter_user: {
+              omit: {
+                password: true,
+                lastPasswordChange: true,
+              },
+            },
+          },
+          orderBy: {
+            updated_at: 'desc',
+          },
+        });
+
+        const getTotal = await transaction_prisma.order.count({
+          where: conditions,
+        });
+
+        return [getData, getTotal];
       });
 
-      const [data, total] = await Promise.all([getData, getTotal]);
       res.status(200).json({
         data,
         total,
@@ -354,25 +368,44 @@ export const getPetOwnerOrders = async (_req: Request, res: Response, next: Next
       const conditions = {
         user_id: _req.user.id,
         status,
+        ...(task_id && { id: task_id }),
       };
-      const getData = prisma.task.findMany({
-        take: limit,
-        skip: (page - 1) * limit,
-        where: conditions,
-        orderBy: {
-          updated_at: 'desc',
-        },
-        include: {
-          order: true,
-        },
-      });
-      const getTotal = prisma.task.count({
-        where: conditions,
+
+      const [data, total] = await prisma.$transaction(async (transaction_prisma) => {
+        const getData = await transaction_prisma.task.findMany({
+          take: limit,
+          skip: (page - 1) * limit,
+          where: conditions,
+          include: {
+            order: {
+              include: {
+                sitter_user: {
+                  omit: {
+                    password: true,
+                    lastPasswordChange: true,
+                  },
+                },
+              },
+            },
+          },
+          orderBy: {
+            updated_at: 'desc',
+          },
+        });
+
+        const taskIds = getData.map((task) => task.id);
+
+        const getTotal = await transaction_prisma.order.count({
+          where: {
+            task_id: { in: taskIds },
+          },
+        });
+
+        return [getData, getTotal];
       });
 
-      const [data, total] = await Promise.all([getData, getTotal]);
       res.status(200).json({
-        data: data[0].order,
+        data: data[0]?.order || [],
         total,
         total_page: Math.ceil(total / limit),
         status: true,
