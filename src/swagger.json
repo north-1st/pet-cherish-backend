@@ -414,7 +414,7 @@
             "schema": {
               "type": "string"
             },
-            "required": false,
+            "required": true,
             "name": "service_city",
             "in": "query"
           },
@@ -1922,7 +1922,7 @@
             "schema": {
               "type": "string"
             },
-            "required": false,
+            "required": true,
             "name": "service_city",
             "in": "query"
           },
