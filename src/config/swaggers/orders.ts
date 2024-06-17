@@ -6,6 +6,7 @@ import {
   orderBodySchema,
   orderParamSchema,
   ordersResponseSchema,
+  ownerOrdersQuerySchema,
   reportBodyContentSchema,
   reportBodySchema,
 } from '@schema/orders';
@@ -62,13 +63,7 @@ const commonGetOrderSetting = (bearerAuth: BearerAuth): RouteConfig => ({
   security: [{ [bearerAuth.name]: [] }],
   summary: '',
   request: {
-    body: {
-      content: {
-        'application/json': {
-          schema: userBaseSchema,
-        },
-      },
-    },
+    query: ownerOrdersQuerySchema,
   },
   responses: {
     200: {

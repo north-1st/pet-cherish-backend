@@ -1,9 +1,14 @@
 import { z } from 'zod';
 
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
-import { OrderStatus, TaskStatus } from '@prisma/client';
+import { OrderStatus, ServiceType, TaskPublic, TaskStatus } from '@prisma/client';
 import { createResponsePaginationDataSchema } from '@schema';
+import { objectIdSchema } from '@schema/objectId';
 import { paginationRequestSchema, paginationSchema } from '@schema/pagination';
+import { sitterResponseSchema } from '@schema/sitter';
+import { taskByIdResponseDataSchema, taskResponseSchema } from '@schema/task';
+import { urlSchema } from '@schema/upload';
+import { userResponseSchema } from '@schema/user';
 
 extendZodWithOpenApi(z);
 
@@ -47,6 +52,7 @@ export const sitterOrdersQuerySchema = paginationRequestSchema.extend({
     example: OrderStatus.TRACKING,
   }),
 });
+
 export const sitterOrdersPaginationSchema = paginationSchema.extend({
   status: z.nativeEnum(OrderStatus),
 });
@@ -55,23 +61,28 @@ export const sitterOrdersRequestSchema = z.object({
 });
 
 export const ownerOrdersQuerySchema = paginationRequestSchema.extend({
+  task_id: z.string().optional(),
   status: z
-    .nativeEnum({
-      ...TaskStatus,
-      CANCELED: OrderStatus.CANCELED,
-      INVALID: OrderStatus.INVALID,
-    })
+    .string()
+    .transform((value) => value.split(',').map((item) => item.trim()))
+    .refine(
+      (statuses) => Array.isArray(statuses) && statuses.every((status) => Object.keys(OrderStatus).includes(status)),
+      { message: 'Invalid status value' }
+    )
     .openapi({
       description: '訂單狀態: 飼主視角',
-      example: TaskStatus.PENDING,
+      example: `${TaskStatus.PENDING},${OrderStatus.INVALID}`,
     }),
 });
 export const ownerOrdersPaginationSchema = paginationSchema.extend({
-  status: z.nativeEnum({
-    ...TaskStatus,
-    CANCELED: OrderStatus.CANCELED,
-    INVALID: OrderStatus.INVALID,
-  }),
+  task_id: z.string().optional(),
+  status: z
+    .string()
+    .transform((value) => value.split(',').map((item) => item.trim()))
+    .refine(
+      (statuses) => Array.isArray(statuses) && statuses.every((status) => Object.keys(OrderStatus).includes(status)),
+      { message: 'Invalid status value' }
+    ),
 });
 export const ownerOrdersRequestSchema = z.object({
   query: ownerOrdersQuerySchema,
@@ -92,45 +103,90 @@ const ordersResponseDataSchema = z.object({
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
   task_id: z.string(),
+  sitter_user: userResponseSchema.partial(),
+  task: z.object({
+    id: objectIdSchema,
+    title: z.string(),
+    public: z.nativeEnum(TaskPublic),
+    status: z.nativeEnum(TaskStatus),
+    cover: urlSchema,
+    service_type: z.nativeEnum(ServiceType),
+    city: z.string(),
+    district: z.string(),
+    unit_price: z.number(),
+    total: z.number(),
+    description: z.string(),
+    accept_sitter_contact: z.boolean().default(false),
+    start_at: z.string().datetime(),
+    end_at: z.string().datetime(),
+    created_at: z.string().datetime(),
+    updated_at: z.string().datetime(),
+    user_id: objectIdSchema,
+    pet_id: objectIdSchema,
+    order_id: objectIdSchema.nullable(),
+    review_id: objectIdSchema,
+  }),
 });
 export const ordersResponseSchema = createResponsePaginationDataSchema(ordersResponseDataSchema).openapi({
   description: '所有訂單',
   example: {
     data: [
       {
-        id: '6658a84a54390e6a3ed4370e',
-        sitter_user_id: '66571db5146b42a4acc541b6',
+        id: '666d861d89a8d92b89dec71f',
         pet_owner_user_id: '6658a67f6676e47b02f23e8b',
         status: 'PENDING',
-        note: '我是保姆100，想接法鬥案子！',
+        note: '100保姆來接案！',
         third_party_id: null,
         payment_at: null,
         report_content: '',
         report_image_list: [],
         report_created_at: null,
         report_updated_at: null,
-        created_at: '2024-05-30T16:24:42.444Z',
-        updated_at: '2024-05-30T16:24:42.444Z',
+        created_at: '2024-06-15T12:16:29.744Z',
+        updated_at: '2024-06-15T12:16:29.744Z',
         task_id: '6658a7d754390e6a3ed4370d',
-      },
-      {
-        id: '6658a256a8b5660a69d5e0d9',
         sitter_user_id: '66571db5146b42a4acc541b6',
-        pet_owner_user_id: '66571fc0146b42a4acc541b7',
-        status: 'PENDING',
-        note: '我是保姆100，想接案！',
-        third_party_id: null,
-        payment_at: null,
-        report_content: '',
-        report_image_list: [],
-        report_created_at: null,
-        report_updated_at: null,
-        created_at: '2024-05-30T15:59:18.340Z',
-        updated_at: '2024-05-30T15:59:18.340Z',
-        task_id: '66573506bb73e558b2e52c43',
+        sitter_user: {
+          id: '66571db5146b42a4acc541b6',
+          email: '100@mail.com',
+          real_name: '100',
+          phone: null,
+          nickname: null,
+          birthdate: null,
+          gender: null,
+          self_introduction: null,
+          avatar: null,
+          is_sitter: true,
+          is_deleted: false,
+          average_rating: null,
+          total_reviews: 0,
+        },
+        task: {
+          id: '6658a7d754390e6a3ed4370d',
+          title: '任務標題103咻咻改改',
+          public: 'OPEN',
+          status: 'PENDING',
+          cover:
+            'https://storage.googleapis.com/pet-cherish-dev.appspot.com/task/3af7e666-7a77-4c34-a764-fbdf8cef63dd.jpeg?GoogleAccessId=firebase-adminsdk-ldt7v%40pet-cherish-dev.iam.gserviceaccount.com&Expires=16730294400&Signature=CjOf4xZi5dBPHxF6ngdcrAtmIu1htxiVoAK7S%2BFpxuYrt8MUY1lLybUMSqhtWMqx39gwR4rpWDWjsaLqID0mdtj9EfJVtROxhdqzbCkfcEdtboYI2RTFE5%2BgWomhBJw0M36hgCuqVCzxh%2F260%2BIIXKwNQcde6RwLx4B4Jhkekkwp4yKqDPciwFJmpK3%2BNX5sp5BSf%2B9e22E9tqju3rg1uNulTQIN6Si1qBf3qAG4Puwcd6IJv6W7ki02VWFovwTYZHvCppgB57YSd4donrICNoJpmDDCnrbvz6UqaF%2Fa36sdzv8AysB7mNSYQsOunUH6Qz3KtWWu6dlPCJnAqRl7sA%3D%3D',
+          service_type: 'BATH',
+          city: '臺北市',
+          district: '大同區',
+          unit_price: 1500,
+          total: 3000,
+          description: '柴犬定期洗澡',
+          accept_sitter_contact: false,
+          start_at: '2024-06-01T12:52:17.708Z',
+          end_at: '2024-06-01T13:52:17.708Z',
+          created_at: '2024-05-30T16:22:47.700Z',
+          updated_at: '2024-06-15T13:41:42.002Z',
+          user_id: '6658a67f6676e47b02f23e8b',
+          pet_id: '6658a7ba54390e6a3ed4370c',
+          order_id: null,
+          review_id: '665ace0f28dba2608ccfd257',
+        },
       },
     ],
-    total: 2,
+    total: 1,
     total_page: 1,
     status: true,
   },
