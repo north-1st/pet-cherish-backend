@@ -118,7 +118,8 @@ export const sitterResponseSchema = z
 export const sitterRequestQuerySchema = z
   .object({
     query: paginationRequestSchema.extend({
-      service_city: z.string().optional(),
+      service_city: z.string(),
+      // .optional(),
       service_district_list: z
         .string()
         .transform((str) => str.split(','))
