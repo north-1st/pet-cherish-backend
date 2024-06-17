@@ -162,7 +162,7 @@ export const taskResponseSchema = z
     },
   });
 
-const taskByIdResponseDataSchema = z.object({
+export const taskByIdResponseDataSchema = z.object({
   id: objectIdSchema,
   title: z.string(),
   public: z.nativeEnum(TaskPublic).default(TaskPublic.OPEN),
