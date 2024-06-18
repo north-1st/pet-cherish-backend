@@ -4,6 +4,7 @@ import { OpenAPIRegistry, OpenApiGeneratorV3 } from '@asteasolutions/zod-to-open
 import { setCommentsSwagger } from '@config/swaggers/comments';
 import { setHomeSwagger } from '@config/swaggers/home';
 import { setOrdersSwagger } from '@config/swaggers/orders';
+import { setPaymentSwagger } from '@config/swaggers/payment';
 import { setPetsSwagger } from '@config/swaggers/pets';
 import { setReviewsSwagger } from '@config/swaggers/reviews';
 import { setSittersSwagger } from '@config/swaggers/sitters';
@@ -31,6 +32,7 @@ setOrdersSwagger(registry, bearerAuth);
 setReviewsSwagger(registry, bearerAuth);
 setCommentsSwagger(registry, bearerAuth);
 setHomeSwagger(registry, bearerAuth);
+setPaymentSwagger(registry, bearerAuth);
 
 const getOpenApiDocumentation = () => {
   const generator = new OpenApiGeneratorV3(registry.definitions);
