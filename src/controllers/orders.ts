@@ -8,6 +8,7 @@ import { OrderStatus, TaskPublic, TaskStatus } from '@prisma/client';
 import {
   createOrderRequestSchema,
   orderBodySchema,
+  orderByIdRequestSchema,
   orderParamSchema,
   ownerOrdersPaginationSchema,
   sitterOrdersPaginationSchema,
@@ -84,6 +85,50 @@ export const createOrder = async (_req: Request, res: Response, next: NextFuncti
     res.status(201).json({
       message: 'The application has been submitted!',
       status: true,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getOrderById = async (_req: Request, res: Response, next: NextFunction) => {
+  const { order_id } = orderParamSchema.parse(_req.params);
+  if (!_req.user?.id) {
+    throw createHttpError(403, 'Forbidden');
+  }
+
+  try {
+    const targetOrder = await prisma.order.findUnique({
+      where: {
+        id: order_id,
+      },
+      omit: {
+        task_id: true,
+        sitter_user_id: true,
+      },
+      include: {
+        sitter_user: {
+          omit: {
+            password: true,
+            lastPasswordChange: true,
+            created_at: true,
+            updated_at: true,
+          },
+        },
+        task: true,
+      },
+    });
+
+    if (!targetOrder) {
+      res.status(404).json({
+        status: false,
+        message: 'Order Not Found',
+      });
+    }
+
+    res.status(200).json({
+      status: true,
+      data: targetOrder,
     });
   } catch (error) {
     next(error);

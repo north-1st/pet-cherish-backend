@@ -2382,6 +2382,139 @@
         }
       }
     },
+    "/api/v1/orders/{order_id}": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "查詢：指定訂單",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "訂單編號",
+              "example": "6658a256a8b5660a69d5e0d9"
+            },
+            "required": true,
+            "name": "order_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "params": {
+                          "type": "object",
+                          "properties": {
+                            "order_id": {
+                              "type": "string",
+                              "description": "訂單編號",
+                              "example": "6658a256a8b5660a69d5e0d9"
+                            }
+                          },
+                          "required": [
+                            "order_id"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "params"
+                      ]
+                    },
+                    "status": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "status"
+                  ],
+                  "description": "查詢：指定訂單",
+                  "example": {
+                    "status": true,
+                    "data": {
+                      "id": "666d861d89a8d92b89dec71f",
+                      "pet_owner_user_id": "6658a67f6676e47b02f23e8b",
+                      "status": "PENDING",
+                      "note": "100保姆來接案！",
+                      "third_party_id": null,
+                      "payment_at": null,
+                      "payment_id": null,
+                      "payment_url": null,
+                      "report_content": "",
+                      "report_image_list": [],
+                      "report_created_at": null,
+                      "report_updated_at": null,
+                      "created_at": "2024-06-15T12:16:29.744Z",
+                      "updated_at": "2024-06-15T12:16:29.744Z",
+                      "sitter_user": {
+                        "id": "66571db5146b42a4acc541b6",
+                        "email": "100@mail.com",
+                        "real_name": "100",
+                        "phone": null,
+                        "nickname": null,
+                        "birthdate": null,
+                        "gender": null,
+                        "self_introduction": null,
+                        "avatar": null,
+                        "is_sitter": true,
+                        "is_deleted": false,
+                        "average_rating": null,
+                        "total_reviews": 0
+                      },
+                      "task": {
+                        "id": "6658a7d754390e6a3ed4370d",
+                        "title": "任務標題103咻咻改改O",
+                        "public": "OPEN",
+                        "status": "PENDING",
+                        "cover": "https://storage.googleapis.com/pet-cherish-dev.appspot.com/task/3af7e666-7a77-4c34-a764-fbdf8cef63dd.jpeg?GoogleAccessId=firebase-adminsdk-ldt7v%40pet-cherish-dev.iam.gserviceaccount.com&Expires=16730294400&Signature=CjOf4xZi5dBPHxF6ngdcrAtmIu1htxiVoAK7S%2BFpxuYrt8MUY1lLybUMSqhtWMqx39gwR4rpWDWjsaLqID0mdtj9EfJVtROxhdqzbCkfcEdtboYI2RTFE5%2BgWomhBJw0M36hgCuqVCzxh%2F260%2BIIXKwNQcde6RwLx4B4Jhkekkwp4yKqDPciwFJmpK3%2BNX5sp5BSf%2B9e22E9tqju3rg1uNulTQIN6Si1qBf3qAG4Puwcd6IJv6W7ki02VWFovwTYZHvCppgB57YSd4donrICNoJpmDDCnrbvz6UqaF%2Fa36sdzv8AysB7mNSYQsOunUH6Qz3KtWWu6dlPCJnAqRl7sA%3D%3D",
+                        "service_type": "BATH",
+                        "city": "臺北市",
+                        "district": "大同區",
+                        "unit_price": 1500,
+                        "total": 3000,
+                        "description": "柴犬定期洗澡",
+                        "accept_sitter_contact": false,
+                        "start_at": "2024-06-01T12:52:17.708Z",
+                        "end_at": "2024-06-01T13:52:17.708Z",
+                        "created_at": "2024-05-30T16:22:47.700Z",
+                        "updated_at": "2024-06-17T14:51:59.975Z",
+                        "user_id": "6658a67f6676e47b02f23e8b",
+                        "pet_id": "6658a7ba54390e6a3ed4370c",
+                        "order_id": null,
+                        "review_id": "665ace0f28dba2608ccfd257"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Order is not found!"
+          }
+        }
+      }
+    },
     "/api/v1/orders/{order_id}/refuse-sitter": {
       "patch": {
         "tags": [
@@ -2393,25 +2526,18 @@
           }
         ],
         "summary": "更新：訂單狀態 / 拒絕指定保母",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "task_id": {
-                    "type": "string",
-                    "description": "任務編號",
-                    "example": "6658a7d754390e6a3ed4370d"
-                  }
-                },
-                "required": [
-                  "task_id"
-                ]
-              }
-            }
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "訂單編號",
+              "example": "6658a256a8b5660a69d5e0d9"
+            },
+            "required": true,
+            "name": "order_id",
+            "in": "path"
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "Update Successfully!"
@@ -2439,25 +2565,18 @@
           }
         ],
         "summary": "更新：訂單狀態 / 接受指定保母",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "task_id": {
-                    "type": "string",
-                    "description": "任務編號",
-                    "example": "6658a7d754390e6a3ed4370d"
-                  }
-                },
-                "required": [
-                  "task_id"
-                ]
-              }
-            }
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "訂單編號",
+              "example": "6658a256a8b5660a69d5e0d9"
+            },
+            "required": true,
+            "name": "order_id",
+            "in": "path"
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "Update Successfully!"
@@ -2485,25 +2604,18 @@
           }
         ],
         "summary": "更新：訂單狀態 / 飼主付款",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "task_id": {
-                    "type": "string",
-                    "description": "任務編號",
-                    "example": "6658a7d754390e6a3ed4370d"
-                  }
-                },
-                "required": [
-                  "task_id"
-                ]
-              }
-            }
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "訂單編號",
+              "example": "6658a256a8b5660a69d5e0d9"
+            },
+            "required": true,
+            "name": "order_id",
+            "in": "path"
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "Update Successfully!"
@@ -2531,25 +2643,18 @@
           }
         ],
         "summary": "更新：訂單狀態 / 任務完成",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "task_id": {
-                    "type": "string",
-                    "description": "任務編號",
-                    "example": "6658a7d754390e6a3ed4370d"
-                  }
-                },
-                "required": [
-                  "task_id"
-                ]
-              }
-            }
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "訂單編號",
+              "example": "6658a256a8b5660a69d5e0d9"
+            },
+            "required": true,
+            "name": "order_id",
+            "in": "path"
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "Update Successfully!"
@@ -2577,25 +2682,18 @@
           }
         ],
         "summary": "更新：訂單狀態 / 取消訂單",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "task_id": {
-                    "type": "string",
-                    "description": "任務編號",
-                    "example": "6658a7d754390e6a3ed4370d"
-                  }
-                },
-                "required": [
-                  "task_id"
-                ]
-              }
-            }
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "訂單編號",
+              "example": "6658a256a8b5660a69d5e0d9"
+            },
+            "required": true,
+            "name": "order_id",
+            "in": "path"
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "Update Successfully!"
@@ -2686,9 +2784,6 @@
                           "id": {
                             "type": "string"
                           },
-                          "sitter_user_id": {
-                            "type": "string"
-                          },
                           "pet_owner_user_id": {
                             "type": "string"
                           },
@@ -2711,6 +2806,14 @@
                             "nullable": true
                           },
                           "payment_at": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "payment_id": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "payment_url": {
                             "type": "string",
                             "nullable": true
                           },
@@ -2738,9 +2841,6 @@
                           "updated_at": {
                             "type": "string",
                             "format": "date-time"
-                          },
-                          "task_id": {
-                            "type": "string"
                           },
                           "sitter_user": {
                             "type": "object",
@@ -2928,19 +3028,19 @@
                         },
                         "required": [
                           "id",
-                          "sitter_user_id",
                           "pet_owner_user_id",
                           "status",
                           "note",
                           "third_party_id",
                           "payment_at",
+                          "payment_id",
+                          "payment_url",
                           "report_content",
                           "report_image_list",
                           "report_created_at",
                           "report_updated_at",
                           "created_at",
                           "updated_at",
-                          "task_id",
                           "sitter_user",
                           "task"
                         ]
@@ -2972,14 +3072,14 @@
                         "note": "100保姆來接案！",
                         "third_party_id": null,
                         "payment_at": null,
+                        "payment_id": null,
+                        "payment_url": null,
                         "report_content": "",
                         "report_image_list": [],
                         "report_created_at": null,
                         "report_updated_at": null,
                         "created_at": "2024-06-15T12:16:29.744Z",
                         "updated_at": "2024-06-15T12:16:29.744Z",
-                        "task_id": "6658a7d754390e6a3ed4370d",
-                        "sitter_user_id": "66571db5146b42a4acc541b6",
                         "sitter_user": {
                           "id": "66571db5146b42a4acc541b6",
                           "email": "100@mail.com",
@@ -2997,7 +3097,7 @@
                         },
                         "task": {
                           "id": "6658a7d754390e6a3ed4370d",
-                          "title": "任務標題103咻咻改改",
+                          "title": "任務標題103咻咻改改O",
                           "public": "OPEN",
                           "status": "PENDING",
                           "cover": "https://storage.googleapis.com/pet-cherish-dev.appspot.com/task/3af7e666-7a77-4c34-a764-fbdf8cef63dd.jpeg?GoogleAccessId=firebase-adminsdk-ldt7v%40pet-cherish-dev.iam.gserviceaccount.com&Expires=16730294400&Signature=CjOf4xZi5dBPHxF6ngdcrAtmIu1htxiVoAK7S%2BFpxuYrt8MUY1lLybUMSqhtWMqx39gwR4rpWDWjsaLqID0mdtj9EfJVtROxhdqzbCkfcEdtboYI2RTFE5%2BgWomhBJw0M36hgCuqVCzxh%2F260%2BIIXKwNQcde6RwLx4B4Jhkekkwp4yKqDPciwFJmpK3%2BNX5sp5BSf%2B9e22E9tqju3rg1uNulTQIN6Si1qBf3qAG4Puwcd6IJv6W7ki02VWFovwTYZHvCppgB57YSd4donrICNoJpmDDCnrbvz6UqaF%2Fa36sdzv8AysB7mNSYQsOunUH6Qz3KtWWu6dlPCJnAqRl7sA%3D%3D",
@@ -3011,7 +3111,7 @@
                           "start_at": "2024-06-01T12:52:17.708Z",
                           "end_at": "2024-06-01T13:52:17.708Z",
                           "created_at": "2024-05-30T16:22:47.700Z",
-                          "updated_at": "2024-06-15T13:41:42.002Z",
+                          "updated_at": "2024-06-17T14:51:59.975Z",
                           "user_id": "6658a67f6676e47b02f23e8b",
                           "pet_id": "6658a7ba54390e6a3ed4370c",
                           "order_id": null,
@@ -3113,9 +3213,6 @@
                           "id": {
                             "type": "string"
                           },
-                          "sitter_user_id": {
-                            "type": "string"
-                          },
                           "pet_owner_user_id": {
                             "type": "string"
                           },
@@ -3138,6 +3235,14 @@
                             "nullable": true
                           },
                           "payment_at": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "payment_id": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "payment_url": {
                             "type": "string",
                             "nullable": true
                           },
@@ -3165,9 +3270,6 @@
                           "updated_at": {
                             "type": "string",
                             "format": "date-time"
-                          },
-                          "task_id": {
-                            "type": "string"
                           },
                           "sitter_user": {
                             "type": "object",
@@ -3355,19 +3457,19 @@
                         },
                         "required": [
                           "id",
-                          "sitter_user_id",
                           "pet_owner_user_id",
                           "status",
                           "note",
                           "third_party_id",
                           "payment_at",
+                          "payment_id",
+                          "payment_url",
                           "report_content",
                           "report_image_list",
                           "report_created_at",
                           "report_updated_at",
                           "created_at",
                           "updated_at",
-                          "task_id",
                           "sitter_user",
                           "task"
                         ]
@@ -3399,14 +3501,14 @@
                         "note": "100保姆來接案！",
                         "third_party_id": null,
                         "payment_at": null,
+                        "payment_id": null,
+                        "payment_url": null,
                         "report_content": "",
                         "report_image_list": [],
                         "report_created_at": null,
                         "report_updated_at": null,
                         "created_at": "2024-06-15T12:16:29.744Z",
                         "updated_at": "2024-06-15T12:16:29.744Z",
-                        "task_id": "6658a7d754390e6a3ed4370d",
-                        "sitter_user_id": "66571db5146b42a4acc541b6",
                         "sitter_user": {
                           "id": "66571db5146b42a4acc541b6",
                           "email": "100@mail.com",
@@ -3424,7 +3526,7 @@
                         },
                         "task": {
                           "id": "6658a7d754390e6a3ed4370d",
-                          "title": "任務標題103咻咻改改",
+                          "title": "任務標題103咻咻改改O",
                           "public": "OPEN",
                           "status": "PENDING",
                           "cover": "https://storage.googleapis.com/pet-cherish-dev.appspot.com/task/3af7e666-7a77-4c34-a764-fbdf8cef63dd.jpeg?GoogleAccessId=firebase-adminsdk-ldt7v%40pet-cherish-dev.iam.gserviceaccount.com&Expires=16730294400&Signature=CjOf4xZi5dBPHxF6ngdcrAtmIu1htxiVoAK7S%2BFpxuYrt8MUY1lLybUMSqhtWMqx39gwR4rpWDWjsaLqID0mdtj9EfJVtROxhdqzbCkfcEdtboYI2RTFE5%2BgWomhBJw0M36hgCuqVCzxh%2F260%2BIIXKwNQcde6RwLx4B4Jhkekkwp4yKqDPciwFJmpK3%2BNX5sp5BSf%2B9e22E9tqju3rg1uNulTQIN6Si1qBf3qAG4Puwcd6IJv6W7ki02VWFovwTYZHvCppgB57YSd4donrICNoJpmDDCnrbvz6UqaF%2Fa36sdzv8AysB7mNSYQsOunUH6Qz3KtWWu6dlPCJnAqRl7sA%3D%3D",
@@ -3438,7 +3540,7 @@
                           "start_at": "2024-06-01T12:52:17.708Z",
                           "end_at": "2024-06-01T13:52:17.708Z",
                           "created_at": "2024-05-30T16:22:47.700Z",
-                          "updated_at": "2024-06-15T13:41:42.002Z",
+                          "updated_at": "2024-06-17T14:51:59.975Z",
                           "user_id": "6658a67f6676e47b02f23e8b",
                           "pet_id": "6658a7ba54390e6a3ed4370c",
                           "order_id": null,
@@ -3529,9 +3631,6 @@
                           "id": {
                             "type": "string"
                           },
-                          "sitter_user_id": {
-                            "type": "string"
-                          },
                           "pet_owner_user_id": {
                             "type": "string"
                           },
@@ -3554,6 +3653,14 @@
                             "nullable": true
                           },
                           "payment_at": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "payment_id": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "payment_url": {
                             "type": "string",
                             "nullable": true
                           },
@@ -3581,9 +3688,6 @@
                           "updated_at": {
                             "type": "string",
                             "format": "date-time"
-                          },
-                          "task_id": {
-                            "type": "string"
                           },
                           "sitter_user": {
                             "type": "object",
@@ -3771,19 +3875,19 @@
                         },
                         "required": [
                           "id",
-                          "sitter_user_id",
                           "pet_owner_user_id",
                           "status",
                           "note",
                           "third_party_id",
                           "payment_at",
+                          "payment_id",
+                          "payment_url",
                           "report_content",
                           "report_image_list",
                           "report_created_at",
                           "report_updated_at",
                           "created_at",
                           "updated_at",
-                          "task_id",
                           "sitter_user",
                           "task"
                         ]
@@ -3815,14 +3919,14 @@
                         "note": "100保姆來接案！",
                         "third_party_id": null,
                         "payment_at": null,
+                        "payment_id": null,
+                        "payment_url": null,
                         "report_content": "",
                         "report_image_list": [],
                         "report_created_at": null,
                         "report_updated_at": null,
                         "created_at": "2024-06-15T12:16:29.744Z",
                         "updated_at": "2024-06-15T12:16:29.744Z",
-                        "task_id": "6658a7d754390e6a3ed4370d",
-                        "sitter_user_id": "66571db5146b42a4acc541b6",
                         "sitter_user": {
                           "id": "66571db5146b42a4acc541b6",
                           "email": "100@mail.com",
@@ -3840,7 +3944,7 @@
                         },
                         "task": {
                           "id": "6658a7d754390e6a3ed4370d",
-                          "title": "任務標題103咻咻改改",
+                          "title": "任務標題103咻咻改改O",
                           "public": "OPEN",
                           "status": "PENDING",
                           "cover": "https://storage.googleapis.com/pet-cherish-dev.appspot.com/task/3af7e666-7a77-4c34-a764-fbdf8cef63dd.jpeg?GoogleAccessId=firebase-adminsdk-ldt7v%40pet-cherish-dev.iam.gserviceaccount.com&Expires=16730294400&Signature=CjOf4xZi5dBPHxF6ngdcrAtmIu1htxiVoAK7S%2BFpxuYrt8MUY1lLybUMSqhtWMqx39gwR4rpWDWjsaLqID0mdtj9EfJVtROxhdqzbCkfcEdtboYI2RTFE5%2BgWomhBJw0M36hgCuqVCzxh%2F260%2BIIXKwNQcde6RwLx4B4Jhkekkwp4yKqDPciwFJmpK3%2BNX5sp5BSf%2B9e22E9tqju3rg1uNulTQIN6Si1qBf3qAG4Puwcd6IJv6W7ki02VWFovwTYZHvCppgB57YSd4donrICNoJpmDDCnrbvz6UqaF%2Fa36sdzv8AysB7mNSYQsOunUH6Qz3KtWWu6dlPCJnAqRl7sA%3D%3D",
@@ -3854,7 +3958,7 @@
                           "start_at": "2024-06-01T12:52:17.708Z",
                           "end_at": "2024-06-01T13:52:17.708Z",
                           "created_at": "2024-05-30T16:22:47.700Z",
-                          "updated_at": "2024-06-15T13:41:42.002Z",
+                          "updated_at": "2024-06-17T14:51:59.975Z",
                           "user_id": "6658a67f6676e47b02f23e8b",
                           "pet_id": "6658a7ba54390e6a3ed4370c",
                           "order_id": null,
@@ -3919,9 +4023,6 @@
                           "id": {
                             "type": "string"
                           },
-                          "sitter_user_id": {
-                            "type": "string"
-                          },
                           "pet_owner_user_id": {
                             "type": "string"
                           },
@@ -3944,6 +4045,14 @@
                             "nullable": true
                           },
                           "payment_at": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "payment_id": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "payment_url": {
                             "type": "string",
                             "nullable": true
                           },
@@ -3971,9 +4080,6 @@
                           "updated_at": {
                             "type": "string",
                             "format": "date-time"
-                          },
-                          "task_id": {
-                            "type": "string"
                           },
                           "sitter_user": {
                             "type": "object",
@@ -4161,19 +4267,19 @@
                         },
                         "required": [
                           "id",
-                          "sitter_user_id",
                           "pet_owner_user_id",
                           "status",
                           "note",
                           "third_party_id",
                           "payment_at",
+                          "payment_id",
+                          "payment_url",
                           "report_content",
                           "report_image_list",
                           "report_created_at",
                           "report_updated_at",
                           "created_at",
                           "updated_at",
-                          "task_id",
                           "sitter_user",
                           "task"
                         ]
@@ -4205,14 +4311,14 @@
                         "note": "100保姆來接案！",
                         "third_party_id": null,
                         "payment_at": null,
+                        "payment_id": null,
+                        "payment_url": null,
                         "report_content": "",
                         "report_image_list": [],
                         "report_created_at": null,
                         "report_updated_at": null,
                         "created_at": "2024-06-15T12:16:29.744Z",
                         "updated_at": "2024-06-15T12:16:29.744Z",
-                        "task_id": "6658a7d754390e6a3ed4370d",
-                        "sitter_user_id": "66571db5146b42a4acc541b6",
                         "sitter_user": {
                           "id": "66571db5146b42a4acc541b6",
                           "email": "100@mail.com",
@@ -4230,7 +4336,7 @@
                         },
                         "task": {
                           "id": "6658a7d754390e6a3ed4370d",
-                          "title": "任務標題103咻咻改改",
+                          "title": "任務標題103咻咻改改O",
                           "public": "OPEN",
                           "status": "PENDING",
                           "cover": "https://storage.googleapis.com/pet-cherish-dev.appspot.com/task/3af7e666-7a77-4c34-a764-fbdf8cef63dd.jpeg?GoogleAccessId=firebase-adminsdk-ldt7v%40pet-cherish-dev.iam.gserviceaccount.com&Expires=16730294400&Signature=CjOf4xZi5dBPHxF6ngdcrAtmIu1htxiVoAK7S%2BFpxuYrt8MUY1lLybUMSqhtWMqx39gwR4rpWDWjsaLqID0mdtj9EfJVtROxhdqzbCkfcEdtboYI2RTFE5%2BgWomhBJw0M36hgCuqVCzxh%2F260%2BIIXKwNQcde6RwLx4B4Jhkekkwp4yKqDPciwFJmpK3%2BNX5sp5BSf%2B9e22E9tqju3rg1uNulTQIN6Si1qBf3qAG4Puwcd6IJv6W7ki02VWFovwTYZHvCppgB57YSd4donrICNoJpmDDCnrbvz6UqaF%2Fa36sdzv8AysB7mNSYQsOunUH6Qz3KtWWu6dlPCJnAqRl7sA%3D%3D",
@@ -4244,7 +4350,7 @@
                           "start_at": "2024-06-01T12:52:17.708Z",
                           "end_at": "2024-06-01T13:52:17.708Z",
                           "created_at": "2024-05-30T16:22:47.700Z",
-                          "updated_at": "2024-06-15T13:41:42.002Z",
+                          "updated_at": "2024-06-17T14:51:59.975Z",
                           "user_id": "6658a67f6676e47b02f23e8b",
                           "pet_id": "6658a7ba54390e6a3ed4370c",
                           "order_id": null,

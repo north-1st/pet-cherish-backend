@@ -5,6 +5,7 @@ import {
   cancelOrder,
   completeOrder,
   createOrder,
+  getOrderById,
   getPetOwnerOrders,
   getReportByOrderId,
   getSitterOrders,
@@ -16,6 +17,7 @@ import requiresAuth from '@middlewares/requiresAuth';
 import { validateRequest } from '@middlewares/validateRequest';
 import {
   createOrderRequestSchema,
+  orderByIdRequestSchema,
   orderRequestSchema,
   ownerOrdersRequestSchema,
   reportBodySchema,
@@ -24,6 +26,8 @@ import {
 
 const router = Router();
 router.post('/', requiresAuth, validateRequest(createOrderRequestSchema), createOrder);
+router.get('/:order_id', requiresAuth, validateRequest(orderByIdRequestSchema), getOrderById);
+
 router.patch('/:order_id/refuse-sitter', requiresAuth, validateRequest(orderRequestSchema), refuseSitter);
 router.patch('/:order_id/accept-sitter', requiresAuth, validateRequest(orderRequestSchema), acceptSitter);
 router.patch('/:order_id/paid', requiresAuth, validateRequest(orderRequestSchema), payForOrder);
