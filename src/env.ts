@@ -3,7 +3,7 @@ import { cleanEnv, email, num, str, url } from 'envalid';
 const env = cleanEnv(process.env, {
   NODE_ENV: str({ default: 'development' }),
   DATABASE_URL: str(),
-  WEBSITE_URL: str(),
+  FRONT_END_URL: str(),
   BACK_END_URL: str(),
   SESSION_SECRET: str(),
   JWT_ACCESS_SECRET: str(),
@@ -20,6 +20,7 @@ const env = cleanEnv(process.env, {
   BACK_END_DEV_URL: str(),
   BACK_END_PROD_URL: str(),
   PORT: num(),
+  STRIPE_SECRET: str(),
 });
 
 export default env;

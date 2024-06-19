@@ -5787,6 +5787,297 @@
           }
         }
       }
+    },
+    "/api/v1/payment/checkout": {
+      "post": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "建立結帳會話",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "products": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "price": {
+                          "type": "number"
+                        },
+                        "quantity": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "price",
+                        "quantity"
+                      ],
+                      "example": {
+                        "name": "陪伴散步",
+                        "price": 100,
+                        "quantity": 2
+                      }
+                    },
+                    "example": [
+                      {
+                        "name": "陪伴散步",
+                        "price": 100,
+                        "quantity": 2
+                      },
+                      {
+                        "name": "到府洗澡",
+                        "price": 150,
+                        "quantity": 4
+                      }
+                    ]
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "example": {
+                      "order_id": "123456"
+                    }
+                  }
+                },
+                "required": [
+                  "products"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "checkout successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "url": {
+                          "type": "string"
+                        },
+                        "metadata": {
+                          "type": "object",
+                          "nullable": true,
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "url",
+                        "metadata"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "example": {
+                    "status": true,
+                    "message": "checkout successful",
+                    "data": {
+                      "id": "cs_test_b1ZmurAFYdbEabofvi11fQrcrT5pwKrPNG04PBxL7YelDvX6byGdNajsOm",
+                      "url": "https://checkout.stripe.com/pay/cs_test_b1ZmurAFYdbEabofvi11fQrcrT5pwKrPNG04PBxL7YelDvX6byGdNajsOm",
+                      "metadata": {
+                        "order_id": "123456"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/payment/complete": {
+      "get": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "完成付款",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "cs_test_b1ZmurAFYdbEabofvi11fQrcrT5pwKrPNG04PBxL7YelDvX6byGdNajsOm"
+            },
+            "required": true,
+            "name": "session_id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Payment successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "retrieve": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "amount_total": {
+                              "type": "number"
+                            },
+                            "metadata": {
+                              "type": "object",
+                              "properties": {}
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "amount_total",
+                            "metadata"
+                          ]
+                        },
+                        "list_items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "amount_total": {
+                                "type": "number"
+                              },
+                              "currency": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "price": {
+                                "type": "object",
+                                "properties": {
+                                  "unit_amount": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": [
+                                  "unit_amount"
+                                ]
+                              },
+                              "quantity": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "amount_total",
+                              "currency",
+                              "description",
+                              "price",
+                              "quantity"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "retrieve",
+                        "list_items"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "example": {
+                    "status": true,
+                    "message": "Your payment was successful",
+                    "data": {
+                      "retrieve": {
+                        "id": "cs_test_b1ZmurAFYdbEabofvi11fQrcrT5pwKrPNG04PBxL7YelDvX6byGdNajsOm",
+                        "amount_total": 80000,
+                        "metadata": {
+                          "order_id": "123456"
+                        }
+                      },
+                      "list_items": [
+                        {
+                          "id": "item_1F7GHh2eZvKYlo2Cj2aO74E7",
+                          "amount_total": 20000,
+                          "currency": "twd",
+                          "description": "陪伴散步",
+                          "price": {
+                            "unit_amount": 10000
+                          },
+                          "quantity": 2
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
     }
   }
 }

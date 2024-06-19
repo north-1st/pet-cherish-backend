@@ -8,6 +8,11 @@ npm start
 
 npx prisma generate
 npx prisma studio
+
+# 本地安裝 mongodb
+brew install mongodb-community
+brew services start mongodb-community
+brew services stop mongodb-community
 ```
 
 ## 本地啟用 docker
@@ -34,4 +39,10 @@ npx ts-node src/prisma/seed.ts
 
 ```bash
 npm run swagger
+```
+
+## Stripe
+
+```
+測試金融卡資訊: 4242 4242 4242 4242
 ```

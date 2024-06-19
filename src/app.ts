@@ -25,7 +25,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    // origin: env.WEBSITE_URL,
+    // origin: env.FRONT_END_URL,
   })
 );
 
