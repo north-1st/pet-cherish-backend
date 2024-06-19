@@ -8,11 +8,16 @@ import {
 } from '@schema/payment';
 
 export const setPaymentSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
+  checkout(registry, bearerAuth);
+  complete(registry, bearerAuth);
+};
+
+const checkout = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
   registry.registerPath({
     method: 'post',
     tags: ['Payment'],
     path: '/api/v1/payment/checkout',
-    summary: 'Create a new checkout session',
+    summary: '建立結帳會話',
     security: [{ [bearerAuth.name]: [] }],
     request: {
       body: {
@@ -25,7 +30,7 @@ export const setPaymentSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerA
     },
     responses: {
       201: {
-        description: 'Checkout created successfully',
+        description: 'checkout successful',
         content: {
           'application/json': {
             schema: checkoutResponseSchema,
@@ -33,26 +38,28 @@ export const setPaymentSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerA
         },
       },
       400: {
-        description: 'Bad request',
+        description: 'Bad Request',
       },
-      401: {
-        description: 'Unauthorized',
+      500: {
+        description: 'Internal Server Error',
       },
     },
   });
+};
 
+const complete = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
   registry.registerPath({
     method: 'get',
     tags: ['Payment'],
     path: '/api/v1/payment/complete',
-    summary: 'Complete the payment',
+    summary: '完成付款',
     security: [{ [bearerAuth.name]: [] }],
     request: {
       query: completeRequestSchema.shape.query,
     },
     responses: {
       201: {
-        description: 'Payment completed successfully',
+        description: 'Payment successful',
         content: {
           'application/json': {
             schema: completeResponseSchema,
@@ -60,7 +67,7 @@ export const setPaymentSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerA
         },
       },
       400: {
-        description: 'Bad request',
+        description: 'Bad Request',
       },
       401: {
         description: 'Unauthorized',
