@@ -26,7 +26,6 @@ import {
 
 const router = Router();
 router.post('/', requiresAuth, validateRequest(createOrderRequestSchema), createOrder);
-router.get('/:order_id', requiresAuth, validateRequest(orderByIdRequestSchema), getOrderById);
 
 router.patch('/:order_id/refuse-sitter', requiresAuth, validateRequest(orderRequestSchema), refuseSitter);
 router.patch('/:order_id/accept-sitter', requiresAuth, validateRequest(orderRequestSchema), acceptSitter);
@@ -36,6 +35,7 @@ router.patch('/:order_id/cancel', requiresAuth, validateRequest(orderRequestSche
 
 router.get('/pet-owner', requiresAuth, validateRequest(ownerOrdersRequestSchema), getPetOwnerOrders);
 router.get('/sitter', requiresAuth, validateRequest(sitterOrdersRequestSchema), getSitterOrders);
+router.get('/:order_id', requiresAuth, validateRequest(orderByIdRequestSchema), getOrderById);
 
 router
   .route('/:order_id/report')
