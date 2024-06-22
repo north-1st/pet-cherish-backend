@@ -1,22 +1,20 @@
-import { z } from 'zod';
-
 import { OpenAPIRegistry, RouteConfig } from '@asteasolutions/zod-to-openapi';
 import { BearerAuth } from '@schema/bearerAuth';
 import {
   orderBodySchema,
-  orderParamSchema,
+  orderByIdRequestSchema,
+  orderResponseSchema,
   ordersResponseSchema,
   ownerOrdersQuerySchema,
   reportBodyContentSchema,
-  reportBodySchema,
 } from '@schema/orders';
-import { userBaseSchema } from '@schema/user';
 
 export const setOrdersSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
   createOrder(registry, bearerAuth);
+  getOrderById(registry, bearerAuth);
   refuseSitter(registry, bearerAuth);
   acceptSitter(registry, bearerAuth);
-  payForOrder(registry, bearerAuth);
+  updatePaymentStatusOrder(registry, bearerAuth);
   completeOrder(registry, bearerAuth);
   cancelOrder(registry, bearerAuth);
   getPetOwnerOrders(registry, bearerAuth);
@@ -32,13 +30,7 @@ const commonUpdateOrderSetting = (bearerAuth: BearerAuth): RouteConfig => ({
   security: [{ [bearerAuth.name]: [] }],
   summary: '',
   request: {
-    body: {
-      content: {
-        'application/json': {
-          schema: orderBodySchema,
-        },
-      },
-    },
+    params: orderByIdRequestSchema.shape.params,
   },
   responses: {
     200: {
@@ -122,6 +114,38 @@ const createOrder = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
   });
 };
 
+const getOrderById = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
+  registry.registerPath({
+    method: 'get',
+    tags: ['Orders'],
+    path: '/api/v1/orders/{order_id}',
+    security: [{ [bearerAuth.name]: [] }],
+    summary: '查詢：指定訂單',
+    request: {
+      params: orderByIdRequestSchema.shape.params,
+    },
+    responses: {
+      200: {
+        description: 'OK',
+        content: {
+          'application/json': {
+            schema: orderResponseSchema,
+          },
+        },
+      },
+      401: {
+        description: 'Unauthorized',
+      },
+      403: {
+        description: 'Forbidden',
+      },
+      404: {
+        description: 'Order is not found!',
+      },
+    },
+  });
+};
+
 const refuseSitter = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
   registry.registerPath({
     ...commonUpdateOrderSetting(bearerAuth),
@@ -138,7 +162,7 @@ const acceptSitter = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
   });
 };
 
-const payForOrder = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
+const updatePaymentStatusOrder = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
   registry.registerPath({
     ...commonUpdateOrderSetting(bearerAuth),
     path: '/api/v1/orders/{order_id}/paid',

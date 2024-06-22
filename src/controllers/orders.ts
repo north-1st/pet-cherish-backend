@@ -1,7 +1,9 @@
+import axios, { AxiosResponse } from 'axios';
 import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 import { ObjectId } from 'mongodb';
 
+import env from '@env';
 import agenda from '@job';
 import { ORDER_STATUS_JOB } from '@job/orderCompletedJob';
 import { OrderStatus, TaskPublic, TaskStatus } from '@prisma/client';
@@ -12,6 +14,7 @@ import {
   ownerOrdersPaginationSchema,
   sitterOrdersPaginationSchema,
 } from '@schema/orders';
+import { CheckoutResponse, checkoutRequestSchema } from '@schema/payment';
 
 import prisma from '../prisma';
 
@@ -84,6 +87,50 @@ export const createOrder = async (_req: Request, res: Response, next: NextFuncti
     res.status(201).json({
       message: 'The application has been submitted!',
       status: true,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getOrderById = async (_req: Request, res: Response, next: NextFunction) => {
+  const { order_id } = orderParamSchema.parse(_req.params);
+  if (!_req.user?.id) {
+    throw createHttpError(403, 'Forbidden');
+  }
+
+  try {
+    const targetOrder = await prisma.order.findUnique({
+      where: {
+        id: order_id,
+      },
+      omit: {
+        task_id: true,
+        sitter_user_id: true,
+      },
+      include: {
+        sitter_user: {
+          omit: {
+            password: true,
+            lastPasswordChange: true,
+            created_at: true,
+            updated_at: true,
+          },
+        },
+        task: true,
+      },
+    });
+
+    if (!targetOrder) {
+      res.status(404).json({
+        status: false,
+        message: 'Order Not Found',
+      });
+    }
+
+    res.status(200).json({
+      status: true,
+      data: targetOrder,
     });
   } catch (error) {
     next(error);
@@ -198,7 +245,52 @@ export const acceptSitter = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-export const payForOrder = async (req: Request, res: Response, next: NextFunction) => {
+export const payforOrder = async (req: Request, res: Response, next: NextFunction) => {
+  const { order_id } = orderParamSchema.parse(req.params);
+  const checkoutBody = checkoutRequestSchema.parse(req);
+  if (!req.user?.id) {
+    throw createHttpError(403, 'Forbidden');
+  }
+
+  try {
+    // (1) call API: /payment/checkout
+    // (2) 存 stripe id, stripe url
+    // (3) redirect front-end url
+    const stripeCheckout: AxiosResponse<CheckoutResponse> = await axios.post(
+      `${env.NODE_ENV === 'development' ? env.BACK_END_DEV_URL : env.BACK_END_PROD_URL}/api/v1/payment/checkout`,
+      checkoutBody.body
+    );
+    if (!stripeCheckout.data.data.id || !stripeCheckout.data.data.url) {
+      return res.status(502).json({
+        status: false,
+        message: 'Payment System Error! Please try again!',
+      });
+    }
+
+    // 補：檢查原 order.payment_url 有值，是否過期？過期才更新。
+    // 目前：每一次 call API 都更新。
+    await prisma.order.update({
+      where: {
+        id: order_id,
+      },
+      data: {
+        payment_id: stripeCheckout.data.data.id,
+        payment_url: stripeCheckout.data.data.url,
+      },
+    });
+
+    return res.status(200).json({
+      status: true,
+      data: {
+        payment_url: stripeCheckout.data.data.url,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updatePaymentStatusOrder = async (req: Request, res: Response, next: NextFunction) => {
   const { order_id } = orderParamSchema.parse(req.params);
   const { task_id } = orderBodySchema.parse(req.body);
   if (!req.user?.id) {
@@ -226,11 +318,11 @@ export const payForOrder = async (req: Request, res: Response, next: NextFunctio
     ]);
 
     // 服務結束時間 +7天到直接改狀態：後端排程
-    const targetTask = await prisma.task.findUnique({ where: { order_id } });
-    if (targetTask && targetTask.end_at) {
-      const sevenDaysLater = new Date(targetTask.end_at.getTime() + 7 * 24 * 60 * 60 * 1000);
-      await agenda.schedule(sevenDaysLater, ORDER_STATUS_JOB, { order_id, user_id: req.user.id, task_id });
-    }
+    // const targetTask = await prisma.task.findUnique({ where: { order_id } });
+    // if (targetTask && targetTask.end_at) {
+    //   const sevenDaysLater = new Date(targetTask.end_at.getTime() + 7 * 24 * 60 * 60 * 1000);
+    //   await agenda.schedule(sevenDaysLater, ORDER_STATUS_JOB, { order_id, user_id: req.user.id, task_id });
+    // }
 
     res.status(200).json({
       message: 'Update Successfully!',

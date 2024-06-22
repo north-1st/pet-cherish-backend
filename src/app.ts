@@ -23,11 +23,19 @@ if (env.NODE_ENV === 'development') {
 
 app.use(express.json());
 
+// 配置CORS以允许所有来源和所有方法
 app.use(
   cors({
-    // origin: env.WEBSITE_URL,
+    origin: env.FRONT_END_URL, // 允许的前端URL
+    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+    preflightContinue: true,
   })
 );
+
+// 处理预检请求
+app.options('*', cors());
 
 // app.use(session(sessionConfig));
 
