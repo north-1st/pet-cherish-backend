@@ -117,24 +117,24 @@ model Task {
 }
 
 model Order {
-  id                String      @id @default(auto()) @map("_id") @db.ObjectId
-  pet_owner_user_id String      @db.ObjectId
-  status            OrderStatus @default(PENDING)
+  id                String         @id @default(auto()) @map("_id") @db.ObjectId
+  pet_owner_user_id String         @db.ObjectId
+  status            OrderStatus    @default(PENDING)
   note              String
-  third_party_id    String?
-  payment_at        DateTime?
-  payment_id        String?
-  payment_url       String?
+  payment_at        DateTime? // 付款時間
+  payment_id        String? // stripe id
+  payment_url       String? // stripe checkout url
+  payment_status    PaymentStatus? // 付款結果：成功、失敗
   report_content    String?
   report_image_list String[]
   report_created_at DateTime?
   report_updated_at DateTime?
-  created_at        DateTime    @default(now())
-  updated_at        DateTime    @updatedAt
-  task              Task        @relation(fields: [task_id, pet_owner_user_id], references: [id, user_id])
-  task_id           String      @db.ObjectId
-  sitter_user       User        @relation("SitterUser", fields: [sitter_user_id], references: [id])
-  sitter_user_id    String      @db.ObjectId
+  created_at        DateTime       @default(now())
+  updated_at        DateTime       @updatedAt
+  task              Task           @relation(fields: [task_id, pet_owner_user_id], references: [id, user_id])
+  task_id           String         @db.ObjectId
+  sitter_user       User           @relation("SitterUser", fields: [sitter_user_id], references: [id])
+  sitter_user_id    String         @db.ObjectId
 
   @@map("orders")
 }
@@ -233,4 +233,9 @@ enum OrderStatus {
   COMPLETED // 任務完成
   CANCELED // 訂單已取消
   INVALID // 訂單不成立
+}
+
+enum PaymentStatus {
+  SUCCESS
+  FAILURE
 }
