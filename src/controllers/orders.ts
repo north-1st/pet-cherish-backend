@@ -1,18 +1,20 @@
+import axios, { AxiosResponse } from 'axios';
 import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 import { ObjectId } from 'mongodb';
 
+import env from '@env';
 import agenda from '@job';
 import { ORDER_STATUS_JOB } from '@job/orderCompletedJob';
 import { OrderStatus, TaskPublic, TaskStatus } from '@prisma/client';
 import {
   createOrderRequestSchema,
   orderBodySchema,
-  orderByIdRequestSchema,
   orderParamSchema,
   ownerOrdersPaginationSchema,
   sitterOrdersPaginationSchema,
 } from '@schema/orders';
+import { CheckoutResponse, checkoutRequestSchema } from '@schema/payment';
 
 import prisma from '../prisma';
 
@@ -243,7 +245,45 @@ export const acceptSitter = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-export const payForOrder = async (req: Request, res: Response, next: NextFunction) => {
+export const payforOrder = async (req: Request, res: Response, next: NextFunction) => {
+  const { order_id } = orderParamSchema.parse(req.params);
+  const checkoutBody = checkoutRequestSchema.parse(req);
+  if (!req.user?.id) {
+    throw createHttpError(403, 'Forbidden');
+  }
+
+  try {
+    // (1) call API: /payment/checkout
+    // (2) 存 stripe id, stripe url
+    // (3) redirect front-end url
+    const stripeCheckout: AxiosResponse<CheckoutResponse> = await axios.post(
+      `${env.BACK_END_URL}/api/v1/payment/checkout`,
+      checkoutBody.body
+    );
+    if (!stripeCheckout.data.data.id || !stripeCheckout.data.data.url) {
+      return res.status(502).json({
+        status: false,
+        message: 'Payment System Error! Please try again!',
+      });
+    }
+
+    await prisma.order.update({
+      where: {
+        id: order_id,
+      },
+      data: {
+        payment_id: stripeCheckout.data.data.id,
+        payment_url: stripeCheckout.data.data.url,
+      },
+    });
+
+    return res.redirect(303, stripeCheckout.data.data.url);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updatePaymentStatusOrder = async (req: Request, res: Response, next: NextFunction) => {
   const { order_id } = orderParamSchema.parse(req.params);
   const { task_id } = orderBodySchema.parse(req.body);
   if (!req.user?.id) {

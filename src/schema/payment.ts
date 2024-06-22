@@ -18,24 +18,26 @@ const productSchema = z
     },
   });
 
+export const checkoutBodyRequestSchema = z.object({
+  products: z.array(productSchema).openapi({
+    example: [
+      { name: '陪伴散步', price: 100, quantity: 2 },
+      { name: '到府洗澡', price: 150, quantity: 4 },
+    ],
+  }),
+  metadata: z
+    .record(z.string())
+    .optional()
+    .openapi({
+      example: {
+        order_id: '123456',
+      },
+    }),
+});
+
 export const checkoutRequestSchema = z
   .object({
-    body: z.object({
-      products: z.array(productSchema).openapi({
-        example: [
-          { name: '陪伴散步', price: 100, quantity: 2 },
-          { name: '到府洗澡', price: 150, quantity: 4 },
-        ],
-      }),
-      metadata: z
-        .record(z.string())
-        .optional()
-        .openapi({
-          example: {
-            order_id: '123456',
-          },
-        }),
-    }),
+    body: checkoutBodyRequestSchema,
   })
   .openapi({
     example: {
@@ -142,3 +144,5 @@ export const completeResponseSchema = z
       },
     },
   });
+
+export type CheckoutResponse = z.infer<typeof checkoutResponseSchema>;

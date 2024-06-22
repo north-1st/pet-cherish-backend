@@ -9,8 +9,9 @@ import {
   getPetOwnerOrders,
   getReportByOrderId,
   getSitterOrders,
-  payForOrder,
+  payforOrder,
   refuseSitter,
+  updatePaymentStatusOrder,
   updateReport,
 } from '@controllers/orders';
 import requiresAuth from '@middlewares/requiresAuth';
@@ -20,6 +21,7 @@ import {
   orderByIdRequestSchema,
   orderRequestSchema,
   ownerOrdersRequestSchema,
+  payforOrderRequestSchema,
   reportBodySchema,
   sitterOrdersRequestSchema,
 } from '@schema/orders';
@@ -29,7 +31,8 @@ router.post('/', requiresAuth, validateRequest(createOrderRequestSchema), create
 
 router.patch('/:order_id/refuse-sitter', requiresAuth, validateRequest(orderRequestSchema), refuseSitter);
 router.patch('/:order_id/accept-sitter', requiresAuth, validateRequest(orderRequestSchema), acceptSitter);
-router.patch('/:order_id/paid', requiresAuth, validateRequest(orderRequestSchema), payForOrder);
+router.patch('/:order_id/payment', requiresAuth, validateRequest(payforOrderRequestSchema), payforOrder);
+router.patch('/:order_id/paid', requiresAuth, validateRequest(orderRequestSchema), updatePaymentStatusOrder);
 router.patch('/:order_id/complete', requiresAuth, validateRequest(orderRequestSchema), completeOrder);
 router.patch('/:order_id/cancel', requiresAuth, validateRequest(orderRequestSchema), cancelOrder);
 
