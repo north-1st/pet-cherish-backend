@@ -14,7 +14,7 @@ export const setOrdersSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerAu
   getOrderById(registry, bearerAuth);
   refuseSitter(registry, bearerAuth);
   acceptSitter(registry, bearerAuth);
-  payForOrder(registry, bearerAuth);
+  updatePaymentStatusOrder(registry, bearerAuth);
   completeOrder(registry, bearerAuth);
   cancelOrder(registry, bearerAuth);
   getPetOwnerOrders(registry, bearerAuth);
@@ -162,7 +162,7 @@ const acceptSitter = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
   });
 };
 
-const payForOrder = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
+const updatePaymentStatusOrder = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
   registry.registerPath({
     ...commonUpdateOrderSetting(bearerAuth),
     path: '/api/v1/orders/{order_id}/paid',

@@ -5,6 +5,7 @@ import { OrderStatus, ServiceType, TaskPublic, TaskStatus } from '@prisma/client
 import { createBaseResponseDataSchema, createResponsePaginationDataSchema } from '@schema';
 import { objectIdSchema } from '@schema/objectId';
 import { paginationRequestSchema, paginationSchema } from '@schema/pagination';
+import { checkoutBodyRequestSchema } from '@schema/payment';
 import { urlSchema } from '@schema/upload';
 import { userResponseSchema } from '@schema/user';
 
@@ -31,6 +32,11 @@ export const orderByIdRequestSchema = z.object({
 export const orderRequestSchema = z.object({
   params: orderParamSchema,
   body: orderBodySchema,
+});
+
+export const payforOrderRequestSchema = z.object({
+  params: orderParamSchema,
+  body: checkoutBodyRequestSchema,
 });
 
 export const createOrderBodySchema = z
@@ -100,7 +106,6 @@ const ordersResponseDataSchema = z.object({
   pet_owner_user_id: z.string(),
   status: z.nativeEnum(OrderStatus),
   note: z.string(),
-  third_party_id: z.string().nullable(),
   payment_at: z.string().nullable(),
   payment_id: z.string().nullable(),
   payment_url: z.string().nullable(),
@@ -140,7 +145,6 @@ const demoOrderData = {
   pet_owner_user_id: '6658a67f6676e47b02f23e8b',
   status: OrderStatus.PENDING,
   note: '100保姆來接案！',
-  third_party_id: null,
   payment_at: null,
   payment_id: null,
   payment_url: null,
