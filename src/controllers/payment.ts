@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 import Stripe from 'stripe';
 
+import { PaymentStatus } from '@prisma/client';
+
 import env from '../env';
 
 const stripe = new Stripe(env.STRIPE_SECRET);
@@ -24,8 +26,8 @@ export const checkout = async (req: Request, res: Response, next: NextFunction) 
     const session = await stripe.checkout.sessions.create({
       line_items: line_items,
       mode: 'payment',
-      success_url: `${env.FRONT_END_URL}/complete?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${env.FRONT_END_URL}/cancel`,
+      success_url: `${env.FRONT_END_URL}/payments/${metadata.order_id}/${PaymentStatus.SUCCESS}/{CHECKOUT_SESSION_ID}`,
+      cancel_url: `${env.FRONT_END_URL}/payments/${metadata.order_id}/${PaymentStatus.FAILURE}/{CHECKOUT_SESSION_ID}`,
       // client_reference_id: '123123',
       metadata,
     });
