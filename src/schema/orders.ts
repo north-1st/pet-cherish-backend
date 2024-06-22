@@ -39,6 +39,13 @@ export const payforOrderRequestSchema = z.object({
   body: checkoutBodyRequestSchema,
 });
 
+export const payforOrderResponseSchema = z.object({
+  status: z.boolean(),
+  data: z.object({
+    payment_url: z.string(),
+  }),
+});
+
 export const createOrderBodySchema = z
   .object({
     task_id: z.string(),
@@ -237,3 +244,4 @@ export type CreateOrderRequest = z.infer<typeof createOrderRequestSchema>;
 export type SitterOrdersRequest = z.infer<typeof sitterOrdersRequestSchema>;
 export type OwnerOrdersRequest = z.infer<typeof ownerOrdersRequestSchema>;
 export type ReportRequest = z.infer<typeof reportBodySchema>;
+export type PayforOrderResponse = z.infer<typeof payforOrderResponseSchema>;

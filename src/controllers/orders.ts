@@ -257,7 +257,7 @@ export const payforOrder = async (req: Request, res: Response, next: NextFunctio
     // (2) 存 stripe id, stripe url
     // (3) redirect front-end url
     const stripeCheckout: AxiosResponse<CheckoutResponse> = await axios.post(
-      `${env.BACK_END_URL}/api/v1/payment/checkout`,
+      `${env.NODE_ENV === 'development' ? env.BACK_END_DEV_URL : env.BACK_END_PROD_URL}/api/v1/payment/checkout`,
       checkoutBody.body
     );
     if (!stripeCheckout.data.data.id || !stripeCheckout.data.data.url) {
@@ -267,6 +267,8 @@ export const payforOrder = async (req: Request, res: Response, next: NextFunctio
       });
     }
 
+    // 補：檢查原 order.payment_url 有值，是否過期？過期才更新。
+    // 目前：每一次 call API 都更新。
     await prisma.order.update({
       where: {
         id: order_id,
@@ -277,7 +279,12 @@ export const payforOrder = async (req: Request, res: Response, next: NextFunctio
       },
     });
 
-    return res.redirect(303, stripeCheckout.data.data.url);
+    return res.status(200).json({
+      status: true,
+      data: {
+        payment_url: stripeCheckout.data.data.url,
+      },
+    });
   } catch (error) {
     next(error);
   }
@@ -311,11 +318,11 @@ export const updatePaymentStatusOrder = async (req: Request, res: Response, next
     ]);
 
     // 服務結束時間 +7天到直接改狀態：後端排程
-    const targetTask = await prisma.task.findUnique({ where: { order_id } });
-    if (targetTask && targetTask.end_at) {
-      const sevenDaysLater = new Date(targetTask.end_at.getTime() + 7 * 24 * 60 * 60 * 1000);
-      await agenda.schedule(sevenDaysLater, ORDER_STATUS_JOB, { order_id, user_id: req.user.id, task_id });
-    }
+    // const targetTask = await prisma.task.findUnique({ where: { order_id } });
+    // if (targetTask && targetTask.end_at) {
+    //   const sevenDaysLater = new Date(targetTask.end_at.getTime() + 7 * 24 * 60 * 60 * 1000);
+    //   await agenda.schedule(sevenDaysLater, ORDER_STATUS_JOB, { order_id, user_id: req.user.id, task_id });
+    // }
 
     res.status(200).json({
       message: 'Update Successfully!',

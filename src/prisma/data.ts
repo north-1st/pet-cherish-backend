@@ -351,7 +351,6 @@ export const orders = [
     pet_owner_user_id: users[1].id,
     status: OrderStatus.VALID,
     note: 'Order Two Note',
-    third_party_id: '456',
     payment_at: new Date(),
     report_content: 'Order Two Report Content',
     report_image_list: ['https://example.com/report2.jpg'],
