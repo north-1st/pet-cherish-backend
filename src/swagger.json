@@ -2450,9 +2450,11 @@
                       "pet_owner_user_id": "6658a67f6676e47b02f23e8b",
                       "status": "PENDING",
                       "note": "100保姆來接案！",
-                      "payment_at": null,
-                      "payment_id": null,
-                      "payment_url": null,
+                      "payment_at": "2024-06-23T08:52:29.000Z",
+                      "payment_id": "cs_test_b1hm29prsKJI5ZmVYdjYbkK1Z1QYoTe9rEm12O5VUuZpX8kXgM5gPeyLk7",
+                      "payment_url": "https://checkout.stripe.com/c/pay/cs_test_a1xN4f7x9wV5xVXnBCPMuYaylbwuMN0gf733IIy4ee0zg7rWskifZJJWos#fidkdWxOYHwnPyd1blpxYHZxWjA0VVZSUjJBSHFLfF1HVEIzV1dyUGxcTl1wUE81T3docDU2MD1VNG5sd0JXc3dhUU9LMmZ0V1B1YXM1N1NydkpiXWNURktJaEFxZG5KQkhJV0pxS3FVcElBNTV8fWZwMnIzMycpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl",
+                      "payment_type": "card",
+                      "payment_status": "SUCCESS",
                       "report_content": "",
                       "report_image_list": [],
                       "report_created_at": null,
@@ -2800,10 +2802,6 @@
                           "note": {
                             "type": "string"
                           },
-                          "payment_at": {
-                            "type": "string",
-                            "nullable": true
-                          },
                           "payment_id": {
                             "type": "string",
                             "nullable": true
@@ -2811,6 +2809,30 @@
                           "payment_url": {
                             "type": "string",
                             "nullable": true
+                          },
+                          "payment_at": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "payment_status": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": [
+                              "SUCCESS",
+                              "FAILURE"
+                            ]
+                          },
+                          "payment_type": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": [
+                              "card",
+                              "bank_transfer",
+                              "alipay",
+                              "apple_pay",
+                              "google_pay",
+                              "wechat"
+                            ]
                           },
                           "report_content": {
                             "type": "string"
@@ -3026,9 +3048,11 @@
                           "pet_owner_user_id",
                           "status",
                           "note",
-                          "payment_at",
                           "payment_id",
                           "payment_url",
+                          "payment_at",
+                          "payment_status",
+                          "payment_type",
                           "report_content",
                           "report_image_list",
                           "report_created_at",
@@ -3064,9 +3088,11 @@
                         "pet_owner_user_id": "6658a67f6676e47b02f23e8b",
                         "status": "PENDING",
                         "note": "100保姆來接案！",
-                        "payment_at": null,
-                        "payment_id": null,
-                        "payment_url": null,
+                        "payment_at": "2024-06-23T08:52:29.000Z",
+                        "payment_id": "cs_test_b1hm29prsKJI5ZmVYdjYbkK1Z1QYoTe9rEm12O5VUuZpX8kXgM5gPeyLk7",
+                        "payment_url": "https://checkout.stripe.com/c/pay/cs_test_a1xN4f7x9wV5xVXnBCPMuYaylbwuMN0gf733IIy4ee0zg7rWskifZJJWos#fidkdWxOYHwnPyd1blpxYHZxWjA0VVZSUjJBSHFLfF1HVEIzV1dyUGxcTl1wUE81T3docDU2MD1VNG5sd0JXc3dhUU9LMmZ0V1B1YXM1N1NydkpiXWNURktJaEFxZG5KQkhJV0pxS3FVcElBNTV8fWZwMnIzMycpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl",
+                        "payment_type": "card",
+                        "payment_status": "SUCCESS",
                         "report_content": "",
                         "report_image_list": [],
                         "report_created_at": null,
@@ -3223,10 +3249,6 @@
                           "note": {
                             "type": "string"
                           },
-                          "payment_at": {
-                            "type": "string",
-                            "nullable": true
-                          },
                           "payment_id": {
                             "type": "string",
                             "nullable": true
@@ -3234,6 +3256,30 @@
                           "payment_url": {
                             "type": "string",
                             "nullable": true
+                          },
+                          "payment_at": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "payment_status": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": [
+                              "SUCCESS",
+                              "FAILURE"
+                            ]
+                          },
+                          "payment_type": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": [
+                              "card",
+                              "bank_transfer",
+                              "alipay",
+                              "apple_pay",
+                              "google_pay",
+                              "wechat"
+                            ]
                           },
                           "report_content": {
                             "type": "string"
@@ -3449,9 +3495,11 @@
                           "pet_owner_user_id",
                           "status",
                           "note",
-                          "payment_at",
                           "payment_id",
                           "payment_url",
+                          "payment_at",
+                          "payment_status",
+                          "payment_type",
                           "report_content",
                           "report_image_list",
                           "report_created_at",
@@ -3487,9 +3535,11 @@
                         "pet_owner_user_id": "6658a67f6676e47b02f23e8b",
                         "status": "PENDING",
                         "note": "100保姆來接案！",
-                        "payment_at": null,
-                        "payment_id": null,
-                        "payment_url": null,
+                        "payment_at": "2024-06-23T08:52:29.000Z",
+                        "payment_id": "cs_test_b1hm29prsKJI5ZmVYdjYbkK1Z1QYoTe9rEm12O5VUuZpX8kXgM5gPeyLk7",
+                        "payment_url": "https://checkout.stripe.com/c/pay/cs_test_a1xN4f7x9wV5xVXnBCPMuYaylbwuMN0gf733IIy4ee0zg7rWskifZJJWos#fidkdWxOYHwnPyd1blpxYHZxWjA0VVZSUjJBSHFLfF1HVEIzV1dyUGxcTl1wUE81T3docDU2MD1VNG5sd0JXc3dhUU9LMmZ0V1B1YXM1N1NydkpiXWNURktJaEFxZG5KQkhJV0pxS3FVcElBNTV8fWZwMnIzMycpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl",
+                        "payment_type": "card",
+                        "payment_status": "SUCCESS",
                         "report_content": "",
                         "report_image_list": [],
                         "report_created_at": null,
@@ -3635,10 +3685,6 @@
                           "note": {
                             "type": "string"
                           },
-                          "payment_at": {
-                            "type": "string",
-                            "nullable": true
-                          },
                           "payment_id": {
                             "type": "string",
                             "nullable": true
@@ -3646,6 +3692,30 @@
                           "payment_url": {
                             "type": "string",
                             "nullable": true
+                          },
+                          "payment_at": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "payment_status": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": [
+                              "SUCCESS",
+                              "FAILURE"
+                            ]
+                          },
+                          "payment_type": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": [
+                              "card",
+                              "bank_transfer",
+                              "alipay",
+                              "apple_pay",
+                              "google_pay",
+                              "wechat"
+                            ]
                           },
                           "report_content": {
                             "type": "string"
@@ -3861,9 +3931,11 @@
                           "pet_owner_user_id",
                           "status",
                           "note",
-                          "payment_at",
                           "payment_id",
                           "payment_url",
+                          "payment_at",
+                          "payment_status",
+                          "payment_type",
                           "report_content",
                           "report_image_list",
                           "report_created_at",
@@ -3899,9 +3971,11 @@
                         "pet_owner_user_id": "6658a67f6676e47b02f23e8b",
                         "status": "PENDING",
                         "note": "100保姆來接案！",
-                        "payment_at": null,
-                        "payment_id": null,
-                        "payment_url": null,
+                        "payment_at": "2024-06-23T08:52:29.000Z",
+                        "payment_id": "cs_test_b1hm29prsKJI5ZmVYdjYbkK1Z1QYoTe9rEm12O5VUuZpX8kXgM5gPeyLk7",
+                        "payment_url": "https://checkout.stripe.com/c/pay/cs_test_a1xN4f7x9wV5xVXnBCPMuYaylbwuMN0gf733IIy4ee0zg7rWskifZJJWos#fidkdWxOYHwnPyd1blpxYHZxWjA0VVZSUjJBSHFLfF1HVEIzV1dyUGxcTl1wUE81T3docDU2MD1VNG5sd0JXc3dhUU9LMmZ0V1B1YXM1N1NydkpiXWNURktJaEFxZG5KQkhJV0pxS3FVcElBNTV8fWZwMnIzMycpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl",
+                        "payment_type": "card",
+                        "payment_status": "SUCCESS",
                         "report_content": "",
                         "report_image_list": [],
                         "report_created_at": null,
@@ -4021,10 +4095,6 @@
                           "note": {
                             "type": "string"
                           },
-                          "payment_at": {
-                            "type": "string",
-                            "nullable": true
-                          },
                           "payment_id": {
                             "type": "string",
                             "nullable": true
@@ -4032,6 +4102,30 @@
                           "payment_url": {
                             "type": "string",
                             "nullable": true
+                          },
+                          "payment_at": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "payment_status": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": [
+                              "SUCCESS",
+                              "FAILURE"
+                            ]
+                          },
+                          "payment_type": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": [
+                              "card",
+                              "bank_transfer",
+                              "alipay",
+                              "apple_pay",
+                              "google_pay",
+                              "wechat"
+                            ]
                           },
                           "report_content": {
                             "type": "string"
@@ -4247,9 +4341,11 @@
                           "pet_owner_user_id",
                           "status",
                           "note",
-                          "payment_at",
                           "payment_id",
                           "payment_url",
+                          "payment_at",
+                          "payment_status",
+                          "payment_type",
                           "report_content",
                           "report_image_list",
                           "report_created_at",
@@ -4285,9 +4381,11 @@
                         "pet_owner_user_id": "6658a67f6676e47b02f23e8b",
                         "status": "PENDING",
                         "note": "100保姆來接案！",
-                        "payment_at": null,
-                        "payment_id": null,
-                        "payment_url": null,
+                        "payment_at": "2024-06-23T08:52:29.000Z",
+                        "payment_id": "cs_test_b1hm29prsKJI5ZmVYdjYbkK1Z1QYoTe9rEm12O5VUuZpX8kXgM5gPeyLk7",
+                        "payment_url": "https://checkout.stripe.com/c/pay/cs_test_a1xN4f7x9wV5xVXnBCPMuYaylbwuMN0gf733IIy4ee0zg7rWskifZJJWos#fidkdWxOYHwnPyd1blpxYHZxWjA0VVZSUjJBSHFLfF1HVEIzV1dyUGxcTl1wUE81T3docDU2MD1VNG5sd0JXc3dhUU9LMmZ0V1B1YXM1N1NydkpiXWNURktJaEFxZG5KQkhJV0pxS3FVcElBNTV8fWZwMnIzMycpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl",
+                        "payment_type": "card",
+                        "payment_status": "SUCCESS",
                         "report_content": "",
                         "report_image_list": [],
                         "report_created_at": null,
@@ -6059,13 +6157,80 @@
                             },
                             "metadata": {
                               "type": "object",
-                              "properties": {}
+                              "properties": {
+                                "order_id": {
+                                  "type": "string"
+                                },
+                                "task_id": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "order_id",
+                                "task_id"
+                              ]
+                            },
+                            "payment_status": {
+                              "type": "string",
+                              "enum": [
+                                "paid",
+                                "unpaid",
+                                "no_payment_required"
+                              ]
+                            },
+                            "payment_intent": {
+                              "type": "object",
+                              "properties": {
+                                "amount": {
+                                  "type": "number"
+                                },
+                                "amount_received": {
+                                  "type": "number"
+                                },
+                                "created": {
+                                  "type": "number"
+                                },
+                                "payment_method": {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "type": "string"
+                                    },
+                                    "card": {
+                                      "type": "object",
+                                      "properties": {
+                                        "brand": {
+                                          "type": "string"
+                                        },
+                                        "last4": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "brand",
+                                        "last4"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "type"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "amount",
+                                "amount_received",
+                                "created",
+                                "payment_method"
+                              ]
                             }
                           },
                           "required": [
                             "id",
                             "amount_total",
-                            "metadata"
+                            "metadata",
+                            "payment_status",
+                            "payment_intent"
                           ]
                         },
                         "list_items": {
@@ -6127,10 +6292,24 @@
                     "message": "Your payment was successful",
                     "data": {
                       "retrieve": {
-                        "id": "cs_test_b1ZmurAFYdbEabofvi11fQrcrT5pwKrPNG04PBxL7YelDvX6byGdNajsOm",
-                        "amount_total": 80000,
+                        "id": "cs_test_b1cr522PQ4qwypfN24f5UzrAbnuLUgAq7fXBB8bklCTrWu2wfgUmlQt2QQ",
+                        "amount_total": 305000,
                         "metadata": {
-                          "order_id": "123456"
+                          "order_id": "6677c51e52789c9282cb5504",
+                          "task_id": "6658a7d754390e6a3ed4370d"
+                        },
+                        "payment_status": "paid",
+                        "payment_intent": {
+                          "amount": 305000,
+                          "amount_received": 305000,
+                          "created": 1719125342,
+                          "payment_method": {
+                            "type": "card",
+                            "card": {
+                              "brand": "visa",
+                              "last4": "4242"
+                            }
+                          }
                         }
                       },
                       "list_items": [
