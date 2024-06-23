@@ -95,10 +95,7 @@ export const ownerOrdersQuerySchema = paginationRequestSchema.extend({
   status: z
     .string()
     .transform((value) => value.split(',').map((item) => item.trim()))
-    .refine(
-      (statuses) => Array.isArray(statuses) && statuses.every((status) => Object.keys(OrderStatus).includes(status)),
-      { message: 'Invalid status value' }
-    )
+    .optional()
     .openapi({
       description: '訂單狀態: 飼主視角',
       example: `${TaskStatus.PENDING},${OrderStatus.INVALID}`,
@@ -110,10 +107,7 @@ export const ownerOrdersPaginationSchema = paginationSchema.extend({
   status: z
     .string()
     .transform((value) => value.split(',').map((item) => item.trim()))
-    .refine(
-      (statuses) => Array.isArray(statuses) && statuses.every((status) => Object.keys(OrderStatus).includes(status)),
-      { message: 'Invalid status value' }
-    ),
+    .optional(),
 });
 
 export const ownerOrdersRequestSchema = z.object({
