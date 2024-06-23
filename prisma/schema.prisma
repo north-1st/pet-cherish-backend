@@ -32,7 +32,8 @@ model User {
   comments           Comment[] @relation("UserComments")
   owner_reviews      Review[]  @relation("PetOwnerRole")
   sitter_reviews     Review[]  @relation("SitterRole")
-  order              Order[]   @relation("SitterUser")
+  sitter_orders      Order[]   @relation("SitterUser")
+  owner_orders       Order[]   @relation("PetOwnerUser")
 
   @@map("users")
 }
@@ -118,7 +119,6 @@ model Task {
 
 model Order {
   id                String             @id @default(auto()) @map("_id") @db.ObjectId
-  pet_owner_user_id String             @db.ObjectId
   status            OrderStatus        @default(PENDING)
   note              String
   payment_at        DateTime? // 付款時間
@@ -136,6 +136,8 @@ model Order {
   task_id           String             @db.ObjectId
   sitter_user       User               @relation("SitterUser", fields: [sitter_user_id], references: [id])
   sitter_user_id    String             @db.ObjectId
+  pet_owner_user    User               @relation("PetOwnerUser", fields: [pet_owner_user_id], references: [id])
+  pet_owner_user_id String             @db.ObjectId
 
   @@map("orders")
 }

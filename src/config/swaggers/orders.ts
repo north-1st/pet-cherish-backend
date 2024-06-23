@@ -4,8 +4,8 @@ import {
   orderBodySchema,
   orderByIdRequestSchema,
   orderResponseSchema,
+  ordersQuerySchema,
   ordersResponseSchema,
-  ownerOrdersQuerySchema,
   reportBodyContentSchema,
 } from '@schema/orders';
 
@@ -55,7 +55,7 @@ const commonGetOrderSetting = (bearerAuth: BearerAuth): RouteConfig => ({
   security: [{ [bearerAuth.name]: [] }],
   summary: '',
   request: {
-    query: ownerOrdersQuerySchema,
+    query: ordersQuerySchema,
   },
   responses: {
     200: {

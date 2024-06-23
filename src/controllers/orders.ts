@@ -11,8 +11,7 @@ import {
   createOrderRequestSchema,
   orderBodySchema,
   orderParamSchema,
-  ownerOrdersPaginationSchema,
-  sitterOrdersPaginationSchema,
+  ordersPaginationSchema,
   updatePaymentStatusOrderBodySchema,
 } from '@schema/orders';
 import { CheckoutResponse, checkoutRequestSchema } from '@schema/payment';
@@ -420,7 +419,7 @@ export const cancelOrder = async (req: Request, res: Response, next: NextFunctio
 };
 
 export const getPetOwnerOrders = async (_req: Request, res: Response, next: NextFunction) => {
-  const { limit, page, status, task_id } = ownerOrdersPaginationSchema.parse(_req.query);
+  const { limit, page, status, task_id } = ordersPaginationSchema.parse(_req.query);
   if (!_req.user?.id) {
     throw createHttpError(403, 'Forbidden');
   }
@@ -446,6 +445,10 @@ export const getPetOwnerOrders = async (_req: Request, res: Response, next: Next
         take: limit,
         skip: (page - 1) * limit,
         where: conditions,
+        omit: {
+          sitter_user_id: true,
+          task_id: true,
+        },
         include: {
           sitter_user: {
             omit: {
@@ -470,7 +473,7 @@ export const getPetOwnerOrders = async (_req: Request, res: Response, next: Next
     });
 
     res.status(200).json({
-      data: data || [],
+      data,
       total,
       total_page: Math.ceil(total / limit),
       status: true,
@@ -481,21 +484,46 @@ export const getPetOwnerOrders = async (_req: Request, res: Response, next: Next
 };
 
 export const getSitterOrders = async (_req: Request, res: Response, next: NextFunction) => {
-  const { limit, page, status } = sitterOrdersPaginationSchema.parse(_req.query);
+  const { limit, page, status, task_id } = ordersPaginationSchema.parse(_req.query);
   if (!_req.user?.id) {
     throw createHttpError(403, 'Forbidden');
+  }
+
+  if (task_id && !ObjectId.isValid(task_id)) {
+    res.status(404).json({
+      status: false,
+      message: 'Bad Request!',
+    });
   }
 
   try {
     const conditions = {
       sitter_user_id: _req.user.id,
-      status,
+      status: {
+        in: status as OrderStatus[],
+      },
+      ...(task_id && { task_id }),
     };
     const [data, total] = await prisma.$transaction(async (transaction_prisma) => {
       const getData = await transaction_prisma.order.findMany({
         take: limit,
         skip: (page - 1) * limit,
         where: conditions,
+        omit: {
+          pet_owner_user_id: true,
+          task_id: true,
+        },
+        include: {
+          pet_owner_user: {
+            omit: {
+              password: true,
+              lastPasswordChange: true,
+              created_at: true,
+              updated_at: true,
+            },
+          },
+          task: true,
+        },
         orderBy: {
           updated_at: 'desc',
         },

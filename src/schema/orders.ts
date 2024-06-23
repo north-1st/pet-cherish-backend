@@ -75,22 +75,7 @@ export const createOrderRequestSchema = z.object({
   body: createOrderBodySchema,
 });
 
-export const sitterOrdersQuerySchema = paginationRequestSchema.extend({
-  status: z.nativeEnum(OrderStatus).openapi({
-    description: '訂單狀態: 保姆視角',
-    example: OrderStatus.TRACKING,
-  }),
-});
-
-export const sitterOrdersPaginationSchema = paginationSchema.extend({
-  status: z.nativeEnum(OrderStatus),
-});
-
-export const sitterOrdersRequestSchema = z.object({
-  query: sitterOrdersQuerySchema,
-});
-
-export const ownerOrdersQuerySchema = paginationRequestSchema.extend({
+export const ordersQuerySchema = paginationRequestSchema.extend({
   task_id: z.string().optional(),
   status: z
     .string()
@@ -102,7 +87,7 @@ export const ownerOrdersQuerySchema = paginationRequestSchema.extend({
     }),
 });
 
-export const ownerOrdersPaginationSchema = paginationSchema.extend({
+export const ordersPaginationSchema = paginationSchema.extend({
   task_id: z.string().optional(),
   status: z
     .string()
@@ -111,7 +96,7 @@ export const ownerOrdersPaginationSchema = paginationSchema.extend({
 });
 
 export const ownerOrdersRequestSchema = z.object({
-  query: ownerOrdersQuerySchema,
+  query: ordersQuerySchema,
 });
 
 const ordersResponseDataSchema = z.object({
@@ -252,7 +237,6 @@ export const reportBodySchema = z
 export type OrdersRequest = z.infer<typeof ordersRequestSchema>;
 export type OrderByIdRequest = z.infer<typeof orderByIdRequestSchema>;
 export type CreateOrderRequest = z.infer<typeof createOrderRequestSchema>;
-export type SitterOrdersRequest = z.infer<typeof sitterOrdersRequestSchema>;
-export type OwnerOrdersRequest = z.infer<typeof ownerOrdersRequestSchema>;
+export type OrdersQueryRequest = z.infer<typeof ownerOrdersRequestSchema>;
 export type ReportRequest = z.infer<typeof reportBodySchema>;
 export type PayforOrderResponse = z.infer<typeof payforOrderResponseSchema>;
