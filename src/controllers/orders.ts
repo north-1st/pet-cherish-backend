@@ -13,6 +13,7 @@ import {
   orderParamSchema,
   ownerOrdersPaginationSchema,
   sitterOrdersPaginationSchema,
+  updatePaymentStatusOrderBodySchema,
 } from '@schema/orders';
 import { CheckoutResponse, checkoutRequestSchema } from '@schema/payment';
 
@@ -292,7 +293,8 @@ export const payforOrder = async (req: Request, res: Response, next: NextFunctio
 
 export const updatePaymentStatusOrder = async (req: Request, res: Response, next: NextFunction) => {
   const { order_id } = orderParamSchema.parse(req.params);
-  const { task_id } = orderBodySchema.parse(req.body);
+  const { task_id, payment_at, payment_status, payment_type } = updatePaymentStatusOrderBodySchema.parse(req.body);
+
   if (!req.user?.id) {
     throw createHttpError(403, 'Forbidden');
   }
@@ -302,7 +304,12 @@ export const updatePaymentStatusOrder = async (req: Request, res: Response, next
       // 訂單狀態<保姆視角>：任務進度追蹤
       prisma.order.update({
         where: { id: order_id },
-        data: { status: OrderStatus.TRACKING },
+        data: {
+          status: OrderStatus.TRACKING,
+          payment_at: new Date(payment_at * 1000), // stripe 給的是 Unix
+          payment_status,
+          payment_type,
+        },
       }),
       // 訂單狀態<飼主視角>：任務進度追蹤
       prisma.task.update({

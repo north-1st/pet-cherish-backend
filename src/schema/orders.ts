@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
-import { OrderStatus, ServiceType, TaskPublic, TaskStatus } from '@prisma/client';
+import { OrderStatus, PaymentMethodType, PaymentStatus, ServiceType, TaskPublic, TaskStatus } from '@prisma/client';
 import { createBaseResponseDataSchema, createResponsePaginationDataSchema } from '@schema';
 import { objectIdSchema } from '@schema/objectId';
 import { paginationRequestSchema, paginationSchema } from '@schema/pagination';
@@ -29,9 +29,21 @@ export const orderByIdRequestSchema = z.object({
   params: orderParamSchema,
 });
 
-export const orderRequestSchema = z.object({
+export const ordersRequestSchema = z.object({
   params: orderParamSchema,
   body: orderBodySchema,
+});
+
+export const updatePaymentStatusOrderBodySchema = z.object({
+  task_id: z.string(),
+  payment_at: z.number(),
+  payment_status: z.nativeEnum(PaymentStatus),
+  payment_type: z.nativeEnum(PaymentMethodType),
+});
+
+export const updatePaymentStatusOrderRequestSchema = z.object({
+  params: orderParamSchema,
+  body: updatePaymentStatusOrderBodySchema,
 });
 
 export const payforOrderRequestSchema = z.object({
@@ -113,9 +125,11 @@ const ordersResponseDataSchema = z.object({
   pet_owner_user_id: z.string(),
   status: z.nativeEnum(OrderStatus),
   note: z.string(),
-  payment_at: z.string().nullable(),
   payment_id: z.string().nullable(),
   payment_url: z.string().nullable(),
+  payment_at: z.string().nullable(),
+  payment_status: z.nativeEnum(PaymentStatus).nullable(),
+  payment_type: z.nativeEnum(PaymentMethodType).nullable(),
   report_content: z.string(),
   report_image_list: z.array(z.string()),
   report_created_at: z.string().nullable(),
@@ -152,9 +166,12 @@ const demoOrderData = {
   pet_owner_user_id: '6658a67f6676e47b02f23e8b',
   status: OrderStatus.PENDING,
   note: '100保姆來接案！',
-  payment_at: null,
-  payment_id: null,
-  payment_url: null,
+  payment_at: '2024-06-23T08:52:29.000Z',
+  payment_id: 'cs_test_b1hm29prsKJI5ZmVYdjYbkK1Z1QYoTe9rEm12O5VUuZpX8kXgM5gPeyLk7',
+  payment_url:
+    'https://checkout.stripe.com/c/pay/cs_test_a1xN4f7x9wV5xVXnBCPMuYaylbwuMN0gf733IIy4ee0zg7rWskifZJJWos#fidkdWxOYHwnPyd1blpxYHZxWjA0VVZSUjJBSHFLfF1HVEIzV1dyUGxcTl1wUE81T3docDU2MD1VNG5sd0JXc3dhUU9LMmZ0V1B1YXM1N1NydkpiXWNURktJaEFxZG5KQkhJV0pxS3FVcElBNTV8fWZwMnIzMycpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl',
+  payment_type: PaymentMethodType.card,
+  payment_status: PaymentStatus.SUCCESS,
   report_content: '',
   report_image_list: [],
   report_created_at: null,
@@ -238,7 +255,7 @@ export const reportBodySchema = z
     },
   });
 
-export type OrdersRequest = z.infer<typeof orderRequestSchema>;
+export type OrdersRequest = z.infer<typeof ordersRequestSchema>;
 export type OrderByIdRequest = z.infer<typeof orderByIdRequestSchema>;
 export type CreateOrderRequest = z.infer<typeof createOrderRequestSchema>;
 export type SitterOrdersRequest = z.infer<typeof sitterOrdersRequestSchema>;
