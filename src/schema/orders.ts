@@ -91,7 +91,13 @@ export const ordersPaginationSchema = paginationSchema.extend({
   task_id: z.string().optional(),
   status: z
     .string()
-    .transform((value) => value.split(',').map((item) => item.trim()))
+    .transform((value) => {
+      if (value) {
+        return value.split(',').map((item) => item.trim());
+      } else {
+        return Object.values(OrderStatus);
+      }
+    })
     .optional(),
 });
 
