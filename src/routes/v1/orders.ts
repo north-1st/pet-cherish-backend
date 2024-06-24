@@ -17,11 +17,11 @@ import {
 import requiresAuth from '@middlewares/requiresAuth';
 import { validateRequest } from '@middlewares/validateRequest';
 import {
+  allOrdersRequestSchema,
   createOrderRequestSchema,
   orderByIdRequestSchema,
   ordersQuerySchema,
   ordersRequestSchema,
-  ownerOrdersRequestSchema,
   payforOrderRequestSchema,
   reportBodySchema,
   updatePaymentStatusOrderRequestSchema,
@@ -42,8 +42,8 @@ router.patch(
 router.patch('/:order_id/complete', requiresAuth, validateRequest(ordersRequestSchema), completeOrder);
 router.patch('/:order_id/cancel', requiresAuth, validateRequest(ordersRequestSchema), cancelOrder);
 
-router.get('/pet-owner', requiresAuth, validateRequest(ordersQuerySchema), getPetOwnerOrders);
-router.get('/sitter', requiresAuth, validateRequest(ordersQuerySchema), getSitterOrders);
+router.get('/pet-owner', requiresAuth, validateRequest(allOrdersRequestSchema), getPetOwnerOrders);
+router.get('/sitter', requiresAuth, validateRequest(allOrdersRequestSchema), getSitterOrders);
 router.get('/:order_id', requiresAuth, validateRequest(orderByIdRequestSchema), getOrderById);
 
 router

@@ -1,10 +1,8 @@
 import { z } from 'zod';
 
-import { OpenAPIRegistry, RouteConfig } from '@asteasolutions/zod-to-openapi';
+import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { BearerAuth } from '@schema/bearerAuth';
 import { homeResponseSchema } from '@schema/home';
-import { orderBodySchema, ordersResponseSchema } from '@schema/orders';
-import { userBaseSchema } from '@schema/user';
 
 export const setHomeSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
   getHomeInfo(registry, bearerAuth);
