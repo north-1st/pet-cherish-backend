@@ -32,7 +32,8 @@ model User {
   comments           Comment[] @relation("UserComments")
   owner_reviews      Review[]  @relation("PetOwnerRole")
   sitter_reviews     Review[]  @relation("SitterRole")
-  order              Order[]   @relation("SitterUser")
+  sitter_orders      Order[]   @relation("SitterUser")
+  owner_orders       Order[]   @relation("PetOwnerUser")
 
   @@map("users")
 }
@@ -117,24 +118,26 @@ model Task {
 }
 
 model Order {
-  id                String         @id @default(auto()) @map("_id") @db.ObjectId
-  pet_owner_user_id String         @db.ObjectId
-  status            OrderStatus    @default(PENDING)
+  id                String             @id @default(auto()) @map("_id") @db.ObjectId
+  status            OrderStatus        @default(PENDING)
   note              String
   payment_at        DateTime? // 付款時間
   payment_id        String? // stripe id
   payment_url       String? // stripe checkout url
   payment_status    PaymentStatus? // 付款結果：成功、失敗
+  payment_type      PaymentMethodType? // 付款方式
   report_content    String?
   report_image_list String[]
   report_created_at DateTime?
   report_updated_at DateTime?
-  created_at        DateTime       @default(now())
-  updated_at        DateTime       @updatedAt
-  task              Task           @relation(fields: [task_id, pet_owner_user_id], references: [id, user_id])
-  task_id           String         @db.ObjectId
-  sitter_user       User           @relation("SitterUser", fields: [sitter_user_id], references: [id])
-  sitter_user_id    String         @db.ObjectId
+  created_at        DateTime           @default(now())
+  updated_at        DateTime           @updatedAt
+  task              Task               @relation(fields: [task_id, pet_owner_user_id], references: [id, user_id])
+  task_id           String             @db.ObjectId
+  sitter_user       User               @relation("SitterUser", fields: [sitter_user_id], references: [id])
+  sitter_user_id    String             @db.ObjectId
+  pet_owner_user    User               @relation("PetOwnerUser", fields: [pet_owner_user_id], references: [id])
+  pet_owner_user_id String             @db.ObjectId
 
   @@map("orders")
 }
@@ -238,4 +241,13 @@ enum OrderStatus {
 enum PaymentStatus {
   SUCCESS
   FAILURE
+}
+
+enum PaymentMethodType {
+  card // 信用卡
+  bank_transfer // 銀行轉帳
+  alipay // 支付寶
+  apple_pay // Apple Pay
+  google_pay // Google Pay
+  wechat // 微信支付
 }

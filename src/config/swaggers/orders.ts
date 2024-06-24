@@ -4,9 +4,10 @@ import {
   orderBodySchema,
   orderByIdRequestSchema,
   orderResponseSchema,
-  ordersResponseSchema,
-  ownerOrdersQuerySchema,
+  ordersQuerySchema,
+  ownerOrdersResponseSchema,
   reportBodyContentSchema,
+  sitterOrdersResponseSchema,
 } from '@schema/orders';
 
 export const setOrdersSwagger = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
@@ -55,14 +56,14 @@ const commonGetOrderSetting = (bearerAuth: BearerAuth): RouteConfig => ({
   security: [{ [bearerAuth.name]: [] }],
   summary: '',
   request: {
-    query: ownerOrdersQuerySchema,
+    query: ordersQuerySchema,
   },
   responses: {
     200: {
       description: 'OK',
       content: {
         'application/json': {
-          schema: ordersResponseSchema,
+          schema: orderResponseSchema,
         },
       },
     },
@@ -125,14 +126,6 @@ const getOrderById = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
       params: orderByIdRequestSchema.shape.params,
     },
     responses: {
-      200: {
-        description: 'OK',
-        content: {
-          'application/json': {
-            schema: orderResponseSchema,
-          },
-        },
-      },
       401: {
         description: 'Unauthorized',
       },
@@ -189,6 +182,17 @@ const cancelOrder = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
 const getPetOwnerOrders = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
   registry.registerPath({
     ...commonGetOrderSetting(bearerAuth),
+    responses: {
+      ...commonGetOrderSetting(bearerAuth).responses,
+      200: {
+        description: 'OK',
+        content: {
+          'application/json': {
+            schema: ownerOrdersResponseSchema,
+          },
+        },
+      },
+    },
     path: '/api/v1/orders/pet-owner',
     summary: '查詢：所有訂單<飼主視角>',
   });
@@ -197,6 +201,17 @@ const getPetOwnerOrders = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) =>
 const getSitterOrders = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
   registry.registerPath({
     ...commonGetOrderSetting(bearerAuth),
+    responses: {
+      ...commonGetOrderSetting(bearerAuth).responses,
+      200: {
+        description: 'OK',
+        content: {
+          'application/json': {
+            schema: sitterOrdersResponseSchema,
+          },
+        },
+      },
+    },
     path: '/api/v1/orders/sitter',
     summary: '查詢：所有訂單<保姆視角>',
   });
@@ -223,7 +238,7 @@ const getReportByOrderId = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) =
         description: 'OK',
         content: {
           'application/json': {
-            schema: ordersResponseSchema,
+            schema: orderResponseSchema,
           },
         },
       },
@@ -264,7 +279,7 @@ const updateReport = (registry: OpenAPIRegistry, bearerAuth: BearerAuth) => {
         description: 'OK',
         content: {
           'application/json': {
-            schema: ordersResponseSchema,
+            schema: orderResponseSchema,
           },
         },
       },

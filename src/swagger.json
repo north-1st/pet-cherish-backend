@@ -2406,102 +2406,6 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "params": {
-                          "type": "object",
-                          "properties": {
-                            "order_id": {
-                              "type": "string",
-                              "description": "訂單編號",
-                              "example": "6658a256a8b5660a69d5e0d9"
-                            }
-                          },
-                          "required": [
-                            "order_id"
-                          ]
-                        }
-                      },
-                      "required": [
-                        "params"
-                      ]
-                    },
-                    "status": {
-                      "type": "boolean"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "status"
-                  ],
-                  "description": "查詢：指定訂單",
-                  "example": {
-                    "status": true,
-                    "data": {
-                      "id": "666d861d89a8d92b89dec71f",
-                      "pet_owner_user_id": "6658a67f6676e47b02f23e8b",
-                      "status": "PENDING",
-                      "note": "100保姆來接案！",
-                      "payment_at": null,
-                      "payment_id": null,
-                      "payment_url": null,
-                      "report_content": "",
-                      "report_image_list": [],
-                      "report_created_at": null,
-                      "report_updated_at": null,
-                      "created_at": "2024-06-15T12:16:29.744Z",
-                      "updated_at": "2024-06-15T12:16:29.744Z",
-                      "sitter_user": {
-                        "id": "66571db5146b42a4acc541b6",
-                        "email": "100@mail.com",
-                        "real_name": "100",
-                        "phone": null,
-                        "nickname": null,
-                        "birthdate": null,
-                        "gender": null,
-                        "self_introduction": null,
-                        "avatar": null,
-                        "is_sitter": true,
-                        "is_deleted": false,
-                        "average_rating": null,
-                        "total_reviews": 0
-                      },
-                      "task": {
-                        "id": "6658a7d754390e6a3ed4370d",
-                        "title": "任務標題103咻咻改改O",
-                        "public": "OPEN",
-                        "status": "PENDING",
-                        "cover": "https://storage.googleapis.com/pet-cherish-dev.appspot.com/task/3af7e666-7a77-4c34-a764-fbdf8cef63dd.jpeg?GoogleAccessId=firebase-adminsdk-ldt7v%40pet-cherish-dev.iam.gserviceaccount.com&Expires=16730294400&Signature=CjOf4xZi5dBPHxF6ngdcrAtmIu1htxiVoAK7S%2BFpxuYrt8MUY1lLybUMSqhtWMqx39gwR4rpWDWjsaLqID0mdtj9EfJVtROxhdqzbCkfcEdtboYI2RTFE5%2BgWomhBJw0M36hgCuqVCzxh%2F260%2BIIXKwNQcde6RwLx4B4Jhkekkwp4yKqDPciwFJmpK3%2BNX5sp5BSf%2B9e22E9tqju3rg1uNulTQIN6Si1qBf3qAG4Puwcd6IJv6W7ki02VWFovwTYZHvCppgB57YSd4donrICNoJpmDDCnrbvz6UqaF%2Fa36sdzv8AysB7mNSYQsOunUH6Qz3KtWWu6dlPCJnAqRl7sA%3D%3D",
-                        "service_type": "BATH",
-                        "city": "臺北市",
-                        "district": "大同區",
-                        "unit_price": 1500,
-                        "total": 3000,
-                        "description": "柴犬定期洗澡",
-                        "accept_sitter_contact": false,
-                        "start_at": "2024-06-01T12:52:17.708Z",
-                        "end_at": "2024-06-01T13:52:17.708Z",
-                        "created_at": "2024-05-30T16:22:47.700Z",
-                        "updated_at": "2024-06-17T14:51:59.975Z",
-                        "user_id": "6658a67f6676e47b02f23e8b",
-                        "pet_id": "6658a7ba54390e6a3ed4370c",
-                        "order_id": null,
-                        "review_id": "665ace0f28dba2608ccfd257"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
           "401": {
             "description": "Unauthorized"
           },
@@ -2762,7 +2666,7 @@
               "description": "訂單狀態: 飼主視角",
               "example": "PENDING,INVALID"
             },
-            "required": true,
+            "required": false,
             "name": "status",
             "in": "query"
           }
@@ -2800,10 +2704,6 @@
                           "note": {
                             "type": "string"
                           },
-                          "payment_at": {
-                            "type": "string",
-                            "nullable": true
-                          },
                           "payment_id": {
                             "type": "string",
                             "nullable": true
@@ -2811,6 +2711,30 @@
                           "payment_url": {
                             "type": "string",
                             "nullable": true
+                          },
+                          "payment_at": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "payment_status": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": [
+                              "SUCCESS",
+                              "FAILURE"
+                            ]
+                          },
+                          "payment_type": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": [
+                              "card",
+                              "bank_transfer",
+                              "alipay",
+                              "apple_pay",
+                              "google_pay",
+                              "wechat"
+                            ]
                           },
                           "report_content": {
                             "type": "string"
@@ -3026,9 +2950,11 @@
                           "pet_owner_user_id",
                           "status",
                           "note",
-                          "payment_at",
                           "payment_id",
                           "payment_url",
+                          "payment_at",
+                          "payment_status",
+                          "payment_type",
                           "report_content",
                           "report_image_list",
                           "report_created_at",
@@ -3056,7 +2982,7 @@
                     "total_page",
                     "status"
                   ],
-                  "description": "所有訂單",
+                  "description": "所有訂單<飼主視角>",
                   "example": {
                     "data": [
                       {
@@ -3064,9 +2990,11 @@
                         "pet_owner_user_id": "6658a67f6676e47b02f23e8b",
                         "status": "PENDING",
                         "note": "100保姆來接案！",
-                        "payment_at": null,
-                        "payment_id": null,
-                        "payment_url": null,
+                        "payment_at": "2024-06-23T08:52:29.000Z",
+                        "payment_id": "cs_test_b1hm29prsKJI5ZmVYdjYbkK1Z1QYoTe9rEm12O5VUuZpX8kXgM5gPeyLk7",
+                        "payment_url": "https://checkout.stripe.com/c/pay/cs_test_a1xN4f7x9wV5xVXnBCPMuYaylbwuMN0gf733IIy4ee0zg7rWskifZJJWos#fidkdWxOYHwnPyd1blpxYHZxWjA0VVZSUjJBSHFLfF1HVEIzV1dyUGxcTl1wUE81T3docDU2MD1VNG5sd0JXc3dhUU9LMmZ0V1B1YXM1N1NydkpiXWNURktJaEFxZG5KQkhJV0pxS3FVcElBNTV8fWZwMnIzMycpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl",
+                        "payment_type": "card",
+                        "payment_status": "SUCCESS",
                         "report_content": "",
                         "report_image_list": [],
                         "report_created_at": null,
@@ -3185,7 +3113,7 @@
               "description": "訂單狀態: 飼主視角",
               "example": "PENDING,INVALID"
             },
-            "required": true,
+            "required": false,
             "name": "status",
             "in": "query"
           }
@@ -3206,7 +3134,7 @@
                           "id": {
                             "type": "string"
                           },
-                          "pet_owner_user_id": {
+                          "sitter_user_id": {
                             "type": "string"
                           },
                           "status": {
@@ -3223,10 +3151,6 @@
                           "note": {
                             "type": "string"
                           },
-                          "payment_at": {
-                            "type": "string",
-                            "nullable": true
-                          },
                           "payment_id": {
                             "type": "string",
                             "nullable": true
@@ -3234,6 +3158,30 @@
                           "payment_url": {
                             "type": "string",
                             "nullable": true
+                          },
+                          "payment_at": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "payment_status": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": [
+                              "SUCCESS",
+                              "FAILURE"
+                            ]
+                          },
+                          "payment_type": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": [
+                              "card",
+                              "bank_transfer",
+                              "alipay",
+                              "apple_pay",
+                              "google_pay",
+                              "wechat"
+                            ]
                           },
                           "report_content": {
                             "type": "string"
@@ -3260,7 +3208,7 @@
                             "type": "string",
                             "format": "date-time"
                           },
-                          "sitter_user": {
+                          "pet_owner_user": {
                             "type": "object",
                             "properties": {
                               "id": {
@@ -3446,19 +3394,21 @@
                         },
                         "required": [
                           "id",
-                          "pet_owner_user_id",
+                          "sitter_user_id",
                           "status",
                           "note",
-                          "payment_at",
                           "payment_id",
                           "payment_url",
+                          "payment_at",
+                          "payment_status",
+                          "payment_type",
                           "report_content",
                           "report_image_list",
                           "report_created_at",
                           "report_updated_at",
                           "created_at",
                           "updated_at",
-                          "sitter_user",
+                          "pet_owner_user",
                           "task"
                         ]
                       }
@@ -3479,27 +3429,29 @@
                     "total_page",
                     "status"
                   ],
-                  "description": "所有訂單",
+                  "description": "所有訂單<保姆視角>",
                   "example": {
                     "data": [
                       {
-                        "id": "666d861d89a8d92b89dec71f",
-                        "pet_owner_user_id": "6658a67f6676e47b02f23e8b",
-                        "status": "PENDING",
-                        "note": "100保姆來接案！",
-                        "payment_at": null,
-                        "payment_id": null,
-                        "payment_url": null,
+                        "id": "6677c51e52789c9282cb5504",
+                        "status": "TRACKING",
+                        "note": "確認要接下任務。",
+                        "payment_at": "2024-06-23T08:52:29.000Z",
+                        "payment_id": "cs_test_b1HCjlZv3gsna3sppKVwSooDLnmRKQePOCoKuzWcnxx36F3SEkhqHg2mrP",
+                        "payment_url": "https://checkout.stripe.com/c/pay/cs_test_b1HCjlZv3gsna3sppKVwSooDLnmRKQePOCoKuzWcnxx36F3SEkhqHg2mrP#fidkdWxOYHwnPyd1blpxYHZxWjA0VVZSUjJBSHFLfF1HVEIzV1dyUGxcTl1wUE81T3docDU2MD1VNG5sd0JXc3dhUU9LMmZ0V1B1YXM1N1NydkpiXWNURktJaEFxZG5KQkhJV0pxS3FVcElBNTV8fWZwMnIzMycpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPydocGlxbFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl",
+                        "payment_status": "SUCCESS",
+                        "payment_type": "card",
                         "report_content": "",
                         "report_image_list": [],
                         "report_created_at": null,
                         "report_updated_at": null,
-                        "created_at": "2024-06-15T12:16:29.744Z",
-                        "updated_at": "2024-06-15T12:16:29.744Z",
-                        "sitter_user": {
-                          "id": "66571db5146b42a4acc541b6",
-                          "email": "100@mail.com",
-                          "real_name": "100",
+                        "created_at": "2024-06-23T06:47:58.210Z",
+                        "updated_at": "2024-06-23T09:44:22.951Z",
+                        "sitter_user_id": "6659fb917bce00ca07bcdd14",
+                        "pet_owner_user": {
+                          "id": "6658a67f6676e47b02f23e8b",
+                          "email": "103@mail.com",
+                          "real_name": "103",
                           "phone": null,
                           "nickname": null,
                           "birthdate": null,
@@ -3508,14 +3460,14 @@
                           "avatar": null,
                           "is_sitter": true,
                           "is_deleted": false,
-                          "average_rating": null,
-                          "total_reviews": 0
+                          "average_rating": 4.7,
+                          "total_reviews": 1
                         },
                         "task": {
                           "id": "6658a7d754390e6a3ed4370d",
                           "title": "任務標題103咻咻改改O",
-                          "public": "OPEN",
-                          "status": "PENDING",
+                          "public": "IN_TRANSACTION",
+                          "status": "TRACKING",
                           "cover": "https://storage.googleapis.com/pet-cherish-dev.appspot.com/task/3af7e666-7a77-4c34-a764-fbdf8cef63dd.jpeg?GoogleAccessId=firebase-adminsdk-ldt7v%40pet-cherish-dev.iam.gserviceaccount.com&Expires=16730294400&Signature=CjOf4xZi5dBPHxF6ngdcrAtmIu1htxiVoAK7S%2BFpxuYrt8MUY1lLybUMSqhtWMqx39gwR4rpWDWjsaLqID0mdtj9EfJVtROxhdqzbCkfcEdtboYI2RTFE5%2BgWomhBJw0M36hgCuqVCzxh%2F260%2BIIXKwNQcde6RwLx4B4Jhkekkwp4yKqDPciwFJmpK3%2BNX5sp5BSf%2B9e22E9tqju3rg1uNulTQIN6Si1qBf3qAG4Puwcd6IJv6W7ki02VWFovwTYZHvCppgB57YSd4donrICNoJpmDDCnrbvz6UqaF%2Fa36sdzv8AysB7mNSYQsOunUH6Qz3KtWWu6dlPCJnAqRl7sA%3D%3D",
                           "service_type": "BATH",
                           "city": "臺北市",
@@ -3527,10 +3479,10 @@
                           "start_at": "2024-06-01T12:52:17.708Z",
                           "end_at": "2024-06-01T13:52:17.708Z",
                           "created_at": "2024-05-30T16:22:47.700Z",
-                          "updated_at": "2024-06-17T14:51:59.975Z",
+                          "updated_at": "2024-06-23T09:44:22.951Z",
                           "user_id": "6658a67f6676e47b02f23e8b",
                           "pet_id": "6658a7ba54390e6a3ed4370c",
-                          "order_id": null,
+                          "order_id": "6677c51e52789c9282cb5504",
                           "review_id": "665ace0f28dba2608ccfd257"
                         }
                       }
@@ -3611,275 +3563,25 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "pet_owner_user_id": {
-                            "type": "string"
-                          },
-                          "status": {
-                            "type": "string",
-                            "enum": [
-                              "PENDING",
-                              "VALID",
-                              "TRACKING",
-                              "COMPLETED",
-                              "CANCELED",
-                              "INVALID"
-                            ]
-                          },
-                          "note": {
-                            "type": "string"
-                          },
-                          "payment_at": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "payment_id": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "payment_url": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "report_content": {
-                            "type": "string"
-                          },
-                          "report_image_list": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
+                      "type": "object",
+                      "properties": {
+                        "params": {
+                          "type": "object",
+                          "properties": {
+                            "order_id": {
+                              "type": "string",
+                              "description": "訂單編號",
+                              "example": "6658a256a8b5660a69d5e0d9"
                             }
                           },
-                          "report_created_at": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "report_updated_at": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "created_at": {
-                            "type": "string",
-                            "format": "date-time"
-                          },
-                          "updated_at": {
-                            "type": "string",
-                            "format": "date-time"
-                          },
-                          "sitter_user": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string"
-                              },
-                              "email": {
-                                "type": "string"
-                              },
-                              "real_name": {
-                                "type": "string"
-                              },
-                              "phone": {
-                                "type": "string",
-                                "nullable": true
-                              },
-                              "nickname": {
-                                "type": "string",
-                                "nullable": true,
-                                "default": ""
-                              },
-                              "birthdate": {
-                                "type": "string",
-                                "nullable": true
-                              },
-                              "gender": {
-                                "type": "string",
-                                "nullable": true,
-                                "enum": [
-                                  "MALE",
-                                  "FEMALE",
-                                  "OTHER"
-                                ]
-                              },
-                              "self_introduction": {
-                                "type": "string",
-                                "nullable": true,
-                                "default": ""
-                              },
-                              "avatar": {
-                                "type": "string",
-                                "nullable": true
-                              },
-                              "is_sitter": {
-                                "type": "boolean",
-                                "default": false
-                              },
-                              "is_deleted": {
-                                "type": "boolean"
-                              },
-                              "average_rating": {
-                                "type": "number",
-                                "nullable": true
-                              },
-                              "total_reviews": {
-                                "type": "number",
-                                "default": 0
-                              }
-                            }
-                          },
-                          "task": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string"
-                              },
-                              "title": {
-                                "type": "string"
-                              },
-                              "public": {
-                                "type": "string",
-                                "enum": [
-                                  "OPEN",
-                                  "CLOSED",
-                                  "IN_TRANSACTION",
-                                  "DELETED",
-                                  "COMPLETED"
-                                ]
-                              },
-                              "status": {
-                                "type": "string",
-                                "enum": [
-                                  "NULL",
-                                  "PENDING",
-                                  "UN_PAID",
-                                  "TRACKING",
-                                  "COMPLETED"
-                                ]
-                              },
-                              "cover": {
-                                "anyOf": [
-                                  {
-                                    "type": "string",
-                                    "format": "uri"
-                                  },
-                                  {
-                                    "nullable": true
-                                  },
-                                  {
-                                    "nullable": true
-                                  }
-                                ]
-                              },
-                              "service_type": {
-                                "type": "string",
-                                "enum": [
-                                  "PHOTOGRAPHY",
-                                  "HEALTH_CARE",
-                                  "BATH",
-                                  "WALKING"
-                                ]
-                              },
-                              "city": {
-                                "type": "string"
-                              },
-                              "district": {
-                                "type": "string"
-                              },
-                              "unit_price": {
-                                "type": "number"
-                              },
-                              "total": {
-                                "type": "number"
-                              },
-                              "description": {
-                                "type": "string"
-                              },
-                              "accept_sitter_contact": {
-                                "type": "boolean",
-                                "default": false
-                              },
-                              "start_at": {
-                                "type": "string",
-                                "format": "date-time"
-                              },
-                              "end_at": {
-                                "type": "string",
-                                "format": "date-time"
-                              },
-                              "created_at": {
-                                "type": "string",
-                                "format": "date-time"
-                              },
-                              "updated_at": {
-                                "type": "string",
-                                "format": "date-time"
-                              },
-                              "user_id": {
-                                "type": "string"
-                              },
-                              "pet_id": {
-                                "type": "string"
-                              },
-                              "order_id": {
-                                "type": "string",
-                                "nullable": true
-                              },
-                              "review_id": {
-                                "type": "string"
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "title",
-                              "public",
-                              "status",
-                              "cover",
-                              "service_type",
-                              "city",
-                              "district",
-                              "unit_price",
-                              "total",
-                              "description",
-                              "start_at",
-                              "end_at",
-                              "created_at",
-                              "updated_at",
-                              "user_id",
-                              "pet_id",
-                              "order_id",
-                              "review_id"
-                            ]
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "pet_owner_user_id",
-                          "status",
-                          "note",
-                          "payment_at",
-                          "payment_id",
-                          "payment_url",
-                          "report_content",
-                          "report_image_list",
-                          "report_created_at",
-                          "report_updated_at",
-                          "created_at",
-                          "updated_at",
-                          "sitter_user",
-                          "task"
-                        ]
-                      }
-                    },
-                    "total": {
-                      "type": "number"
-                    },
-                    "total_page": {
-                      "type": "number"
+                          "required": [
+                            "order_id"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "params"
+                      ]
                     },
                     "status": {
                       "type": "boolean"
@@ -3887,69 +3589,65 @@
                   },
                   "required": [
                     "data",
-                    "total",
-                    "total_page",
                     "status"
                   ],
-                  "description": "所有訂單",
+                  "description": "查詢：指定訂單",
                   "example": {
-                    "data": [
-                      {
-                        "id": "666d861d89a8d92b89dec71f",
-                        "pet_owner_user_id": "6658a67f6676e47b02f23e8b",
+                    "status": true,
+                    "data": {
+                      "id": "666d861d89a8d92b89dec71f",
+                      "pet_owner_user_id": "6658a67f6676e47b02f23e8b",
+                      "status": "PENDING",
+                      "note": "100保姆來接案！",
+                      "payment_at": "2024-06-23T08:52:29.000Z",
+                      "payment_id": "cs_test_b1hm29prsKJI5ZmVYdjYbkK1Z1QYoTe9rEm12O5VUuZpX8kXgM5gPeyLk7",
+                      "payment_url": "https://checkout.stripe.com/c/pay/cs_test_a1xN4f7x9wV5xVXnBCPMuYaylbwuMN0gf733IIy4ee0zg7rWskifZJJWos#fidkdWxOYHwnPyd1blpxYHZxWjA0VVZSUjJBSHFLfF1HVEIzV1dyUGxcTl1wUE81T3docDU2MD1VNG5sd0JXc3dhUU9LMmZ0V1B1YXM1N1NydkpiXWNURktJaEFxZG5KQkhJV0pxS3FVcElBNTV8fWZwMnIzMycpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl",
+                      "payment_type": "card",
+                      "payment_status": "SUCCESS",
+                      "report_content": "",
+                      "report_image_list": [],
+                      "report_created_at": null,
+                      "report_updated_at": null,
+                      "created_at": "2024-06-15T12:16:29.744Z",
+                      "updated_at": "2024-06-15T12:16:29.744Z",
+                      "sitter_user": {
+                        "id": "66571db5146b42a4acc541b6",
+                        "email": "100@mail.com",
+                        "real_name": "100",
+                        "phone": null,
+                        "nickname": null,
+                        "birthdate": null,
+                        "gender": null,
+                        "self_introduction": null,
+                        "avatar": null,
+                        "is_sitter": true,
+                        "is_deleted": false,
+                        "average_rating": null,
+                        "total_reviews": 0
+                      },
+                      "task": {
+                        "id": "6658a7d754390e6a3ed4370d",
+                        "title": "任務標題103咻咻改改O",
+                        "public": "OPEN",
                         "status": "PENDING",
-                        "note": "100保姆來接案！",
-                        "payment_at": null,
-                        "payment_id": null,
-                        "payment_url": null,
-                        "report_content": "",
-                        "report_image_list": [],
-                        "report_created_at": null,
-                        "report_updated_at": null,
-                        "created_at": "2024-06-15T12:16:29.744Z",
-                        "updated_at": "2024-06-15T12:16:29.744Z",
-                        "sitter_user": {
-                          "id": "66571db5146b42a4acc541b6",
-                          "email": "100@mail.com",
-                          "real_name": "100",
-                          "phone": null,
-                          "nickname": null,
-                          "birthdate": null,
-                          "gender": null,
-                          "self_introduction": null,
-                          "avatar": null,
-                          "is_sitter": true,
-                          "is_deleted": false,
-                          "average_rating": null,
-                          "total_reviews": 0
-                        },
-                        "task": {
-                          "id": "6658a7d754390e6a3ed4370d",
-                          "title": "任務標題103咻咻改改O",
-                          "public": "OPEN",
-                          "status": "PENDING",
-                          "cover": "https://storage.googleapis.com/pet-cherish-dev.appspot.com/task/3af7e666-7a77-4c34-a764-fbdf8cef63dd.jpeg?GoogleAccessId=firebase-adminsdk-ldt7v%40pet-cherish-dev.iam.gserviceaccount.com&Expires=16730294400&Signature=CjOf4xZi5dBPHxF6ngdcrAtmIu1htxiVoAK7S%2BFpxuYrt8MUY1lLybUMSqhtWMqx39gwR4rpWDWjsaLqID0mdtj9EfJVtROxhdqzbCkfcEdtboYI2RTFE5%2BgWomhBJw0M36hgCuqVCzxh%2F260%2BIIXKwNQcde6RwLx4B4Jhkekkwp4yKqDPciwFJmpK3%2BNX5sp5BSf%2B9e22E9tqju3rg1uNulTQIN6Si1qBf3qAG4Puwcd6IJv6W7ki02VWFovwTYZHvCppgB57YSd4donrICNoJpmDDCnrbvz6UqaF%2Fa36sdzv8AysB7mNSYQsOunUH6Qz3KtWWu6dlPCJnAqRl7sA%3D%3D",
-                          "service_type": "BATH",
-                          "city": "臺北市",
-                          "district": "大同區",
-                          "unit_price": 1500,
-                          "total": 3000,
-                          "description": "柴犬定期洗澡",
-                          "accept_sitter_contact": false,
-                          "start_at": "2024-06-01T12:52:17.708Z",
-                          "end_at": "2024-06-01T13:52:17.708Z",
-                          "created_at": "2024-05-30T16:22:47.700Z",
-                          "updated_at": "2024-06-17T14:51:59.975Z",
-                          "user_id": "6658a67f6676e47b02f23e8b",
-                          "pet_id": "6658a7ba54390e6a3ed4370c",
-                          "order_id": null,
-                          "review_id": "665ace0f28dba2608ccfd257"
-                        }
+                        "cover": "https://storage.googleapis.com/pet-cherish-dev.appspot.com/task/3af7e666-7a77-4c34-a764-fbdf8cef63dd.jpeg?GoogleAccessId=firebase-adminsdk-ldt7v%40pet-cherish-dev.iam.gserviceaccount.com&Expires=16730294400&Signature=CjOf4xZi5dBPHxF6ngdcrAtmIu1htxiVoAK7S%2BFpxuYrt8MUY1lLybUMSqhtWMqx39gwR4rpWDWjsaLqID0mdtj9EfJVtROxhdqzbCkfcEdtboYI2RTFE5%2BgWomhBJw0M36hgCuqVCzxh%2F260%2BIIXKwNQcde6RwLx4B4Jhkekkwp4yKqDPciwFJmpK3%2BNX5sp5BSf%2B9e22E9tqju3rg1uNulTQIN6Si1qBf3qAG4Puwcd6IJv6W7ki02VWFovwTYZHvCppgB57YSd4donrICNoJpmDDCnrbvz6UqaF%2Fa36sdzv8AysB7mNSYQsOunUH6Qz3KtWWu6dlPCJnAqRl7sA%3D%3D",
+                        "service_type": "BATH",
+                        "city": "臺北市",
+                        "district": "大同區",
+                        "unit_price": 1500,
+                        "total": 3000,
+                        "description": "柴犬定期洗澡",
+                        "accept_sitter_contact": false,
+                        "start_at": "2024-06-01T12:52:17.708Z",
+                        "end_at": "2024-06-01T13:52:17.708Z",
+                        "created_at": "2024-05-30T16:22:47.700Z",
+                        "updated_at": "2024-06-17T14:51:59.975Z",
+                        "user_id": "6658a67f6676e47b02f23e8b",
+                        "pet_id": "6658a7ba54390e6a3ed4370c",
+                        "order_id": null,
+                        "review_id": "665ace0f28dba2608ccfd257"
                       }
-                    ],
-                    "total": 1,
-                    "total_page": 1,
-                    "status": true
+                    }
                   }
                 }
               }
@@ -3997,275 +3695,25 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "pet_owner_user_id": {
-                            "type": "string"
-                          },
-                          "status": {
-                            "type": "string",
-                            "enum": [
-                              "PENDING",
-                              "VALID",
-                              "TRACKING",
-                              "COMPLETED",
-                              "CANCELED",
-                              "INVALID"
-                            ]
-                          },
-                          "note": {
-                            "type": "string"
-                          },
-                          "payment_at": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "payment_id": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "payment_url": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "report_content": {
-                            "type": "string"
-                          },
-                          "report_image_list": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
+                      "type": "object",
+                      "properties": {
+                        "params": {
+                          "type": "object",
+                          "properties": {
+                            "order_id": {
+                              "type": "string",
+                              "description": "訂單編號",
+                              "example": "6658a256a8b5660a69d5e0d9"
                             }
                           },
-                          "report_created_at": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "report_updated_at": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "created_at": {
-                            "type": "string",
-                            "format": "date-time"
-                          },
-                          "updated_at": {
-                            "type": "string",
-                            "format": "date-time"
-                          },
-                          "sitter_user": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string"
-                              },
-                              "email": {
-                                "type": "string"
-                              },
-                              "real_name": {
-                                "type": "string"
-                              },
-                              "phone": {
-                                "type": "string",
-                                "nullable": true
-                              },
-                              "nickname": {
-                                "type": "string",
-                                "nullable": true,
-                                "default": ""
-                              },
-                              "birthdate": {
-                                "type": "string",
-                                "nullable": true
-                              },
-                              "gender": {
-                                "type": "string",
-                                "nullable": true,
-                                "enum": [
-                                  "MALE",
-                                  "FEMALE",
-                                  "OTHER"
-                                ]
-                              },
-                              "self_introduction": {
-                                "type": "string",
-                                "nullable": true,
-                                "default": ""
-                              },
-                              "avatar": {
-                                "type": "string",
-                                "nullable": true
-                              },
-                              "is_sitter": {
-                                "type": "boolean",
-                                "default": false
-                              },
-                              "is_deleted": {
-                                "type": "boolean"
-                              },
-                              "average_rating": {
-                                "type": "number",
-                                "nullable": true
-                              },
-                              "total_reviews": {
-                                "type": "number",
-                                "default": 0
-                              }
-                            }
-                          },
-                          "task": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string"
-                              },
-                              "title": {
-                                "type": "string"
-                              },
-                              "public": {
-                                "type": "string",
-                                "enum": [
-                                  "OPEN",
-                                  "CLOSED",
-                                  "IN_TRANSACTION",
-                                  "DELETED",
-                                  "COMPLETED"
-                                ]
-                              },
-                              "status": {
-                                "type": "string",
-                                "enum": [
-                                  "NULL",
-                                  "PENDING",
-                                  "UN_PAID",
-                                  "TRACKING",
-                                  "COMPLETED"
-                                ]
-                              },
-                              "cover": {
-                                "anyOf": [
-                                  {
-                                    "type": "string",
-                                    "format": "uri"
-                                  },
-                                  {
-                                    "nullable": true
-                                  },
-                                  {
-                                    "nullable": true
-                                  }
-                                ]
-                              },
-                              "service_type": {
-                                "type": "string",
-                                "enum": [
-                                  "PHOTOGRAPHY",
-                                  "HEALTH_CARE",
-                                  "BATH",
-                                  "WALKING"
-                                ]
-                              },
-                              "city": {
-                                "type": "string"
-                              },
-                              "district": {
-                                "type": "string"
-                              },
-                              "unit_price": {
-                                "type": "number"
-                              },
-                              "total": {
-                                "type": "number"
-                              },
-                              "description": {
-                                "type": "string"
-                              },
-                              "accept_sitter_contact": {
-                                "type": "boolean",
-                                "default": false
-                              },
-                              "start_at": {
-                                "type": "string",
-                                "format": "date-time"
-                              },
-                              "end_at": {
-                                "type": "string",
-                                "format": "date-time"
-                              },
-                              "created_at": {
-                                "type": "string",
-                                "format": "date-time"
-                              },
-                              "updated_at": {
-                                "type": "string",
-                                "format": "date-time"
-                              },
-                              "user_id": {
-                                "type": "string"
-                              },
-                              "pet_id": {
-                                "type": "string"
-                              },
-                              "order_id": {
-                                "type": "string",
-                                "nullable": true
-                              },
-                              "review_id": {
-                                "type": "string"
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "title",
-                              "public",
-                              "status",
-                              "cover",
-                              "service_type",
-                              "city",
-                              "district",
-                              "unit_price",
-                              "total",
-                              "description",
-                              "start_at",
-                              "end_at",
-                              "created_at",
-                              "updated_at",
-                              "user_id",
-                              "pet_id",
-                              "order_id",
-                              "review_id"
-                            ]
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "pet_owner_user_id",
-                          "status",
-                          "note",
-                          "payment_at",
-                          "payment_id",
-                          "payment_url",
-                          "report_content",
-                          "report_image_list",
-                          "report_created_at",
-                          "report_updated_at",
-                          "created_at",
-                          "updated_at",
-                          "sitter_user",
-                          "task"
-                        ]
-                      }
-                    },
-                    "total": {
-                      "type": "number"
-                    },
-                    "total_page": {
-                      "type": "number"
+                          "required": [
+                            "order_id"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "params"
+                      ]
                     },
                     "status": {
                       "type": "boolean"
@@ -4273,69 +3721,65 @@
                   },
                   "required": [
                     "data",
-                    "total",
-                    "total_page",
                     "status"
                   ],
-                  "description": "所有訂單",
+                  "description": "查詢：指定訂單",
                   "example": {
-                    "data": [
-                      {
-                        "id": "666d861d89a8d92b89dec71f",
-                        "pet_owner_user_id": "6658a67f6676e47b02f23e8b",
+                    "status": true,
+                    "data": {
+                      "id": "666d861d89a8d92b89dec71f",
+                      "pet_owner_user_id": "6658a67f6676e47b02f23e8b",
+                      "status": "PENDING",
+                      "note": "100保姆來接案！",
+                      "payment_at": "2024-06-23T08:52:29.000Z",
+                      "payment_id": "cs_test_b1hm29prsKJI5ZmVYdjYbkK1Z1QYoTe9rEm12O5VUuZpX8kXgM5gPeyLk7",
+                      "payment_url": "https://checkout.stripe.com/c/pay/cs_test_a1xN4f7x9wV5xVXnBCPMuYaylbwuMN0gf733IIy4ee0zg7rWskifZJJWos#fidkdWxOYHwnPyd1blpxYHZxWjA0VVZSUjJBSHFLfF1HVEIzV1dyUGxcTl1wUE81T3docDU2MD1VNG5sd0JXc3dhUU9LMmZ0V1B1YXM1N1NydkpiXWNURktJaEFxZG5KQkhJV0pxS3FVcElBNTV8fWZwMnIzMycpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl",
+                      "payment_type": "card",
+                      "payment_status": "SUCCESS",
+                      "report_content": "",
+                      "report_image_list": [],
+                      "report_created_at": null,
+                      "report_updated_at": null,
+                      "created_at": "2024-06-15T12:16:29.744Z",
+                      "updated_at": "2024-06-15T12:16:29.744Z",
+                      "sitter_user": {
+                        "id": "66571db5146b42a4acc541b6",
+                        "email": "100@mail.com",
+                        "real_name": "100",
+                        "phone": null,
+                        "nickname": null,
+                        "birthdate": null,
+                        "gender": null,
+                        "self_introduction": null,
+                        "avatar": null,
+                        "is_sitter": true,
+                        "is_deleted": false,
+                        "average_rating": null,
+                        "total_reviews": 0
+                      },
+                      "task": {
+                        "id": "6658a7d754390e6a3ed4370d",
+                        "title": "任務標題103咻咻改改O",
+                        "public": "OPEN",
                         "status": "PENDING",
-                        "note": "100保姆來接案！",
-                        "payment_at": null,
-                        "payment_id": null,
-                        "payment_url": null,
-                        "report_content": "",
-                        "report_image_list": [],
-                        "report_created_at": null,
-                        "report_updated_at": null,
-                        "created_at": "2024-06-15T12:16:29.744Z",
-                        "updated_at": "2024-06-15T12:16:29.744Z",
-                        "sitter_user": {
-                          "id": "66571db5146b42a4acc541b6",
-                          "email": "100@mail.com",
-                          "real_name": "100",
-                          "phone": null,
-                          "nickname": null,
-                          "birthdate": null,
-                          "gender": null,
-                          "self_introduction": null,
-                          "avatar": null,
-                          "is_sitter": true,
-                          "is_deleted": false,
-                          "average_rating": null,
-                          "total_reviews": 0
-                        },
-                        "task": {
-                          "id": "6658a7d754390e6a3ed4370d",
-                          "title": "任務標題103咻咻改改O",
-                          "public": "OPEN",
-                          "status": "PENDING",
-                          "cover": "https://storage.googleapis.com/pet-cherish-dev.appspot.com/task/3af7e666-7a77-4c34-a764-fbdf8cef63dd.jpeg?GoogleAccessId=firebase-adminsdk-ldt7v%40pet-cherish-dev.iam.gserviceaccount.com&Expires=16730294400&Signature=CjOf4xZi5dBPHxF6ngdcrAtmIu1htxiVoAK7S%2BFpxuYrt8MUY1lLybUMSqhtWMqx39gwR4rpWDWjsaLqID0mdtj9EfJVtROxhdqzbCkfcEdtboYI2RTFE5%2BgWomhBJw0M36hgCuqVCzxh%2F260%2BIIXKwNQcde6RwLx4B4Jhkekkwp4yKqDPciwFJmpK3%2BNX5sp5BSf%2B9e22E9tqju3rg1uNulTQIN6Si1qBf3qAG4Puwcd6IJv6W7ki02VWFovwTYZHvCppgB57YSd4donrICNoJpmDDCnrbvz6UqaF%2Fa36sdzv8AysB7mNSYQsOunUH6Qz3KtWWu6dlPCJnAqRl7sA%3D%3D",
-                          "service_type": "BATH",
-                          "city": "臺北市",
-                          "district": "大同區",
-                          "unit_price": 1500,
-                          "total": 3000,
-                          "description": "柴犬定期洗澡",
-                          "accept_sitter_contact": false,
-                          "start_at": "2024-06-01T12:52:17.708Z",
-                          "end_at": "2024-06-01T13:52:17.708Z",
-                          "created_at": "2024-05-30T16:22:47.700Z",
-                          "updated_at": "2024-06-17T14:51:59.975Z",
-                          "user_id": "6658a67f6676e47b02f23e8b",
-                          "pet_id": "6658a7ba54390e6a3ed4370c",
-                          "order_id": null,
-                          "review_id": "665ace0f28dba2608ccfd257"
-                        }
+                        "cover": "https://storage.googleapis.com/pet-cherish-dev.appspot.com/task/3af7e666-7a77-4c34-a764-fbdf8cef63dd.jpeg?GoogleAccessId=firebase-adminsdk-ldt7v%40pet-cherish-dev.iam.gserviceaccount.com&Expires=16730294400&Signature=CjOf4xZi5dBPHxF6ngdcrAtmIu1htxiVoAK7S%2BFpxuYrt8MUY1lLybUMSqhtWMqx39gwR4rpWDWjsaLqID0mdtj9EfJVtROxhdqzbCkfcEdtboYI2RTFE5%2BgWomhBJw0M36hgCuqVCzxh%2F260%2BIIXKwNQcde6RwLx4B4Jhkekkwp4yKqDPciwFJmpK3%2BNX5sp5BSf%2B9e22E9tqju3rg1uNulTQIN6Si1qBf3qAG4Puwcd6IJv6W7ki02VWFovwTYZHvCppgB57YSd4donrICNoJpmDDCnrbvz6UqaF%2Fa36sdzv8AysB7mNSYQsOunUH6Qz3KtWWu6dlPCJnAqRl7sA%3D%3D",
+                        "service_type": "BATH",
+                        "city": "臺北市",
+                        "district": "大同區",
+                        "unit_price": 1500,
+                        "total": 3000,
+                        "description": "柴犬定期洗澡",
+                        "accept_sitter_contact": false,
+                        "start_at": "2024-06-01T12:52:17.708Z",
+                        "end_at": "2024-06-01T13:52:17.708Z",
+                        "created_at": "2024-05-30T16:22:47.700Z",
+                        "updated_at": "2024-06-17T14:51:59.975Z",
+                        "user_id": "6658a67f6676e47b02f23e8b",
+                        "pet_id": "6658a7ba54390e6a3ed4370c",
+                        "order_id": null,
+                        "review_id": "665ace0f28dba2608ccfd257"
                       }
-                    ],
-                    "total": 1,
-                    "total_page": 1,
-                    "status": true
+                    }
                   }
                 }
               }
@@ -6059,13 +5503,80 @@
                             },
                             "metadata": {
                               "type": "object",
-                              "properties": {}
+                              "properties": {
+                                "order_id": {
+                                  "type": "string"
+                                },
+                                "task_id": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "order_id",
+                                "task_id"
+                              ]
+                            },
+                            "payment_status": {
+                              "type": "string",
+                              "enum": [
+                                "paid",
+                                "unpaid",
+                                "no_payment_required"
+                              ]
+                            },
+                            "payment_intent": {
+                              "type": "object",
+                              "properties": {
+                                "amount": {
+                                  "type": "number"
+                                },
+                                "amount_received": {
+                                  "type": "number"
+                                },
+                                "created": {
+                                  "type": "number"
+                                },
+                                "payment_method": {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "type": "string"
+                                    },
+                                    "card": {
+                                      "type": "object",
+                                      "properties": {
+                                        "brand": {
+                                          "type": "string"
+                                        },
+                                        "last4": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "brand",
+                                        "last4"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "type"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "amount",
+                                "amount_received",
+                                "created",
+                                "payment_method"
+                              ]
                             }
                           },
                           "required": [
                             "id",
                             "amount_total",
-                            "metadata"
+                            "metadata",
+                            "payment_status",
+                            "payment_intent"
                           ]
                         },
                         "list_items": {
@@ -6127,10 +5638,24 @@
                     "message": "Your payment was successful",
                     "data": {
                       "retrieve": {
-                        "id": "cs_test_b1ZmurAFYdbEabofvi11fQrcrT5pwKrPNG04PBxL7YelDvX6byGdNajsOm",
-                        "amount_total": 80000,
+                        "id": "cs_test_b1cr522PQ4qwypfN24f5UzrAbnuLUgAq7fXBB8bklCTrWu2wfgUmlQt2QQ",
+                        "amount_total": 305000,
                         "metadata": {
-                          "order_id": "123456"
+                          "order_id": "6677c51e52789c9282cb5504",
+                          "task_id": "6658a7d754390e6a3ed4370d"
+                        },
+                        "payment_status": "paid",
+                        "payment_intent": {
+                          "amount": 305000,
+                          "amount_received": 305000,
+                          "created": 1719125342,
+                          "payment_method": {
+                            "type": "card",
+                            "card": {
+                              "brand": "visa",
+                              "last4": "4242"
+                            }
+                          }
                         }
                       },
                       "list_items": [
