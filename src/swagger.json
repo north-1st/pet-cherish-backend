@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://pet-cherish-backend.onrender.com",
+      "url": "https://pet-cherish-backend.zeabur.app",
       "description": "Production server"
     },
     {
