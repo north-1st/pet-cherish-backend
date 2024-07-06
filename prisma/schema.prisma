@@ -250,4 +250,5 @@ enum PaymentMethodType {
   apple_pay // Apple Pay
   google_pay // Google Pay
   wechat // 微信支付
+  link // Link 支付
 }
