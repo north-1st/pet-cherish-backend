@@ -46,7 +46,6 @@ const getOpenApiDocumentation = () => {
     },
     servers: [
       { url: env.BACK_END_PROD_URL, description: 'Production server' },
-      { url: 'https://pet-cherish-backend.zeabur.app', description: 'Zeabur server' },
       { url: env.BACK_END_DEV_URL, description: 'Development server' },
     ],
   });
