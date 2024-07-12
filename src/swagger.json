@@ -11,10 +11,6 @@
       "description": "Production server"
     },
     {
-      "url": "https://pet-cherish-backend.zeabur.app",
-      "description": "Zeabur server"
-    },
-    {
       "url": "http://localhost:5000",
       "description": "Development server"
     }
